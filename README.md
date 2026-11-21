@@ -1,2 +1,2 @@
-# velocity-pharma-copilot
+# pharma-supply-chain-copilot
 IITKGP - Team Velocity Capstone Project Repo
