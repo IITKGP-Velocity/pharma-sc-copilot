@@ -4,8 +4,9 @@ import os
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_ENV_FILE = PROJECT_ROOT / ".env"
+RAG_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+REPOSITORY_ROOT = RAG_PROJECT_ROOT.parent
+DEFAULT_ENV_FILE = REPOSITORY_ROOT / ".env"
 
 
 def load_secret_env(env_file: str | Path = DEFAULT_ENV_FILE) -> None:

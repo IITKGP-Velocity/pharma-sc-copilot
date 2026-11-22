@@ -21,10 +21,9 @@ directory for the commands below is `RAG/`.
 | `scripts/parse_and_chunk.py` | Extracts text and creates section-aware chunks |
 | `scripts/embed_and_index.py` | Creates dense and sparse indexes |
 | `scripts/retriever.py` | Loads the index and performs hybrid retrieval |
-| `scripts/local_secrets.py` | Loads local secrets from `.env` |
+| `scripts/local_secrets.py` | Loads local secrets from the repository-root `.env` |
 | `RAG.ipynb` | Production notebook for running and inspecting the complete pipeline |
 | `requirements.txt` | Python dependencies for the scripts and notebook |
-| `.env.example` | Secret-file template |
 
 ## Prerequisites
 
@@ -35,24 +34,27 @@ install the project dependencies from the `RAG/` project directory:
 python -m pip install -r requirements.txt
 ```
 
-Create the local secret file:
+From the repository root, create the single local secret file:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Set the actual key in `.env`:
+Set the actual key in the repository-root `.env`:
 
 ```text
 EMBEDDINGS_KEY=your_embeddings_key
 ```
 
-The default CA certificate path is `secrets/vm02-ca.crt`. The certificate is
-kept in the ignored `secrets/` directory and is not committed. If you need a
-different certificate path, set `EMBED_CERT` in the environment or in `.env`,
-for example `EMBED_CERT=C:\path\to\certificate.crt`. TLS certificate
-verification remains enabled; do not disable it to work around certificate
-errors.
+The default CA certificate path is `../secrets/vm02-ca.crt` (repository-root
+`secrets/vm02-ca.crt`). Certificates are kept in the root ignored `secrets/`
+directory and are not committed. If you need a
+different certificate path, set `EMBED_CERT` in the environment or in the
+repository-root `.env`, for example `EMBED_CERT=C:\path\to\certificate.crt`.
+TLS certificate verification remains enabled; do not disable it to work around
+certificate errors.
+The LLM pipeline similarly uses the root `secrets/vm04-ca.crt` by default;
+override it with `LLM_CERT` if needed.
 
 ## End-to-end pipeline
 
@@ -83,8 +85,9 @@ The [RAG.ipynb](RAG.ipynb) notebook executes the same steps in this order.
 |---|---|---|---|
 | `input/sources.csv` | Maintainer/source setup | `build_manifest.py` | Source document IDs, titles, URLs, publication dates, use cases, and PDF bucket values |
 | `docs/<doc_id>.pdf` | External source/download | `build_manifest.py`, `parse_and_chunk.py` | Regulatory source PDF. The file name must match `doc_id` |
-| `.env` | Local operator | All embedding and retrieval code | Optional local `EMBEDDINGS_KEY` and `EMBED_CERT` configuration |
-| `secrets/vm02-ca.crt` | Local operator | Embedding API client | Default CA certificate used to verify the embeddings service's TLS connection; ignored by Git |
+| `../.env` | Local operator | All embedding and retrieval code | Single repository-root file for local `EMBEDDINGS_KEY`, optional `LLM_KEY`, and API/certificate overrides |
+| `../secrets/vm02-ca.crt` | Local operator | Embedding API client | Default CA certificate used to verify the embeddings service's TLS connection; ignored by Git |
+| `../secrets/vm04-ca.crt` | Local operator | LLM answer pipeline | Default CA certificate used to verify the LLM service's TLS connection; ignored by Git |
 
 ### Manifest and chunk generation
 
@@ -117,9 +120,9 @@ The [RAG.ipynb](RAG.ipynb) notebook executes the same steps in this order.
 
 ## Secrets
 
-- `.env` is local and ignored by Git.
-- `secrets/` is local and ignored by Git.
-- `.env.example` contains a placeholder only and is safe to commit.
+- The repository-root `.env` is local and ignored by the root `.gitignore`.
+- The repository-root `secrets/` directory is local and ignored by Git.
+- The repository-root `.env.example` contains placeholders only and is safe to commit.
 - If a key is accidentally committed, revoke and rotate it immediately.
 
 ## Chunk JSONL Field Reference

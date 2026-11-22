@@ -1,4 +1,4 @@
 .env
-secrets/
+/secrets/
 __pycache__/
 *.py[cod]
