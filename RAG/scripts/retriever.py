@@ -50,8 +50,9 @@ except ImportError:
     from local_secrets import get_embeddings_key
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+REPOSITORY_ROOT = PROJECT_ROOT.parent
 DEFAULT_INDEX_DIR = PROJECT_ROOT / "index"
-DEFAULT_EMBED_CERT = PROJECT_ROOT / "secrets" / "vm02-ca.crt"
+DEFAULT_EMBED_CERT = REPOSITORY_ROOT / "secrets" / "vm02-ca.crt"
 
 # Reuse the EXACT embedding client and BM25 tokenizer used at indexing time.
 # If the tokenizer differed, keyword matching would silently break.

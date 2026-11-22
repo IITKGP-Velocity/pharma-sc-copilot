@@ -10,7 +10,7 @@ Output: faiss.index, bm25.pkl, indexed_chunks.jsonl (row i == vector i == BM25 d
 Environment
   EMBEDDINGS_KEY   API key for the embeddings service (required)
   EMBED_URL        default https://<COURSE_HOST>:1035/v1/embeddings
-  EMBED_CERT       default <project-root>/secrets/vm02-ca.crt
+  EMBED_CERT       default <repo-root>/secrets/vm02-ca.crt
 
 Run
   python embed_and_index.py --chunks index/chunks.jsonl --out-dir index/
@@ -233,7 +233,7 @@ def main() -> int:
     except RuntimeError as e:
         raise SystemExit(str(e)) from e
     url = os.environ.get("EMBED_URL", "https://<COURSE_HOST>:1035/v1/embeddings")
-    cert = Path(os.environ.get("EMBED_CERT", str(project_root / "secrets" / "vm02-ca.crt")))
+    cert = Path(os.environ.get("EMBED_CERT", str(project_root.parent / "secrets" / "vm02-ca.crt")))
     if not cert.exists():
         raise SystemExit(f"Certificate not found: {cert} (set EMBED_CERT)")
 
