@@ -4,14 +4,6 @@ IITKGP - Team Velocity Capstone Project Repo
 This repository contains the regulatory-document indexing workflow and a
 grounded question-answering pipeline for pharmaceutical supply-chain compliance.
 
-## Working with an AI agent
-
-The skill in [.github/skills/velocity-capstone/SKILL.md](.github/skills/velocity-capstone/SKILL.md)
-covers onboarding, debugging, PR review and project status. Any coding agent
-can be pointed at that file (for example "follow the instructions in
-.github/skills/velocity-capstone/SKILL.md"); GitHub Copilot in VS Code loads it
-automatically.
-
 ## Pipelines
 
 ### Build the regulatory corpus and search index
