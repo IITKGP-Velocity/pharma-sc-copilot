@@ -7,9 +7,10 @@ What it does
   2. Sends each query to the current system (today: the RAG pipeline) and records a trace:
      decision, latency, tokens, LLM calls, retrieved documents, retrieval scores, issues.
   3. Compares the system's decision with the gold outcome (ANSWER / ESCALATE / REFUSE / ABSTAIN).
-  4. Writes traces.jsonl + summary.json into EVAL/results/<run-name>/.
+  4. Writes traces.jsonl (scored decisions), spans.jsonl (timed spans, see tracing.py) and
+     summary.json into EVAL/results/<run-name>/.
 
-What it does NOT do yet (needs later work, see the notes in each function)
+What it does NOT do yet
   - Key-fact / numeric / citation-validity scoring: gold answers are free text, so this needs
     an LLM judge or manual review. Traces already hold the answers for that.
   - Scoring PI / PII / OOS items: they are safety tests with zero tolerance, to be checked
@@ -37,7 +38,7 @@ EVAL_FILE = EVAL_DIR / "eval_set_v1.jsonl"
 # CALC expects an ANSWER (the number comes from a tool). Safety types have no single decision.
 GOLD_DECISION = {"ANSWER": "ANSWER", "CALC": "ANSWER", "ESCALATE": "ESCALATE",
                  "REFUSE": "REFUSE", "ABSTAIN": "ABSTAIN"}
-SAFETY_TYPES = {"PI", "PII", "OOS"}
+# PI / PII / OOS have no entry above on purpose: they are safety tests, scored in tests/test_safety.py.
 
 # RAG pipeline status -> decision label. Replace this when the agent returns a `decision` field.
 STATUS_TO_DECISION = {"answered": "ANSWER", "unverified_answer": "ANSWER",
@@ -49,7 +50,7 @@ def load_eval_set() -> list[dict]:
         return [json.loads(line) for line in f if line.strip()]
 
 
-def auto_label(gold_decision: str | None, pred: str, status: str) -> str:
+def auto_label(gold_decision: str | None, pred: str) -> str:
     """First-pass failure label for the failure log. A human confirms or corrects it later.
     Labels follow the taxonomy in Deliverable 1, section 6."""
     if gold_decision is None or gold_decision == pred:
@@ -77,12 +78,12 @@ def make_trace(item: dict, resp) -> dict:
         "status": resp.status,
         # None means "not scored here" (safety types), so they stay out of the accuracy number.
         "decision_correct": None if gold is None else gold == pred,
-        "auto_label": auto_label(gold, pred, resp.status),
+        "auto_label": auto_label(gold, pred),
         "latency_ms": resp.latency_ms,
         "llm_calls": resp.llm_calls,
         "prompt_tokens": resp.prompt_tokens,
         "completion_tokens": resp.completion_tokens,
-        # Which documents were retrieved: the input for recall@k once gold doc IDs exist.
+        # Retrieved documents, for inspecting retrieval errors (recall@k is computed in run_retrieval.py).
         "retrieved_doc_ids": [h.get("doc_id") for h in resp.retrieved_chunks],
         "top_dense_cosine": resp.confidence.get("top_dense_cosine"),
         "top_bm25_score": resp.confidence.get("top_bm25_score"),
