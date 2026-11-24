@@ -20,6 +20,7 @@ import test_rag_pipeline as base          # fakes: make_hit, make_pipeline, repl
 from safety import find_injection, redact_pii
 from tracing import traced_ask
 from trace_summary import summarise
+from build_dashboard import build
 
 # Query texts copied from the eval set (A12, C05, E07, B11, D08, E12, A09).
 PII_CASES = [
@@ -135,6 +136,31 @@ class TestTraceSummary(unittest.TestCase):
 
     def test_empty_trace_file(self):
         self.assertEqual(summarise([]), {"queries": 0})
+
+
+class TestDashboard(unittest.TestCase):
+    def _run_dir(self, d: str, queries: list[str]) -> Path:
+        """Write a spans.jsonl for the given queries using the fake pipeline."""
+        hits = [base.make_hit(1, "CFR21_Part211", "211.142", "Store at 2 to 8 degrees.", ref=1)]
+        ok = base.reply("Store at 2 to 8 degrees [1].")
+        p = base.make_pipeline(hits, [ok] * len(queries))
+        for q in queries:
+            traced_ask(p, q, trace_file=Path(d) / "spans.jsonl")
+        return Path(d)
+
+    def test_dashboard_shows_numbers_and_queries(self):
+        with tempfile.TemporaryDirectory() as d:
+            page = build(self._run_dir(d, ["What does 211.142 cover?", "Storage temperature?"]))
+        self.assertIn("avg latency", page)
+        self.assertIn("What does 211.142 cover?", page)
+        self.assertIn("2 spans", page)
+
+    def test_query_text_is_escaped_and_pii_redacted(self):
+        with tempfile.TemporaryDirectory() as d:
+            page = build(self._run_dir(d, ["<script>alert(1)</script> call 9876543210"]))
+        self.assertNotIn("<script>alert(1)</script>", page)
+        self.assertIn("&lt;script&gt;", page)
+        self.assertNotIn("9876543210", page)
 
 
 if __name__ == "__main__":

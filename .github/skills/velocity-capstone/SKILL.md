@@ -21,7 +21,7 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 | `RAG/` | Source PDFs, chunking, FAISS + BM25 index, `retriever.py` (hybrid retrieval, RRF) |
 | `RAG_PIPELINE/scripts/rag_pipeline.py` | Confidence gate, Qwen3-8B answer, citation/number verifier, one repair attempt |
 | `RAG_PIPELINE/tests/` | Unit tests for the pipeline |
-| `EVAL/` | Eval set and gold docs, `run_retrieval.py` (recall@k), `run_eval.py` (full run + spans), `tracing.py`, `trace_summary.py`, `safety.py` (PII and injection checks), `tests/test_safety.py`, results under `EVAL/results/` |
+| `EVAL/` | Eval set and gold docs, `run_retrieval.py` (recall@k), `run_eval.py` (full run + spans), `tracing.py`, `trace_summary.py`, `build_dashboard.py` (HTML dashboard for a run), `safety.py` (PII and injection checks), `tests/test_safety.py`, results under `EVAL/results/` |
 | `.env.example` | Names of the settings (placeholders only) |
 
 Capstone requirements (Track B): 60-100 query gold eval set frozen in Week 1, three prompting strategies, hybrid retrieval with a reranker and citations, recall@k measured separately, an agent with 3+ tools and a planner/executor/critic loop (10-step cap), tracing, a failure taxonomy, a UI with rate limiting and caching, prompt-injection and PII tests, a model card and report.
@@ -36,7 +36,7 @@ Capstone requirements (Track B): 60-100 query gold eval set frozen in Week 1, th
 5. Check the embeddings service: POST `/v1/embeddings` with model `bge-small-en-v1.5`; expect HTTP 200 and 384 numbers.
 6. Run: `python RAG_PIPELINE/scripts/rag_pipeline.py --query "<question>" --json`
 7. Run the offline tests (no network needed): `python RAG_PIPELINE/tests/test_rag_pipeline.py` (27 tests). If `LLM_URL` is set in `.env` but `secrets/vm04-ca.crt` is missing, one test errors with "LLM certificate not found"; add the certificate or unset `LLM_URL`.
-8. Run the eval offline tests (PII, injection, tracing, trace summary): `python EVAL/tests/test_safety.py` (11 tests).
+8. Run the eval offline tests (PII, injection, tracing, trace summary, dashboard): `python EVAL/tests/test_safety.py` (13 tests).
 9. Never commit `.env`, `secrets/`, or `.venv/`.
 
 ## 2. Debugging playbook
