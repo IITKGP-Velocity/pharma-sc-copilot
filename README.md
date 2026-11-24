@@ -48,6 +48,7 @@ and the scripts that run and score it.
 | `EVAL/tracing.py` | `traced_ask()` wraps a pipeline call, records timed spans (retrieve, llm_call) and writes one redacted JSON trace per query. |
 | `EVAL/trace_summary.py` | Summarises a trace file: decision mix, latency (avg, p50, p95), tokens and LLM calls per query, verifier failure and repair rates, and where the time goes. |
 | `EVAL/build_dashboard.py` | Builds a self-contained `dashboard.html` for a run (no server or internet needed): KPI cards, decision mix, failure labels, time per step, and a per-query table with its spans. |
+| `EVAL/build_failure_log.py` | Lists every wrong decision of a run in `failure_log.csv` with its first-pass label; people fill `confirmed_label` (taxonomy from Deliverable 1) and `notes`. Re-running keeps what they typed. |
 | `EVAL/safety.py` | Regex PII redaction (rule R4) and prompt-injection detection (rule R6). Names are only caught after a label word such as "driver" or "contact". |
 | `EVAL/tests/test_safety.py` | Offline tests for the above, including a scan of the indexed chunks for instruction-like text: `python EVAL/tests/test_safety.py`. |
 
@@ -68,7 +69,10 @@ python EVAL/trace_summary.py EVAL/results/baseline-rag/spans.jsonl
 # HTML dashboard for the run (open EVAL/results/baseline-rag/dashboard.html)
 python EVAL/build_dashboard.py EVAL/results/baseline-rag
 
-# Offline tests (no keys or network): PII, injection, tracing, trace summary, dashboard
+# Failure log to review and label by hand (EVAL/results/baseline-rag/failure_log.csv)
+python EVAL/build_failure_log.py EVAL/results/baseline-rag
+
+# Offline tests (no keys or network): PII, injection, tracing, trace summary, dashboard, failure log
 python EVAL/tests/test_safety.py
 ```
 
