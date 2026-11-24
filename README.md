@@ -72,9 +72,24 @@ python EVAL/build_dashboard.py EVAL/results/baseline-rag
 # Failure log to review and label by hand (EVAL/results/baseline-rag/failure_log.csv)
 python EVAL/build_failure_log.py EVAL/results/baseline-rag
 
-# Offline tests (no keys or network): PII, injection, tracing, trace summary, dashboard, failure log
+# Offline tests (no keys or network): PII, injection, tracing, trace summary, dashboard, failure log, demo
 python EVAL/tests/test_safety.py
 ```
+
+### See the dashboard without keys
+
+`EVAL/demo.py` builds a demo run from the real eval set, but with a fake retriever
+and fake LLM that behave randomly (fixed seed, so everyone sees the same result).
+No keys, certificates or network are needed, and it takes about 10 seconds.
+
+```powershell
+python EVAL/demo.py --open
+```
+
+It writes `traces.jsonl`, `spans.jsonl`, the summaries, `dashboard.html` and
+`failure_log.csv` to `EVAL/demo_output/DEMO_fake_data/` (git-ignored). The numbers
+are meaningless: only the layout is real. Real results go in
+`EVAL/results/<run-name>/` and come from `run_eval.py`.
 
 Current limits: only the decision is scored (key facts, numbers and citation
 validity need an LLM judge or manual review); ESCALATE and REFUSE items count as

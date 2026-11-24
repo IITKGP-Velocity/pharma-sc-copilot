@@ -21,7 +21,7 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 | `RAG/` | Source PDFs, chunking, FAISS + BM25 index, `retriever.py` (hybrid retrieval, RRF) |
 | `RAG_PIPELINE/scripts/rag_pipeline.py` | Confidence gate, Qwen3-8B answer, citation/number verifier, one repair attempt |
 | `RAG_PIPELINE/tests/` | Unit tests for the pipeline |
-| `EVAL/` | Eval set and gold docs, `run_retrieval.py` (recall@k), `run_eval.py` (full run + spans), `tracing.py`, `trace_summary.py`, `build_dashboard.py` (HTML dashboard for a run), `build_failure_log.py` (failure_log.csv to review by hand), `safety.py` (PII and injection checks), `tests/test_safety.py`, results under `EVAL/results/` |
+| `EVAL/` | Eval set and gold docs, `run_retrieval.py` (recall@k), `run_eval.py` (full run + spans), `tracing.py`, `trace_summary.py`, `build_dashboard.py` (HTML dashboard for a run), `build_failure_log.py` (failure_log.csv to review by hand), `demo.py` (fake-data demo run, no keys needed; output in git-ignored `EVAL/demo_output/`), `safety.py` (PII and injection checks), `tests/test_safety.py`, results under `EVAL/results/` |
 | `.env.example` | Names of the settings (placeholders only) |
 
 Capstone requirements (Track B): 60-100 query gold eval set frozen in Week 1, three prompting strategies, hybrid retrieval with a reranker and citations, recall@k measured separately, an agent with 3+ tools and a planner/executor/critic loop (10-step cap), tracing, a failure taxonomy, a UI with rate limiting and caching, prompt-injection and PII tests, a model card and report.
@@ -36,7 +36,7 @@ Capstone requirements (Track B): 60-100 query gold eval set frozen in Week 1, th
 5. Check the embeddings service: POST `/v1/embeddings` with model `bge-small-en-v1.5`; expect HTTP 200 and 384 numbers.
 6. Run: `python RAG_PIPELINE/scripts/rag_pipeline.py --query "<question>" --json`
 7. Run the offline tests (no network needed): `python RAG_PIPELINE/tests/test_rag_pipeline.py` (27 tests). If `LLM_URL` is set in `.env` but `secrets/vm04-ca.crt` is missing, one test errors with "LLM certificate not found"; add the certificate or unset `LLM_URL`.
-8. Run the eval offline tests (PII, injection, tracing, trace summary, dashboard, failure log): `python EVAL/tests/test_safety.py` (16 tests).
+8. Run the eval offline tests (PII, injection, tracing, trace summary, dashboard, failure log, demo): `python EVAL/tests/test_safety.py` (18 tests).
 9. Never commit `.env`, `secrets/`, or `.venv/`.
 
 ## 2. Debugging playbook
@@ -80,6 +80,7 @@ To report status, check the repo and compare with the capstone requirements abov
 - Retrieval and answer quality are reported separately: recall@k and MRR come from `run_retrieval.py` (document level, only queries listed in `gold_docs_v1.json`); decision accuracy comes from `run_eval.py`.
 - Separate: done and verified, done but not run against the live model, not started.
 - Failure counts for the taxonomy come from `confirmed_label` in `failure_log.csv` (reviewed by a person). `auto_label` is only a first guess; do not report it as a result.
+- Never quote numbers from `EVAL/demo_output/` (fake data from `demo.py`) as results.
 - List blockers with an owner (for example the chat certificate, gold document IDs for queries beyond the 7 already mapped, missing `decision` and `reason_code` output fields).
 - Flag risks early: scope (five use cases in four weeks), corpus size, abstention behaviour, and the Week 1 gate (eval set frozen and baseline recorded before agent code).
 

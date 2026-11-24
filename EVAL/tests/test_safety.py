@@ -25,6 +25,7 @@ from build_dashboard import build
 from build_failure_log import failure_rows, read_existing, unknown_labels, write_log
 from run_eval import make_trace
 from types import SimpleNamespace
+from demo import run_demo
 
 # Query texts copied from the eval set (A12, C05, E07, B11, D08, E12, A09).
 PII_CASES = [
@@ -140,6 +141,25 @@ class TestTraceSummary(unittest.TestCase):
 
     def test_empty_trace_file(self):
         self.assertEqual(summarise([]), {"queries": 0})
+
+
+class TestDemo(unittest.TestCase):
+    def test_demo_writes_every_output_file(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = run_demo(Path(d) / "DEMO_fake_data", limit=6)
+            names = {p.name for p in out.iterdir()}
+            page = (out / "dashboard.html").read_text(encoding="utf-8")
+        self.assertEqual(names, {"traces.jsonl", "spans.jsonl", "summary.json", "trace_summary.json",
+                                 "dashboard.html", "failure_log.csv"})
+        self.assertIn("DEMO_fake_data", page)
+
+    def test_demo_is_repeatable(self):
+        """The fixed seed means every teammate sees the same decisions."""
+        def decisions(d):
+            out = run_demo(Path(d) / "DEMO_fake_data", limit=8)
+            return [json.loads(l)["pred_decision"] for l in (out / "traces.jsonl").read_text().splitlines()]
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            self.assertEqual(decisions(a), decisions(b))
 
 
 class TestFailureLog(unittest.TestCase):
