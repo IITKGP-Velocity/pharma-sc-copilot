@@ -23,23 +23,26 @@ from run_eval import STATUS_TO_DECISION
 from safety import redact_pii
 
 
-def _timed(name, fn, spans, t0, attrs_of_result):
-    """Wrap fn so each call adds one span: name, start offset, duration, attributes."""
+def _timed(name, fn, spans, t0, describe_result):
+    """Return a copy of fn that adds one span to `spans` every time it is called.
+
+    name            label of the span, e.g. "retrieve"
+    t0              start time of the whole query, so spans show when they began
+    describe_result function that turns fn's return value into extra span fields
+    """
     def wrapper(*args, **kwargs):
         start = time.monotonic()
-        error = None
+        span = {"name": name, "start_ms": int((start - t0) * 1000), "error": None}
         try:
             result = fn(*args, **kwargs)
-            return result
-        except Exception as e:                     # record the failure, then let it propagate
-            error = type(e).__name__
+        except Exception as e:
+            span["error"] = type(e).__name__      # keep the failure in the trace, then re-raise
             raise
+        else:
+            span.update(describe_result(result))  # only possible when the call succeeded
+            return result
         finally:
-            end = time.monotonic()
-            span = {"name": name, "start_ms": int((start - t0) * 1000),
-                    "duration_ms": int((end - start) * 1000), "error": error}
-            if error is None:
-                span.update(attrs_of_result(result))
+            span["duration_ms"] = int((time.monotonic() - start) * 1000)
             spans.append(span)
     return wrapper
 
