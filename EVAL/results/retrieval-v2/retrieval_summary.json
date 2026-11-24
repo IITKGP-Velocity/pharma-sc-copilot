@@ -1,0 +1,10 @@
+{
+  "queries": 64,
+  "gold_queries": 7,
+  "doc_recall_at_5": 1.0,
+  "doc_mrr": 0.929,
+  "answerable_items": 33,
+  "answerable_wrongly_gated_rate": 0.0,
+  "abstain_items": 8,
+  "abstain_items_correctly_gated_rate": 0.0
+}

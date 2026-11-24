@@ -21,6 +21,7 @@ from types import SimpleNamespace
 EVAL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = EVAL_DIR.parent
 EVAL_FILE = EVAL_DIR / "eval_set_v1.jsonl"
+GOLD_FILE = EVAL_DIR / "gold_docs_v1.json"   # query id -> source documents that support the answer
 
 # Same defaults as RegulatoryRAGPipeline (RAG_MIN_COSINE / RAG_MIN_BM25).
 MIN_COSINE, MIN_BM25 = 0.48, 2.0
@@ -34,6 +35,9 @@ def main() -> int:
 
     with open(EVAL_FILE, encoding="utf-8") as f:
         items = [json.loads(line) for line in f if line.strip()]
+    # Keys starting with "_" are notes, not query IDs.
+    gold = {k: v for k, v in json.loads(GOLD_FILE.read_text(encoding="utf-8")).items()
+            if not k.startswith("_")}
 
     # Import after the path is set; rag_pipeline also loads the repo-root .env at import time.
     sys.path.insert(0, str(REPO_ROOT / "RAG_PIPELINE" / "scripts"))
@@ -54,10 +58,17 @@ def main() -> int:
         hits = retriever.search(query=item["query"], top_k=args.top_k)
         sig = confidence_signal(hits)
         would_abstain, _ = RegulatoryRAGPipeline._should_abstain_early(gate_cfg, sig)
+        doc_ids = [h.get("doc_id") for h in hits]
+        # Rank (1-based) of the first gold document in the results; None = not retrieved.
+        gold_rank = None
+        if item["id"] in gold:
+            gold_rank = next((i for i, d in enumerate(doc_ids, 1) if d in gold[item["id"]]), None)
         rows.append({
             "id": item["id"], "use_case": item["use_case"], "gold_type": item["type"],
             "would_abstain": would_abstain,
-            "retrieved_doc_ids": [h.get("doc_id") for h in hits],
+            "has_gold": item["id"] in gold,
+            "gold_rank": gold_rank,
+            "retrieved_doc_ids": doc_ids,
             "top_dense_cosine": sig["top_dense_cosine"],
             "top_bm25_score": sig["top_bm25_score"],
             "has_ref_match": sig["has_ref_match"],
@@ -77,8 +88,17 @@ def main() -> int:
 
     ans, ans_rate = rate({"ANSWER", "CALC"})
     abs_, abs_rate = rate({"ABSTAIN"})
+
+    # Document-level recall@k and MRR over queries that have gold documents.
+    # With only 6 PDFs this is a weak test; chunk-level gold IDs would be stricter.
+    gold_rows = [r for r in rows if r["has_gold"]]
+    recall = (sum(r["gold_rank"] is not None for r in gold_rows) / len(gold_rows)) if gold_rows else None
+    mrr = (sum(1 / r["gold_rank"] for r in gold_rows if r["gold_rank"]) / len(gold_rows)) if gold_rows else None
     summary = {
         "queries": len(rows),
+        "gold_queries": len(gold_rows),
+        f"doc_recall_at_{args.top_k}": None if recall is None else round(recall, 3),
+        "doc_mrr": None if mrr is None else round(mrr, 3),
         "answerable_items": len(ans),
         "answerable_wrongly_gated_rate": None if ans_rate is None else round(ans_rate, 3),
         "abstain_items": len(abs_),
