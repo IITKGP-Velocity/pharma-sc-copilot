@@ -42,7 +42,8 @@ and the scripts that run and score it.
 |---|---|
 | `EVAL/eval_set_v1.jsonl` | The 64 queries with type and gold behaviour (A 14, B 13, C 13, D 12, E 12). |
 | `EVAL/build_eval_set.py` | Rebuilds the JSONL from the Deliverable 1 `.docx` and prints its SHA-256 for the freeze record. |
-| `EVAL/run_retrieval.py` | Retrieval-only run (embeddings API only): retrieved documents, scores, and whether the confidence gate would abstain. |
+| `EVAL/run_retrieval.py` | Retrieval-only run (embeddings API only): retrieved documents, scores, whether the confidence gate would abstain, and document-level recall@k and MRR. |
+| `EVAL/gold_docs_v1.json` | Gold source documents for the queries the current corpus can support (7 of 64), used for recall@k. |
 | `EVAL/run_eval.py` | Full run through `rag_pipeline.py`: one trace per query (decision, latency, tokens, retrieved documents, verifier result), decision accuracy and first-pass failure labels. |
 
 Results are written to `EVAL/results/<run-name>/`.
