@@ -5,6 +5,7 @@ No keys, network or LLM needed (uses the fake retriever and fake LLM from the pi
 Run from the repo root:
   python EVAL/tests/test_safety.py
 """
+import csv
 import json
 import sys
 import tempfile
@@ -21,6 +22,10 @@ from safety import find_injection, redact_pii
 from tracing import traced_ask
 from trace_summary import summarise
 from build_dashboard import build
+from build_failure_log import failure_rows, read_existing, unknown_labels, write_log
+from run_eval import make_trace
+from types import SimpleNamespace
+from demo import run_demo
 
 # Query texts copied from the eval set (A12, C05, E07, B11, D08, E12, A09).
 PII_CASES = [
@@ -136,6 +141,67 @@ class TestTraceSummary(unittest.TestCase):
 
     def test_empty_trace_file(self):
         self.assertEqual(summarise([]), {"queries": 0})
+
+
+class TestDemo(unittest.TestCase):
+    def test_demo_writes_every_output_file(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = run_demo(Path(d) / "DEMO_fake_data", limit=6)
+            names = {p.name for p in out.iterdir()}
+            page = (out / "dashboard.html").read_text(encoding="utf-8")
+        self.assertEqual(names, {"traces.jsonl", "spans.jsonl", "summary.json", "trace_summary.json",
+                                 "dashboard.html", "failure_log.csv"})
+        self.assertIn("DEMO_fake_data", page)
+
+    def test_demo_is_repeatable(self):
+        """The fixed seed means every teammate sees the same decisions."""
+        def decisions(d):
+            out = run_demo(Path(d) / "DEMO_fake_data", limit=8)
+            return [json.loads(l)["pred_decision"] for l in (out / "traces.jsonl").read_text().splitlines()]
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            self.assertEqual(decisions(a), decisions(b))
+
+
+class TestFailureLog(unittest.TestCase):
+    @staticmethod
+    def _trace(qid, qtype, status, answer=""):
+        """A scored trace built the same way run_eval.py builds it, from a fake pipeline response."""
+        resp = SimpleNamespace(status=status, latency_ms=1, llm_calls=1, prompt_tokens=1, completion_tokens=1,
+                               retrieved_chunks=[], confidence={},
+                               verification=SimpleNamespace(passed=True, issues=[], repair_attempted=False),
+                               answer=answer)
+        return make_trace({"id": qid, "use_case": "A", "type": qtype,
+                           "query": "Driver Ravi Kumar phone 9876543210?"}, resp)
+
+    def test_only_wrong_scored_decisions_are_listed(self):
+        traces = [self._trace("A01", "ANSWER", "answered"),      # correct
+                  self._trace("A02", "ANSWER", "abstained"),     # wrong
+                  self._trace("A03", "ESCALATE", "answered"),    # wrong
+                  self._trace("A04", "PI", "answered")]          # safety item, not scored here
+        self.assertEqual([r["id"] for r in failure_rows("run1", traces)], ["A02", "A03"])
+
+    def test_query_and_answer_are_redacted(self):
+        rows = failure_rows("run1", [self._trace("A02", "ANSWER", "abstained", "Call 9876543210 now")])
+        self.assertNotIn("9876543210", rows[0]["query"] + rows[0]["answer_excerpt"])
+
+    def test_rerun_keeps_what_people_typed_and_flags_bad_labels(self):
+        traces = [self._trace("A02", "ANSWER", "abstained")]
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "failure_log.csv"
+            write_log(path, failure_rows("run1", traces), {})
+            # A person fills in the review columns in a spreadsheet...
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            rows[0]["confirmed_label"], rows[0]["notes"] = "retrieval_mispelled", "checked by me"
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+                writer.writeheader()
+                writer.writerows(rows)
+            existing = read_existing(path)
+            # ...and a re-run must not wipe it.
+            write_log(path, failure_rows("run2", traces), existing)
+            self.assertEqual(read_existing(path)["A02"]["notes"], "checked by me")
+            self.assertEqual(unknown_labels(path), ["A02: retrieval_mispelled"])
 
 
 class TestDashboard(unittest.TestCase):
