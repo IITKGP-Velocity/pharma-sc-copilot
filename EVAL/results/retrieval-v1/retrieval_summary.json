@@ -1,0 +1,7 @@
+{
+  "queries": 64,
+  "answerable_items": 33,
+  "answerable_wrongly_gated_rate": 0.0,
+  "abstain_items": 8,
+  "abstain_items_correctly_gated_rate": 0.0
+}

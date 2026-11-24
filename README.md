@@ -33,6 +33,36 @@ that fail its verifier; `--allow-unverified` returns such answers clearly
 flagged instead. The verifier checks grounding markers and numbers, not whether
 the answer faithfully interprets the source, so human review is still needed.
 
+### Evaluate the copilot
+
+The [EVAL/](EVAL/) folder holds the 64-query evaluation set from Deliverable 1
+and the scripts that run and score it.
+
+| File | Purpose |
+|---|---|
+| `EVAL/eval_set_v1.jsonl` | The 64 queries with type and gold behaviour (A 14, B 13, C 13, D 12, E 12). |
+| `EVAL/build_eval_set.py` | Rebuilds the JSONL from the Deliverable 1 `.docx` and prints its SHA-256 for the freeze record. |
+| `EVAL/run_retrieval.py` | Retrieval-only run (embeddings API only): retrieved documents, scores, and whether the confidence gate would abstain. |
+| `EVAL/run_eval.py` | Full run through `rag_pipeline.py`: one trace per query (decision, latency, tokens, retrieved documents, verifier result), decision accuracy and first-pass failure labels. |
+
+Results are written to `EVAL/results/<run-name>/`.
+
+```powershell
+# Retrieval only (needs EMBEDDINGS_KEY and secrets/vm02-ca.crt)
+python EVAL/run_retrieval.py --run-name retrieval-v1
+
+# Full run (also needs LLM_URL, LLM_KEY and secrets/vm04-ca.crt)
+python EVAL/run_eval.py --run-name smoke --limit 3
+python EVAL/run_eval.py --run-name baseline-rag
+```
+
+Current limits: only the decision is scored (key facts, numbers and citation
+validity need an LLM judge or manual review); ESCALATE and REFUSE items count as
+wrong until the agent layer returns those decisions; PI, PII and out-of-scope
+items are logged but not scored here. The retrieval-only run shows the
+confidence gate never abstains on this set, so abstention needs a scope check in
+the agent layer.
+
 ## Setup
 
 Use Python 3.14.6 and install dependencies from the repository root:
