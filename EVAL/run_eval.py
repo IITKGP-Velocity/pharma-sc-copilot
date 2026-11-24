@@ -144,16 +144,19 @@ def main() -> int:
     # Import here so build/score helpers can be used without the index and API keys.
     sys.path.insert(0, str(REPO_ROOT / "RAG_PIPELINE" / "scripts"))
     from rag_pipeline import RegulatoryRAGPipeline
+    from tracing import traced_ask   # imported here, not at the top, because tracing imports this file
     pipeline = RegulatoryRAGPipeline()
 
     out_dir = EVAL_DIR / "results" / args.run_name
     out_dir.mkdir(parents=True, exist_ok=True)
+    spans_file = out_dir / "spans.jsonl"      # timed spans per query; summarise with trace_summary.py
+    spans_file.unlink(missing_ok=True)        # traced_ask appends, so start each run clean
 
     traces = []
     # Traces are appended one by one, so a crash part-way keeps the queries already done.
     with open(out_dir / "traces.jsonl", "w", encoding="utf-8") as f:
         for n, item in enumerate(items, 1):
-            resp = pipeline.ask(item["query"])
+            resp, _ = traced_ask(pipeline, item["query"], trace_file=spans_file)
             trace = make_trace(item, resp)
             traces.append(trace)
             f.write(json.dumps(trace, ensure_ascii=False) + "\n")

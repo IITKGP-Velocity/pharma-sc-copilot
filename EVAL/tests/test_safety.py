@@ -19,6 +19,7 @@ sys.path.insert(0, str(REPO_ROOT / "RAG_PIPELINE" / "scripts"))
 import test_rag_pipeline as base          # fakes: make_hit, make_pipeline, reply
 from safety import find_injection, redact_pii
 from tracing import traced_ask
+from trace_summary import summarise
 
 # Query texts copied from the eval set (A12, C05, E07, B11, D08, E12, A09).
 PII_CASES = [
@@ -116,6 +117,24 @@ class TestTracing(unittest.TestCase):
         self.assertNotIn("chat", vars(p.llm))
         _, trace = traced_ask(p, "q2")                    # a second call must still give 2 spans, not 4
         self.assertEqual(len(trace["spans"]), 2)
+
+
+class TestTraceSummary(unittest.TestCase):
+    def test_summary_counts_decisions_tokens_and_span_time(self):
+        hits = [base.make_hit(1, "CFR21_Part211", "211.142", "Store at 2 to 8 degrees.", ref=1)]
+        ok = base.reply("Store at 2 to 8 degrees [1].")               # 300 prompt + 40 completion tokens
+        p = base.make_pipeline(hits, [ok, ok, ok])
+        traces = [traced_ask(p, f"q{i}")[1] for i in range(3)]
+        s = summarise(traces)
+        self.assertEqual(s["queries"], 3)
+        self.assertEqual(s["decisions"], {"ANSWER": 3})
+        self.assertEqual(s["avg_llm_calls"], 1.0)
+        self.assertEqual((s["avg_prompt_tokens"], s["avg_completion_tokens"]), (300, 40))
+        self.assertEqual(s["verifier_failed_rate"], 0.0)
+        self.assertEqual(set(s["avg_ms_per_span"]), {"retrieve", "llm_call"})
+
+    def test_empty_trace_file(self):
+        self.assertEqual(summarise([]), {"queries": 0})
 
 
 if __name__ == "__main__":

@@ -46,10 +46,12 @@ and the scripts that run and score it.
 | `EVAL/gold_docs_v1.json` | Gold source documents for the queries the current corpus can support (7 of 64), used for recall@k. |
 | `EVAL/run_eval.py` | Full run through `rag_pipeline.py`: one trace per query (decision, latency, tokens, retrieved documents, verifier result), decision accuracy and first-pass failure labels. |
 | `EVAL/tracing.py` | `traced_ask()` wraps a pipeline call, records timed spans (retrieve, llm_call) and writes one redacted JSON trace per query. |
+| `EVAL/trace_summary.py` | Summarises a trace file: decision mix, latency (avg, p50, p95), tokens and LLM calls per query, verifier failure and repair rates, and where the time goes. |
 | `EVAL/safety.py` | Regex PII redaction (rule R4) and prompt-injection detection (rule R6). Names are only caught after a label word such as "driver" or "contact". |
 | `EVAL/tests/test_safety.py` | Offline tests for the above, including a scan of the indexed chunks for instruction-like text: `python EVAL/tests/test_safety.py`. |
 
-Results are written to `EVAL/results/<run-name>/`.
+Results are written to `EVAL/results/<run-name>/`. A full run writes `traces.jsonl`
+(scored decisions), `spans.jsonl` (timed spans per query) and `summary.json`.
 
 ```powershell
 # Retrieval only (needs EMBEDDINGS_KEY and secrets/vm02-ca.crt)
@@ -58,6 +60,12 @@ python EVAL/run_retrieval.py --run-name retrieval-v1
 # Full run (also needs LLM_URL, LLM_KEY and secrets/vm04-ca.crt)
 python EVAL/run_eval.py --run-name smoke --limit 3
 python EVAL/run_eval.py --run-name baseline-rag
+
+# Cost and latency summary of a full run
+python EVAL/trace_summary.py EVAL/results/baseline-rag/spans.jsonl
+
+# Offline tests (no keys or network): PII, injection, tracing, trace summary
+python EVAL/tests/test_safety.py
 ```
 
 Current limits: only the decision is scored (key facts, numbers and citation
@@ -65,7 +73,9 @@ validity need an LLM judge or manual review); ESCALATE and REFUSE items count as
 wrong until the agent layer returns those decisions; PI, PII and out-of-scope
 items are logged but not scored here. The retrieval-only run shows the
 confidence gate never abstains on this set, so abstention needs a scope check in
-the agent layer.
+the agent layer. Of the 22 ANSWER items, 15 need data that is not in the current
+6-PDF corpus (product labels, Orange Book, shortages, recalls, NDC data), so they
+should be relabelled ABSTAIN or the corpus extended before the set is frozen.
 
 ## Setup
 
