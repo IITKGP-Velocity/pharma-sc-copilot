@@ -45,6 +45,9 @@ and the scripts that run and score it.
 | `EVAL/run_retrieval.py` | Retrieval-only run (embeddings API only): retrieved documents, scores, whether the confidence gate would abstain, and document-level recall@k and MRR. |
 | `EVAL/gold_docs_v1.json` | Gold source documents for the queries the current corpus can support (7 of 64), used for recall@k. |
 | `EVAL/run_eval.py` | Full run through `rag_pipeline.py`: one trace per query (decision, latency, tokens, retrieved documents, verifier result), decision accuracy and first-pass failure labels. |
+| `EVAL/tracing.py` | `traced_ask()` wraps a pipeline call, records timed spans (retrieve, llm_call) and writes one redacted JSON trace per query. |
+| `EVAL/safety.py` | Regex PII redaction (rule R4) and prompt-injection detection (rule R6). Names are only caught after a label word such as "driver" or "contact". |
+| `EVAL/tests/test_safety.py` | Offline tests for the above, including a scan of the indexed chunks for instruction-like text: `python EVAL/tests/test_safety.py`. |
 
 Results are written to `EVAL/results/<run-name>/`.
 
