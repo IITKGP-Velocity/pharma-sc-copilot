@@ -52,13 +52,13 @@ Run a component's unit tests to check it works, and its demo to see what it does
 
 | # | Component (code) | Unit tests | Demo | What you should see | Level |
 |---|---|---|---|---|---|
-| 1 | **Safety rules + redaction** (`safety.py`) | `python -m pytest tests/test_safety.py -q` → 15 passed | `python scripts/demo.py safety` | A release question → `ESCALATE (R1, to QP)`; injection → `REFUSE (R6)`; "driver Ravi Kumar, phone 9876543210" → `driver [REDACTED], phone [REDACTED]` | A |
-| 2 | **Tools** (`tools.py`) | `python -m pytest tests/test_tools.py -q` → 8 passed | `python scripts/demo.py tools` | `mkt(...) = 4.61`, `demurrage(...) = 450`, `impurity_passes(0.11, 0.10) = False` | A |
-| 3 | **Corpus** (`corpus.py`) | `python -m pytest tests/test_corpus.py -q` → 5 passed | `python scripts/build_corpus.py --fetch` | `Wrote 5495 passages from 548 documents` | A / B |
-| 4 | **Retrieval** (`retrieval.py`) | `python -m pytest tests/test_retrieval.py -q` → 6 passed | `python scripts/demo.py retrieval "How should vancomycin be stored?"` | 5 passages, all vancomycin labels; header says `BM25 only` or `dense + BM25` | A / B |
-| 5 | **Agent loop** (`agent.py`) | `python -m pytest tests/test_agent.py -q` → 11 passed | `python scripts/demo.py agent "What is the storage temperature for unopened adalimumab pens?"` | Every step with its time, then the JSON answer and `latency … steps … LLM calls … tokens …` | A / B / C |
-| 6 | **Model clients + credentials** (`llm.py`, `runtime.py`) | `python -m pytest tests/test_llm.py tests/test_runtime.py -q` → 14 passed | `python scripts/check_setup.py --live "${FLAGS[@]}"` | `Live chat call: OK` and `Live embeddings call: OK` | A / C |
-| 7 | **Observability** (`observability.py`, `tracing.py`) | `python -m pytest tests/test_observability.py -q` → 18 passed | `python scripts/demo.py dashboard --open` | A dashboard in the browser and `eval/demo_output/DEMO_fake_data/failure_log.csv` (fake data) | A |
+| 1 | **Safety rules + redaction** (`safety/`) | `python -m pytest tests/test_safety.py -q` → 15 passed | `python scripts/demo.py safety` | A release question → `ESCALATE (R1, to QP)`; injection → `REFUSE (R6)`; "driver Ravi Kumar, phone 9876543210" → `driver [REDACTED], phone [REDACTED]` | A |
+| 2 | **Tools** (`agent/tools.py`) | `python -m pytest tests/test_tools.py -q` → 8 passed | `python scripts/demo.py tools` | `mkt(...) = 4.61`, `demurrage(...) = 450`, `impurity_passes(0.11, 0.10) = False` | A |
+| 3 | **Corpus** (`rag/corpus.py`) | `python -m pytest tests/test_corpus.py -q` → 5 passed | `python scripts/build_corpus.py --fetch` | `Wrote 5495 passages from 548 documents` | A / B |
+| 4 | **Retrieval** (`rag/retrieval.py`) | `python -m pytest tests/test_retrieval.py -q` → 6 passed | `python scripts/demo.py retrieval "How should vancomycin be stored?"` | 5 passages, all vancomycin labels; header says `BM25 only` or `dense + BM25` | A / B |
+| 5 | **Agent loop** (`agent/engine.py`) | `python -m pytest tests/test_agent.py -q` → 11 passed | `python scripts/demo.py agent "What is the storage temperature for unopened adalimumab pens?"` | Every step with its time, then the JSON answer and `latency … steps … LLM calls … tokens …` | A / B / C |
+| 6 | **Model clients + credentials** (`agent/llm.py`, `runtime.py`) | `python -m pytest tests/test_llm.py tests/test_runtime.py -q` → 14 passed | `python scripts/check_setup.py --live "${FLAGS[@]}"` | `Live chat call: OK` and `Live embeddings call: OK` | A / C |
+| 7 | **Observability** (`observability/`) | `python -m pytest tests/test_observability.py -q` → 18 passed | `python scripts/demo.py dashboard --open` | A dashboard in the browser and `eval/demo_output/DEMO_fake_data/failure_log.csv` (fake data) | A |
 | 8 | **Retrieval quality** | (covered by 7) | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | `bm25_only recall@5=…` and `hybrid recall@5=…` | B / C |
 | 9 | **Web app** (`app/app.py`) | — | `python -m pip install -e ".[app]"` then `python -m streamlit run app/app.py` | A page at http://localhost:8501 showing the mode line; the 11th question in a minute is blocked | B / C |
 
@@ -177,15 +177,32 @@ Queries and answers are redacted for personal data before they are written.
 
 ## 7. Project map
 
+The code is split into one folder per component under `src/copilot/`. Each folder's `__init__.py`
+lists what it offers, so `from copilot.safety import redact_pii` works without knowing the file.
+
+```
+src/copilot/
+  safety/          1. rules R1-R8, redaction, output guard        rules.py
+  rag/             2. corpus and retrieval                        corpus.py, retrieval.py
+  agent/           3-5. planner, tools, critic, model clients     engine.py, tools.py, llm.py
+  observability/   6. traces, metrics, failure log, dashboard     tracing.py, metrics.py, failure_log.py, dashboard.py
+  config.py, runtime.py, schemas.py, service.py                   shared: settings, credentials, answer schema, wiring
+```
+
 | Path | Part |
 |---|---|
-| `src/copilot/safety.py` | 1. Rule pre-check R1–R8, redaction (phones, emails, dates of birth, labelled names), output guard |
-| `src/copilot/retrieval.py`, `corpus.py` | 2. openFDA corpus, passages, BM25 + dense + fusion, optional reranker (`rerank: true`) |
-| `src/copilot/agent.py` | 3–5. Planner → Executor → Critic loop, 10-step cap, token budget, per-query metrics |
-| `src/copilot/tools.py` | 4. Deterministic tools |
-| `src/copilot/llm.py`, `runtime.py` | Model clients (per-port CA, retries, token counts) and how keys/certs are passed |
-| `src/copilot/observability.py` | 6. Results rows, summary, failure log, retrieval metrics, dashboard |
-| `src/copilot/tracing.py` | 6. Writes `trace.jsonl` |
+| `src/copilot/safety/rules.py` | 1. Rule pre-check R1–R8, redaction (phones, emails, dates of birth, labelled names), output guard |
+| `src/copilot/rag/corpus.py` | 2. openFDA download, 800-character passages, raw files with SHA-256 hashes |
+| `src/copilot/rag/retrieval.py` | 2. BM25 + dense + reciprocal rank fusion, optional reranker (`rerank: true`) |
+| `src/copilot/agent/engine.py` | 3–5. Planner → Executor → Critic loop, 10-step cap, token budget, per-query metrics |
+| `src/copilot/agent/tools.py` | 4. Deterministic tools |
+| `src/copilot/agent/llm.py` | Chat and embeddings clients (per-port CA, retries, token counts) |
+| `src/copilot/observability/tracing.py` | 6. Writes `trace.jsonl` |
+| `src/copilot/observability/metrics.py` | 6. `results.jsonl` rows, run summary, recall@k and MRR |
+| `src/copilot/observability/failure_log.py` | 6. `failure_log.csv` and taxonomy counts |
+| `src/copilot/observability/dashboard.py` | 6. `dashboard.html` |
+| `src/copilot/runtime.py`, `config.py` | How endpoints, certificates and keys are passed; settings |
+| `src/copilot/schemas.py`, `service.py` | Answer schema (Deliverable 1); builds the engine from the settings |
 | `scripts/` | `demo`, `ask`, `run_eval`, `eval_retrieval`, `rebuild_report`, `build_corpus`, `check_setup`, `freeze_eval` |
 | `app/app.py` | Streamlit app with rate limit (from `configs/settings.yaml`) and caching |
 | `eval/gold/` | Frozen 64-query eval set + hash, retrieval gold set |
@@ -209,4 +226,4 @@ Queries and answers are redacted for personal data before they are written.
 - The evaluation set is frozen (`eval/gold/eval_set_v1.0.sha256`). Changes need a new version and a logged reason.
 - Quote numbers from `eval/results/run_*`, never from `eval/demo_output/` (fake data). Result folders are
   ignored by Git; commit the run you report with `git add -f eval/results/<run>`.
-- Keep `src/copilot/safety.py` in line with `configs/refusal_rules.yaml`.
+- Keep `src/copilot/safety/rules.py` in line with `configs/refusal_rules.yaml`.

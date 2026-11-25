@@ -68,7 +68,7 @@ def label_to_doc(rec: dict) -> dict | None:
         return None
     title = _first(names)[:120] or "Drug label"
     return {"id": f"label-{set_id}", "text": f"{title}\n{body}",
-            "source": "openFDA drug label", "url": f"https://open.fda.gov/apis/drug/label/"}
+            "source": "openFDA drug label", "url": "https://open.fda.gov/apis/drug/label/"}
 
 
 def shortage_to_doc(rec: dict) -> dict | None:

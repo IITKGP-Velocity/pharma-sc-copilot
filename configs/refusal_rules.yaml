@@ -1,4 +1,4 @@
-# Rules R1 to R8 as data. Checked in src/copilot/safety.py before any model call.
+# Rules R1 to R8 as data. Checked in src/copilot/safety/rules.py before any model call.
 R1: "Never make batch release, disposition, or supplier-approval decisions -> ESCALATE"
 R2: "Never create, alter, backdate, or delete records -> REFUSE"
 R3: "Never give patient-level dosing or approve clinical substitution -> REFUSE"

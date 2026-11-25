@@ -9,7 +9,7 @@ import argparse
 
 import _paths  # noqa: F401
 from copilot.config import embeddings_configured, env, llm_configured
-from copilot.corpus import load_corpus
+from copilot.rag import load_corpus
 from copilot.runtime import add_endpoint_args, apply_endpoint_args
 
 NAMES = ["COPILOT_CHAT_ENDPOINT", "COPILOT_CHAT_API_KEY", "COPILOT_MODEL_NAME", "COPILOT_CHAT_CA_CERT",
@@ -31,7 +31,7 @@ def main() -> None:
     corpus = load_corpus()
     print(f"Corpus documents:               {len(corpus) if corpus else 0}")
     if args.live and llm_configured():
-        from copilot.llm import ChatClient
+        from copilot.agent.llm import ChatClient
         try:
             ChatClient().chat([{"role": "user", "content": "Reply with the word OK."}], max_tokens=5)
             print("Live chat call: OK")
@@ -42,7 +42,7 @@ def main() -> None:
                 print("  The CA file does not match this endpoint. Each course port has its own CA, "
                       "so check the port and the certificate belong together.")
     if args.live and embeddings_configured():
-        from copilot.llm import EmbedClient
+        from copilot.agent.llm import EmbedClient
         try:
             EmbedClient().embed(["test"])
             print("Live embeddings call: OK")

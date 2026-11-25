@@ -1,7 +1,7 @@
 import pytest
 
 from copilot.config import env, llm_configured
-from copilot.llm import ChatClient, EndpointNotConfigured, ca_bundle, parse_json_object
+from copilot.agent.llm import ChatClient, EndpointNotConfigured, ca_bundle, parse_json_object
 
 
 def test_parses_plain_and_fenced_json():

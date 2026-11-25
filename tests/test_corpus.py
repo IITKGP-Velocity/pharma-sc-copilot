@@ -1,4 +1,4 @@
-from copilot.corpus import enforcement_to_doc, label_to_doc, shortage_to_doc
+from copilot.rag.corpus import enforcement_to_doc, label_to_doc, shortage_to_doc
 
 
 def test_label_becomes_document_with_storage_text():
@@ -23,7 +23,7 @@ def test_shortage_and_recall_documents():
 
 
 def test_fetch_labels_saves_raw_with_hash_and_builds_docs(monkeypatch, tmp_path):
-    import copilot.corpus as C
+    import copilot.rag.corpus as C
     monkeypatch.setattr(C, "RAW", tmp_path)
     sample = {"results": [{"set_id": "s1", "openfda": {"generic_name": ["CISPLATIN"]},
                            "storage_and_handling": ["Store at 15 to 25 C. Do not refrigerate."]}]}
@@ -36,7 +36,7 @@ def test_fetch_labels_saves_raw_with_hash_and_builds_docs(monkeypatch, tmp_path)
 
 
 def test_long_document_is_split_into_titled_passages():
-    from copilot.corpus import chunk_document
+    from copilot.rag.corpus import chunk_document
     doc = {"id": "label-x", "text": "ADALIMUMAB\n" + "Store refrigerated. " * 200, "source": "s", "url": "u"}
     chunks = chunk_document(doc, chunk_chars=300)
     assert len(chunks) > 1

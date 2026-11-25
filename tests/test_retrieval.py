@@ -1,4 +1,4 @@
-from copilot.retrieval import BM25Index, DenseIndex, hybrid_search, reciprocal_rank_fusion, tokenize
+from copilot.rag.retrieval import BM25Index, DenseIndex, hybrid_search, reciprocal_rank_fusion, tokenize
 
 DOCS = [
     {"id": "d1", "text": "Store unopened pens refrigerated at 2 to 8 C. Do not freeze."},

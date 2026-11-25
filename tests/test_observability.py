@@ -9,10 +9,11 @@ import pytest
 import requests
 
 from conftest import ScriptedChat
-from copilot import llm, observability as obs
+from copilot import observability as obs
+from copilot.agent import llm
 from copilot.agent import Engine
 from copilot.safety import redact_pii
-from copilot.schemas import Citation, CopilotResponse
+from copilot.schemas import CopilotResponse
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 

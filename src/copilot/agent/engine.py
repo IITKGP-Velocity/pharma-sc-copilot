@@ -16,11 +16,11 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from copilot.config import ROOT, load_settings
-from copilot.retrieval import BM25Index, DenseIndex, hybrid_search, rerank
+from copilot.rag.retrieval import BM25Index, DenseIndex, hybrid_search, rerank
 from copilot.safety import guard_output, looks_like_injection, pre_check, redact_pii
 from copilot.schemas import Citation, CopilotResponse
-from copilot.tools import TOOLS, run_tool
-from copilot.tracing import log_event
+from copilot.agent.tools import TOOLS, run_tool
+from copilot.observability.tracing import log_event
 
 SETTINGS = load_settings()
 MAX_STEPS = int(SETTINGS.get("max_steps", 10))

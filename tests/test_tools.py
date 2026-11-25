@@ -1,6 +1,6 @@
 import pytest
 
-from copilot import tools
+from copilot.agent import tools
 
 
 def test_mkt_example_from_spec_is_about_4_6_c():

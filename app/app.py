@@ -2,7 +2,6 @@
 
   python -m streamlit run app/app.py
 """
-import json
 import sys
 import time
 from pathlib import Path

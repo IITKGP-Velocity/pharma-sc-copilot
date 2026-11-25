@@ -13,9 +13,9 @@ import sys
 from datetime import datetime
 
 import _paths
-from copilot.corpus import load_corpus
+from copilot.rag import load_corpus
 from copilot.observability import retrieval_metrics
-from copilot.retrieval import hybrid_search
+from copilot.rag import hybrid_search
 from copilot.runtime import add_endpoint_args, apply_endpoint_args
 from copilot.service import build_engine
 

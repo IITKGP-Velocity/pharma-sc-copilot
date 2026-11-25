@@ -21,12 +21,11 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 ## Project map
 | Path | Purpose |
 |---|---|
-| `src/copilot/safety.py` | Rule pre-check R1-R8, redaction (phones, emails, dates of birth, labelled names), output guard |
-| `src/copilot/corpus.py`, `retrieval.py` | openFDA corpus in 800-char passages; BM25 + dense + RRF; optional reranker (`rerank: true`) |
-| `src/copilot/agent.py` | Planner -> Executor -> Critic loop, 10-step cap, token budget, per-query metrics in `last_metrics` |
-| `src/copilot/tools.py` | Deterministic tools: MKT, cost delta, markup, demurrage, impurity, quarantine, manifest |
-| `src/copilot/llm.py`, `runtime.py` | Model clients (per-port CA, retries, token counts); endpoint flags and key files |
-| `src/copilot/observability.py`, `tracing.py` | Result rows, summary, failure log, recall@k, dashboard; `trace.jsonl` |
+| `src/copilot/safety/` | `rules.py`: rule pre-check R1-R8, redaction (phones, emails, dates of birth, labelled names), output guard |
+| `src/copilot/rag/` | `corpus.py`: openFDA corpus in 800-char passages; `retrieval.py`: BM25 + dense + RRF, optional reranker (`rerank: true`) |
+| `src/copilot/agent/` | `engine.py`: Planner -> Executor -> Critic loop, 10-step cap, token budget, per-query metrics in `last_metrics`; `tools.py`: deterministic tools; `llm.py`: model clients (per-port CA, retries, token counts) |
+| `src/copilot/observability/` | `tracing.py` (`trace.jsonl`), `metrics.py` (result rows, summary, recall@k), `failure_log.py`, `dashboard.py` |
+| `src/copilot/runtime.py`, `config.py`, `schemas.py`, `service.py` | Endpoint flags and key files; settings; answer schema; builds the engine |
 | `scripts/` | `demo.py` (per part or `all`), `run_eval.py`, `eval_retrieval.py`, `rebuild_report.py`, `ask.py`, `build_corpus.py`, `check_setup.py`, `freeze_eval.py` |
 | `app/app.py` | Streamlit app; rate limit from `configs/settings.yaml`; caching |
 | `eval/gold/` | Frozen 64-query set + SHA-256, retrieval gold set |
@@ -79,7 +78,7 @@ Known data gap: most wrong ANSWER items need data the corpus does not have (Oran
 Review the diff against `origin/main`. Report findings grouped as blocking / should fix / nit, each with file and line.
 
 - Security: no keys, certificates, tokens or `.env` content; no `verify=False`; no data files or embeddings committed.
-- Correctness: matches rules R1-R8 (`configs/refusal_rules.yaml`, `src/copilot/safety.py`) and the four outcomes; numbers come from tools, not the model; citations point to retrieved passages.
+- Correctness: matches rules R1-R8 (`configs/refusal_rules.yaml`, `src/copilot/safety/rules.py`) and the four outcomes; numbers come from tools, not the model; citations point to retrieved passages.
 - Evaluation integrity: `eval/gold/eval_set_v1.0.jsonl` is frozen (hash in `eval_set_v1.0.sha256`); a change needs a new version and a logged reason.
 - Tests: new logic has tests; `python -m pytest -q` passes; offline tests never call the live services.
 - Privacy: anything written to traces, results or logs goes through `redact_pii()`.

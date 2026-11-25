@@ -6,12 +6,11 @@
 """
 import argparse
 import json
-from pathlib import Path
 
 import _paths
-from copilot import corpus as C
+from copilot.rag import corpus as C
 from copilot.config import embeddings_configured, load_settings
-from copilot.llm import EmbedClient
+from copilot.agent.llm import EmbedClient
 from copilot.runtime import add_endpoint_args, apply_endpoint_args
 from copilot.service import EMBEDDINGS_FILE
 

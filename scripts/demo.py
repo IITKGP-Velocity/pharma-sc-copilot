@@ -25,7 +25,7 @@ from copilot.agent import Engine
 from copilot.observability import build_dashboard, read_jsonl, result_row, summarise, write_failure_log, write_jsonl
 from copilot.runtime import add_endpoint_args, apply_endpoint_args
 from copilot.safety import pre_check, redact_pii
-from copilot.tools import TOOLS, run_tool
+from copilot.agent.tools import TOOLS, run_tool
 
 ROOT = _paths.ROOT
 

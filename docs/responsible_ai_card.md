@@ -12,7 +12,7 @@ Batch release, disposition, quarantine, supplier approval, patient dosing, thera
 Release, disposition, and approval outputs are escalated to a named authority: QP, QA, Regulatory, Pharmacist, or Prescriber. The system never states those decisions.
 
 ## Safety measures
-- Rule pre-check for R1–R8 before any model call (`src/copilot/safety.py`).
+- Rule pre-check for R1–R8 before any model call (`src/copilot/safety/rules.py`).
 - Phone numbers, emails, dates of birth, and names that follow a label word (driver, contact, patient)
   are redacted before the model sees them, before output is returned, and before anything is logged.
 - Instructions inside questions or documents are treated as data (injection tests in `tests/test_safety.py`).

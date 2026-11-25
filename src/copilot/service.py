@@ -3,8 +3,8 @@ import json
 
 from copilot.agent import Engine
 from copilot.config import ROOT, embeddings_configured, llm_configured
-from copilot.corpus import load_corpus
-from copilot.llm import ChatClient, EmbedClient
+from copilot.rag import load_corpus
+from copilot.agent.llm import ChatClient, EmbedClient
 
 EMBEDDINGS_FILE = ROOT / "data" / "processed" / "embeddings.json"
 
