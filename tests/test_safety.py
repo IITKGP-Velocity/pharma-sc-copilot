@@ -1,3 +1,4 @@
+"""Rules R1-R8, personal-data redaction, injection detection and the output guard."""
 import pytest
 
 from copilot.safety import guard_output, looks_like_injection, pre_check, redact_pii

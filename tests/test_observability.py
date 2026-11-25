@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 
 def metrics(**kw):
+    """Default per-query metrics; keyword arguments override single fields."""
     base = {"latency_ms": 10, "steps": 1, "llm_calls": 1, "prompt_tokens": 100, "completion_tokens": 20,
             "tool_calls": 0, "retrieve_ms": 1, "llm_ms": 8, "tool_ms": 0, "stopped_by": None, "error": None,
             "retrieved": ["d1"]}
@@ -26,6 +27,7 @@ def metrics(**kw):
 
 
 def row(qid, qtype, decision, **kw):
+    """A results row for a fake query with the given type and decision."""
     item = {"id": qid, "use_case": qid[0], "type": qtype, "query": "Driver Ravi Kumar phone 9876543210?"}
     return obs.result_row(item, CopilotResponse(decision=decision), metrics(**kw))
 

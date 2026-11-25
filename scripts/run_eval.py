@@ -28,6 +28,7 @@ EVAL = ROOT / "eval" / "gold" / "eval_set_v1.0.jsonl"
 
 
 def main() -> int:
+    """Run the eval set, write per-query results and traces, then the summary, failure log and dashboard."""
     ap = argparse.ArgumentParser(description="Run the 64-query evaluation set.")
     ap.add_argument("--ids", nargs="+", help="only run these query ids")
     add_endpoint_args(ap)

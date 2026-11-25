@@ -17,11 +17,13 @@ RATE_LIMIT_PER_MIN = int(load_settings().get("rate_limit_per_min", 10))
 
 @st.cache_resource
 def engine():
+    """One engine per app process; Streamlit keeps it between requests."""
     return build_engine()
 
 
 @st.cache_data(show_spinner=False)
 def cached_answer(question: str) -> dict:
+    """Answer a question; identical questions are served from Streamlit's cache."""
     return engine().answer(question).model_dump()
 
 

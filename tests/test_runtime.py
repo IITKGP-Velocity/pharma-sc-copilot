@@ -1,3 +1,4 @@
+"""How endpoints, certificates and keys are passed at run time: flags, key files, hidden prompt."""
 import argparse
 
 import pytest
@@ -7,6 +8,7 @@ from copilot.runtime import add_endpoint_args, apply_endpoint_args, read_key_fil
 
 
 def parse(*argv):
+    """Parse command-line flags the way a script would."""
     ap = argparse.ArgumentParser()
     add_endpoint_args(ap)
     return ap.parse_args(list(argv))

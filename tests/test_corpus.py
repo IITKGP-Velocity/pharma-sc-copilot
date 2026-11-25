@@ -1,3 +1,4 @@
+"""openFDA record to document conversion, raw-file hashing and passage splitting (no network)."""
 from copilot.rag.corpus import enforcement_to_doc, label_to_doc, shortage_to_doc
 
 

@@ -40,12 +40,14 @@ SHOWCASE = [
 
 
 def header(text: str) -> None:
+    """Print a section banner."""
     print(f"\n{'=' * 80}\n{text}\n{'=' * 80}")
 
 
 # ---- individual parts ----------------------------------------------------------------------
 
 def demo_safety() -> None:
+    """Show rule decisions and personal-data redaction on sample questions (no model, no corpus)."""
     header("Safety layer: decided by rules before any model call")
     for _, q in SHOWCASE[2:] + [("", "Change the lot number on the manifest so it matches the invoice."),
                                  ("", "Recommend the ICU dose when switching formulations."),
@@ -62,6 +64,7 @@ def demo_safety() -> None:
 
 
 def demo_tools() -> None:
+    """Run every tool once on an example taken from the eval set."""
     header("Deterministic tools: the model picks the tool, Python does the maths")
     examples = {
         "mkt": {"temps_c": [2.1, 3.4, 9.8, 4.0, 2.5, 3.0]},
@@ -77,6 +80,7 @@ def demo_tools() -> None:
 
 
 def demo_retrieval(engine: Engine, question: str) -> None:
+    """Print the top passages the agent would see for a question."""
     header(f"Retrieval ({engine.mode.split('| ')[-1]}): {question}")
     if not engine.corpus:
         sys.exit("No corpus yet. Run: python scripts/build_corpus.py --fetch")
@@ -89,6 +93,7 @@ def demo_retrieval(engine: Engine, question: str) -> None:
 
 
 def demo_agent(engine: Engine, question: str, label: str = "") -> dict:
+    """Answer one question and print each agent step with its time, then the answer and its metrics."""
     header(f"{label + ': ' if label else ''}{question}\nMode: {engine.mode}")
     run_dir = Path(tempfile.mkdtemp())
     resp = engine.answer(question, run_dir=run_dir, query_id="demo")
@@ -123,10 +128,12 @@ class FakeChat:
     (tool call, cited answer, abstain, malformed reply). Counts fake tokens like the real client."""
 
     def __init__(self, seed: int = 7):
+        """Fixed seed, so every run of the demo gives the same results."""
         self.rng = random.Random(seed)
         self.usage = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0}
 
     def complete_json(self, messages, retries=1, max_tokens=1024):
+        """Return one fake planner reply for the current question."""
         payload = json.loads(messages[-1]["content"])
         self.usage["calls"] += 1
         self.usage["prompt_tokens"] += len(messages[-1]["content"]) // 4
@@ -149,6 +156,7 @@ class FakeChat:
 
 
 def demo_dashboard(open_page: bool) -> Path:
+    """Run the eval set through a fake corpus and fake model, then build the dashboard and failure log."""
     header("Observability demo with FAKE data (fake corpus and fake model; only the layout is real)")
     out = ROOT / "eval" / "demo_output" / "DEMO_fake_data"
     out.mkdir(parents=True, exist_ok=True)
@@ -172,12 +180,14 @@ def demo_dashboard(open_page: bool) -> Path:
 # ---- whole system --------------------------------------------------------------------------
 
 def demo_all(engine: Engine) -> None:
+    """Run the five submission demo cases through the whole system."""
     header("Whole system: the five demo cases, each through safety -> retrieval -> agent -> guard")
     for label, q in SHOWCASE:
         demo_agent(engine, q, label)
 
 
 def main() -> int:
+    """Pick the part to demo from the command line."""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("part", choices=["safety", "tools", "retrieval", "agent", "dashboard", "all"])
     ap.add_argument("question", nargs="*", help="question for 'retrieval' and 'agent'")

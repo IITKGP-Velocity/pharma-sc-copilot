@@ -1,3 +1,4 @@
+"""Deterministic tools return the numbers the eval set expects."""
 import pytest
 
 from copilot.agent import tools

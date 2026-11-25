@@ -32,17 +32,20 @@ def _e(value) -> str:
 
 
 def _bar(value: float, top: float) -> str:
+    """HTML bar whose filled width is value / top."""
     pct = 0 if top <= 0 else min(100, round(100 * value / top))
     return f'<div class="bar"><div class="fill" style="width:{pct}%"></div></div>'
 
 
 def _table(headers: list[str], rows: list[list[str]]) -> str:
+    """HTML table; the cells must already be escaped."""
     head = "".join(f"<th>{_e(h)}</th>" for h in headers)
     return f"<table><tr>{head}</tr>" + "".join("<tr>" + "".join(f"<td>{c}</td>" for c in r) + "</tr>"
                                                 for r in rows) + "</table>"
 
 
 def _fraction_rows(fractions: dict) -> list[list[str]]:
+    """Turn {'ANS': '4/22', ...} into table rows with a bar each."""
     out = []
     for key, frac in fractions.items():
         ok, total = (int(x) for x in frac.split("/"))
@@ -63,6 +66,7 @@ def build_dashboard(run_dir: Path) -> Path:
             steps_by_query[ev["query_id"]].append(ev)
 
     def kpi(label, value):
+        """One headline-number card."""
         return f'<div class="kpi"><div class="v">{_e(value)}</div><div class="l">{_e(label)}</div></div>'
 
     a = s["agent_avg"]

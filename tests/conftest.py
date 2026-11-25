@@ -1,3 +1,4 @@
+"""Shared test fakes: a scripted chat model, keyword-bag embeddings and a three-passage corpus. No network."""
 import pytest
 
 
@@ -5,10 +6,12 @@ class ScriptedChat:
     """Fake chat endpoint: returns scripted JSON replies, one per call. No network."""
 
     def __init__(self, replies):
+        """replies: the JSON objects to return, in order."""
         self.replies = list(replies)
         self.calls = 0
 
     def complete_json(self, messages, retries=1):
+        """Return the next scripted reply, like ChatClient.complete_json."""
         self.calls += 1
         if not self.replies:
             raise RuntimeError("script exhausted")
@@ -21,6 +24,7 @@ class FakeEmbed:
     VOCAB = ["storage", "temperature", "adalimumab", "shortage", "recall", "cisplatin"]
 
     def embed(self, texts):
+        """One vector per text: how often each VOCAB word appears."""
         out = []
         for t in texts:
             t = t.lower()
@@ -30,6 +34,7 @@ class FakeEmbed:
 
 @pytest.fixture
 def corpus():
+    """Three passages: an adalimumab label, a WHO mapping note and a cisplatin shortage."""
     return [
         {"id": "label-adalimumab", "text": "Storage temperature: store unopened adalimumab pens refrigerated at 2 C to 8 C. Do not freeze."},
         {"id": "who-trs961", "text": "Temperature mapping of transport and storage is a qualification activity."},

@@ -15,14 +15,17 @@ def mkt_celsius(temps_c: list[float], delta_h_kj: float = 83.144) -> float:
 
 
 def demurrage_total(days_late: float, rate_per_day: float) -> float:
+    """Port fee for a late shipment: days late x daily rate."""
     return days_late * rate_per_day
 
 
 def impurity_passes(value_pct: float, limit_pct: float) -> bool:
+    """True when the measured impurity is at or below the limit (both in percent)."""
     return value_pct <= limit_pct
 
 
 def cost_delta(brand_unit: float, generic_unit: float, units: int) -> dict:
+    """Brand vs generic cost for a number of units: both totals, the difference and the price ratio."""
     brand_total = brand_unit * units
     generic_total = generic_unit * units
     return {"brand_total": round(brand_total, 2), "generic_total": round(generic_total, 2),
@@ -30,14 +33,17 @@ def cost_delta(brand_unit: float, generic_unit: float, units: int) -> dict:
 
 
 def markup_percent(price: float, reference: float) -> float:
+    """How far a price is above a reference price, in percent (e.g. grey-market vs NADAC)."""
     return (price - reference) / reference * 100.0
 
 
 def quarantine_cost(units: int, unit_cost: float) -> float:
+    """Value of stock held in quarantine: units x unit cost."""
     return units * unit_cost
 
 
 def manifest_mismatch(declared_units: int, invoice_units: int) -> int:
+    """Units on the manifest minus units on the invoice (0 means they match)."""
     return declared_units - invoice_units
 
 
