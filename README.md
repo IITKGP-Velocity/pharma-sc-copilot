@@ -10,19 +10,46 @@ and the full agentic copilot.
 [pharma-supply-copilot/](pharma-supply-copilot/) is the complete Track B system:
 safety rules, hybrid retrieval over an openFDA corpus, a Planner -> Executor ->
 Critic agent with deterministic tools, a Streamlit app, and observability
-(per-query traces, metrics, failure log and an HTML dashboard). Each part can be
-demoed on its own or the whole system end to end:
+(per-query traces, metrics, failure log and an HTML dashboard).
+
+### Test it locally
+
+**Set up once** (Python 3.11+):
 
 ```bash
-cd pharma-supply-copilot && python -m pip install -e ".[dev]"
-python scripts/demo.py safety      # or: tools, dashboard, retrieval, agent, all
+cd pharma-supply-copilot
+python3 -m venv .venv && source .venv/bin/activate     # Windows: py -m venv .venv; .\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
 ```
 
-See [pharma-supply-copilot/README.md](pharma-supply-copilot/README.md) for setup,
-the testing guide (how to test each component and the whole system locally, with
-the expected output of every step), the course endpoints (chat on port 1034,
-embeddings on 1035) and the latest live results. The folders below (`RAG/`,
-`RAG_PIPELINE/`, `EVAL/`) are the earlier regulatory-PDF pipeline and its
+**Test one component.** Run its unit tests to check it works, and its demo to see what it does.
+Rows 1–3 and 7 need nothing else; the rest need the corpus or the course model.
+
+| # | Component | Unit tests | Demo | Pass when |
+|---|---|---|---|---|
+| 1 | Safety rules + redaction | `python -m pytest tests/test_safety.py -q` | `python scripts/demo.py safety` | 15 passed; release question → `ESCALATE (R1, to QP)`; phone and name → `[REDACTED]` |
+| 2 | Tools | `python -m pytest tests/test_tools.py -q` | `python scripts/demo.py tools` | 8 passed; `mkt(...) = 4.61` |
+| 3 | Corpus | `python -m pytest tests/test_corpus.py -q` | `python scripts/build_corpus.py --fetch` | 5 passed; `Wrote 5495 passages from 548 documents` (needs internet) |
+| 4 | Retrieval | `python -m pytest tests/test_retrieval.py -q` | `python scripts/demo.py retrieval "How should vancomycin be stored?"` | 6 passed; 5 vancomycin passages (needs corpus) |
+| 5 | Agent loop | `python -m pytest tests/test_agent.py -q` | `python scripts/demo.py agent "your question"` | 11 passed; each step printed with time and tokens |
+| 6 | Model clients | `python -m pytest tests/test_llm.py tests/test_runtime.py -q` | `python scripts/check_setup.py --live <flags>` | 14 passed; `Live chat call: OK`, `Live embeddings call: OK` |
+| 7 | Observability | `python -m pytest tests/test_observability.py -q` | `python scripts/demo.py dashboard --open` | 18 passed; dashboard opens (fake data) |
+
+**Test the whole project**, in order:
+
+1. `python -m pytest -q` → `77 passed` (offline, no keys).
+2. `python scripts/check_setup.py --live <flags>` → both live calls `OK`.
+3. `python scripts/build_corpus.py --fetch --embed <flags>` → `Wrote embeddings for 5495 passages` (about 4 min).
+4. `python scripts/demo.py all <flags>` → the five demo cases: cited answer, MKT tool (4.61), escalation to QP, injection refused (R6), PII redacted.
+5. `python scripts/run_eval.py <flags>` → all 64 queries (about 6 min), then open `eval/results/run_<date>/dashboard.html`.
+
+`<flags>` are the course endpoints, certificates and key files. Keys are never stored in the project;
+pass them as files (`--api-key-file`) or type them at the hidden prompt. The exact flags, the two
+course servers (chat on port 1034, embeddings on 1035) and expected output for every step are in
+[pharma-supply-copilot/README.md](pharma-supply-copilot/README.md), section 2 (testing guide) and
+section 3 (connecting to the course model).
+
+The folders below (`RAG/`, `RAG_PIPELINE/`, `EVAL/`) are the earlier regulatory-PDF pipeline and its
 evaluation tools.
 
 ## Working with an AI agent
