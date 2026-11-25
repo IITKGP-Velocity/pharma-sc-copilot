@@ -32,6 +32,7 @@ _load_dotenv()
 
 
 def load_settings(path: str | Path | None = None) -> dict:
+    """Read the non-secret settings from configs/settings.yaml."""
     path = Path(path) if path else ROOT / "configs" / "settings.yaml"
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
@@ -43,8 +44,10 @@ def env(name: str, default: str | None = None) -> str | None:
 
 
 def llm_configured() -> bool:
+    """True when the chat endpoint, key and model name are all set."""
     return all(env(n) for n in ["COPILOT_CHAT_ENDPOINT", "COPILOT_CHAT_API_KEY", "COPILOT_MODEL_NAME"])
 
 
 def embeddings_configured() -> bool:
+    """True when the embeddings endpoint, key and model name are all set."""
     return all(env(n) for n in ["COPILOT_EMBED_ENDPOINT", "COPILOT_EMBED_API_KEY", "COPILOT_EMBED_MODEL"])

@@ -19,6 +19,7 @@ MAX_ATTEMPTS = 3
 
 
 class EndpointNotConfigured(RuntimeError):
+    """Raised when an endpoint, key or model name is missing."""
     pass
 
 
@@ -36,13 +37,16 @@ def ca_bundle(name: str) -> str | bool:
 
 
 class _OpenAICompatible:
+    """Shared HTTP client for OpenAI-compatible endpoints: auth header, CA file, retries."""
     def __init__(self, endpoint: str, api_key: str, verify: str | bool = True, timeout: int = 60):
+        """verify is a CA file path or True (system CAs); TLS checking is never turned off."""
         self.endpoint = endpoint.rstrip("/")
         self.api_key = api_key
         self.verify = verify             # True or a CA file path; never False
         self.timeout = timeout
 
     def _post(self, path: str, payload: dict) -> dict:
+        """POST JSON and return the reply; connection errors and HTTP 429/5xx are retried up to MAX_ATTEMPTS."""
         for attempt in range(1, MAX_ATTEMPTS + 1):
             try:
                 resp = requests.post(f"{self.endpoint}{path}",
@@ -64,7 +68,9 @@ class _OpenAICompatible:
 
 
 class ChatClient(_OpenAICompatible):
+    """Client for the course chat model; counts calls and tokens in self.usage."""
     def __init__(self, endpoint: str | None = None, api_key: str | None = None, model: str | None = None):
+        """Take endpoint, key and model from the arguments or the environment; fail early if any is missing."""
         endpoint = endpoint or env("COPILOT_CHAT_ENDPOINT")
         api_key = api_key or env("COPILOT_CHAT_API_KEY")
         self.model = model or env("COPILOT_MODEL_NAME")
@@ -75,6 +81,7 @@ class ChatClient(_OpenAICompatible):
         self.usage = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0}
 
     def chat(self, messages: list[dict], temperature: float = 0.0, max_tokens: int = 600) -> str:
+        """One chat completion: returns the reply text and adds the server-reported tokens to self.usage."""
         data = self._post("/chat/completions", {"model": self.model, "messages": messages,
                                                 "temperature": temperature, "max_tokens": max_tokens})
         usage = data.get("usage") or {}
@@ -85,6 +92,7 @@ class ChatClient(_OpenAICompatible):
 
     def complete_json(self, messages: list[dict], retries: int = 1, max_tokens: int = 1024) -> dict:
         # 1024 is the endpoint's output limit; 600 cut long answers off mid-JSON in the first live run.
+        """Ask for one JSON object; on invalid JSON, show the model the parse error and ask once more."""
         for attempt in range(retries + 1):
             text = self.chat(messages, max_tokens=max_tokens)
             try:
@@ -100,7 +108,9 @@ class ChatClient(_OpenAICompatible):
 
 
 class EmbedClient(_OpenAICompatible):
+    """Client for the course embeddings model (bge-small-en-v1.5, 384 numbers per text)."""
     def __init__(self, endpoint: str | None = None, api_key: str | None = None, model: str | None = None):
+        """Take endpoint, key and model from the arguments or the environment; fail early if any is missing."""
         endpoint = endpoint or env("COPILOT_EMBED_ENDPOINT")
         api_key = api_key or env("COPILOT_EMBED_API_KEY")
         self.model = model or env("COPILOT_EMBED_MODEL")
@@ -110,6 +120,7 @@ class EmbedClient(_OpenAICompatible):
 
     def embed(self, texts: list[str], batch: int = 16) -> list[list[float]]:
         # The course embeddings API accepts at most 16 texts per request (HTTP 413 above that).
+        """Return one vector per text, in the same order as the input."""
         out: list[list[float]] = []
         for i in range(0, len(texts), batch):
             data = self._post("/embeddings", {"model": self.model, "input": texts[i:i + batch]})

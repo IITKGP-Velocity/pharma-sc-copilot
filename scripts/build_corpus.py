@@ -18,6 +18,7 @@ ROOT = _paths.ROOT
 
 
 def main() -> int:
+    """Optionally download, split into passages, write the corpus and optionally compute embeddings."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--fetch", action="store_true", help="download from openFDA first")
     ap.add_argument("--embed", action="store_true", help="compute embeddings with the university endpoint")

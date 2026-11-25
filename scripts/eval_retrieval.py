@@ -25,6 +25,7 @@ K = 5
 
 
 def main() -> int:
+    """Rank passages for each gold query with BM25 only and with hybrid search; report recall@k and MRR."""
     ap = argparse.ArgumentParser(description="Retrieval-only evaluation.")
     add_endpoint_args(ap)
     apply_endpoint_args(ap.parse_args())

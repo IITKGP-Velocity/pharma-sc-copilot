@@ -24,6 +24,7 @@ FLAGS = {
 
 
 def add_endpoint_args(parser: argparse.ArgumentParser) -> None:
+    """Add the endpoint, model, certificate and key-file flags to a script's argument parser."""
     group = parser.add_argument_group("university endpoints (optional; keys are asked for, never passed here)")
     group.add_argument("--chat-endpoint", help="chat base URL ending in /v1")
     group.add_argument("--model", help="chat model name")
@@ -47,6 +48,7 @@ def read_key_file(path: str) -> str:
 
 
 def _blank(name: str) -> bool:
+    """True when the environment variable is unset or only spaces."""
     return not (os.environ.get(name) or "").strip()
 
 

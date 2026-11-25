@@ -1,3 +1,4 @@
+"""Model client: JSON parsing, blank settings and CA certificate handling (no network)."""
 import pytest
 
 from copilot.config import env, llm_configured

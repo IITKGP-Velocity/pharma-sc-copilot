@@ -5,6 +5,7 @@ from pathlib import Path
 
 
 def log_event(run_dir: Path, event: dict) -> None:
+    """Append one event, with a timestamp, to run_dir/trace.jsonl."""
     run_dir.mkdir(parents=True, exist_ok=True)
     record = {"ts": time.time(), **event}
     with (run_dir / "trace.jsonl").open("a", encoding="utf-8") as f:

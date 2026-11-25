@@ -17,6 +17,7 @@ BASE = "https://api.fda.gov"
 
 
 def _get(path: str, params: dict, retries: int = 3) -> dict:
+    """GET from openFDA with the optional key; HTTP 404 means no matches, 429 is retried with backoff."""
     key = env("OPENFDA_API_KEY")
     if key:
         params = {**params, "api_key": key}
@@ -33,6 +34,7 @@ def _get(path: str, params: dict, retries: int = 3) -> dict:
 
 
 def save_raw(name: str, payload: dict) -> Path:
+    """Save one raw openFDA response and record its SHA-256 in data/raw/manifest.json (data provenance)."""
     RAW.mkdir(parents=True, exist_ok=True)
     path = RAW / f"{name}.json"
     path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
@@ -45,6 +47,7 @@ def save_raw(name: str, payload: dict) -> Path:
 
 
 def _first(value) -> str:
+    """openFDA fields are lists of strings; join them into one string."""
     if isinstance(value, list):
         return " ".join(str(v) for v in value)
     return str(value) if value else ""
@@ -72,6 +75,7 @@ def label_to_doc(rec: dict) -> dict | None:
 
 
 def shortage_to_doc(rec: dict) -> dict | None:
+    """Turn one openFDA shortage record into a document (status, company, reason, resupply)."""
     key = rec.get("generic_name") or rec.get("package_ndc") or rec.get("ndc")
     if not key:
         return None
@@ -83,6 +87,7 @@ def shortage_to_doc(rec: dict) -> dict | None:
 
 
 def enforcement_to_doc(rec: dict) -> dict | None:
+    """Turn one openFDA recall record into a document (class, product, reason, firm, status)."""
     if not rec.get("recall_number"):
         return None
     text = (f"Recall {rec['recall_number']}: class {rec.get('classification', '')}. "
@@ -93,6 +98,7 @@ def enforcement_to_doc(rec: dict) -> dict | None:
 
 
 def fetch_labels(names: list[str], per_name: int = 25) -> list[dict]:
+    """Download up to per_name labels for each generic drug name."""
     docs = []
     for name in names:
         data = _get("/drug/label.json", {"search": f'openfda.generic_name:"{name}"', "limit": per_name})
@@ -103,12 +109,14 @@ def fetch_labels(names: list[str], per_name: int = 25) -> list[dict]:
 
 
 def fetch_shortages(limit: int = 100) -> list[dict]:
+    """Download the first `limit` drug shortage records."""
     data = _get("/drug/shortages.json", {"limit": limit})
     save_raw("shortages", data)
     return [d for d in (shortage_to_doc(r) for r in data.get("results", [])) if d]
 
 
 def fetch_enforcement(limit: int = 100) -> list[dict]:
+    """Download the first `limit` Class I drug recall records."""
     data = _get("/drug/enforcement.json", {"search": "classification:\"Class I\"", "limit": limit})
     save_raw("enforcement_class1", data)
     return [d for d in (enforcement_to_doc(r) for r in data.get("results", [])) if d]
@@ -138,6 +146,7 @@ def chunk_document(doc: dict, chunk_chars: int = 1200) -> list[dict]:
 
 
 def write_corpus(docs: list[dict]) -> Path:
+    """Write passages to data/processed/corpus.jsonl, one JSON object per line."""
     PROCESSED.mkdir(parents=True, exist_ok=True)
     path = PROCESSED / "corpus.jsonl"
     with path.open("w", encoding="utf-8") as f:
@@ -147,6 +156,7 @@ def write_corpus(docs: list[dict]) -> Path:
 
 
 def load_corpus() -> list[dict] | None:
+    """Read data/processed/corpus.jsonl; None when the corpus has not been built yet."""
     path = PROCESSED / "corpus.jsonl"
     if not path.exists():
         return None

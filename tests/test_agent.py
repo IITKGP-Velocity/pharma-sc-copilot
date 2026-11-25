@@ -1,3 +1,4 @@
+"""Agent loop: modes, rule pre-check, tool calls, critic checks, step cap and error handling."""
 from copilot.agent import Engine
 from copilot.schemas import CopilotResponse
 from conftest import FakeEmbed, ScriptedChat

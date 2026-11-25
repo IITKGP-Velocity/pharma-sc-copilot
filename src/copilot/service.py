@@ -10,12 +10,14 @@ EMBEDDINGS_FILE = ROOT / "data" / "processed" / "embeddings.json"
 
 
 def load_vectors() -> dict[str, list[float]] | None:
+    """Load pre-computed passage embeddings (data/processed/embeddings.json) if they were built."""
     if EMBEDDINGS_FILE.exists():
         return json.loads(EMBEDDINGS_FILE.read_text(encoding="utf-8"))
     return None
 
 
 def build_engine() -> Engine:
+    """Build the Engine from the corpus and whichever endpoints are configured; blank settings switch features off."""
     corpus = load_corpus()
     chat = ChatClient() if llm_configured() else None
     embed = EmbedClient() if embeddings_configured() else None

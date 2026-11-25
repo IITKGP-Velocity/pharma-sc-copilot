@@ -1,3 +1,4 @@
+"""BM25, dense search and reciprocal rank fusion on a tiny corpus."""
 from copilot.rag.retrieval import BM25Index, DenseIndex, hybrid_search, reciprocal_rank_fusion, tokenize
 
 DOCS = [

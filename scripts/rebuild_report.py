@@ -14,6 +14,7 @@ from copilot.observability import (build_dashboard, label_counts, read_jsonl, un
 
 
 def main() -> int:
+    """Rebuild failure_log.csv and dashboard.html for an existing run folder."""
     if len(sys.argv) != 2:
         sys.exit(__doc__)
     run_dir = Path(sys.argv[1])

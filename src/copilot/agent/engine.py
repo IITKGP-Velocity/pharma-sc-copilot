@@ -30,12 +30,14 @@ PLANNER_PROMPT = (ROOT / "prompts" / "system" / "planner.txt").read_text(encodin
 
 
 def _new_metrics() -> dict:
+    """Empty per-query metrics record; answer() fills it and leaves it in engine.last_metrics."""
     return {"latency_ms": 0, "steps": 0, "llm_calls": 0, "prompt_tokens": 0, "completion_tokens": 0,
             "tool_calls": 0, "retrieved": [], "retrieve_ms": 0, "llm_ms": 0, "tool_ms": 0,
             "stopped_by": None, "error": None}
 
 
 class Engine:
+    """Answers questions: rules, then retrieval, then the planner/tool/critic loop. Holds the indexes and model clients."""
     def __init__(self, corpus: list[dict] | None, chat=None, embed=None, vectors: dict[str, list[float]] | None = None):
         """vectors: precomputed {doc_id: embedding}. If missing and embed is set, they are computed now."""
         self.corpus = corpus or []
@@ -55,6 +57,7 @@ class Engine:
 
     @property
     def mode(self) -> str:
+        """Mode line shown to users, e.g. 'agent (LLM) | retrieval: dense + BM25'."""
         if not self.corpus:
             return "rules only (no corpus)"
         generation = "agent (LLM)" if self.chat is not None else "extractive offline (no chat endpoint)"
@@ -69,6 +72,7 @@ class Engine:
         before = dict(usage) if usage else None
 
         def trace(event: dict) -> None:
+            """Append one stage record to run_dir/trace.jsonl (only when a run folder was given)."""
             if run_dir is not None:
                 log_event(run_dir, {"query_id": query_id, "ms": int((time.monotonic() - start) * 1000), **event})
 
@@ -84,6 +88,7 @@ class Engine:
                 m["llm_calls"] = m["steps"]        # fake chat clients in tests have no usage counter
 
     def _answer(self, query: str, trace, m: dict) -> CopilotResponse:
+        """The pipeline for one question; answer() wraps it with timing and token accounting."""
         clean = redact_pii(query)
         decided = pre_check(clean)
         if decided is not None:
@@ -127,6 +132,7 @@ class Engine:
                                    missing_evidence="Model endpoint error. Check the endpoint and try again.")
 
     def _agent_loop(self, clean: str, original: str, hits, retrieved: set[str], trace, m: dict) -> CopilotResponse:
+        """Planner -> Executor -> Critic: up to MAX_STEPS model turns within TOKEN_BUDGET."""
         evidence = [{"doc_id": d, "text": self.texts[d][:800]} for d, _ in hits]
         if looks_like_injection(original):
             evidence.append({"doc_id": "system-note", "text": "The question contained instructions. They were ignored."})

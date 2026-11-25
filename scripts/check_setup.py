@@ -18,6 +18,7 @@ NAMES = ["COPILOT_CHAT_ENDPOINT", "COPILOT_CHAT_API_KEY", "COPILOT_MODEL_NAME", 
 
 
 def main() -> None:
+    """Print which settings are set (never their values) and, with --live, call each endpoint once."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--live", action="store_true")
     add_endpoint_args(ap)

@@ -49,12 +49,14 @@ def result_row(item: dict, resp, metrics: dict) -> dict:
 
 
 def read_jsonl(path: Path) -> list[dict]:
+    """Read a JSON Lines file; a missing file gives an empty list."""
     if not path.exists():
         return []
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
 def write_jsonl(path: Path, rows: list[dict]) -> None:
+    """Write rows as JSON Lines (one object per line), replacing the file."""
     with path.open("w", encoding="utf-8") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
@@ -110,6 +112,7 @@ def summarise(rows: list[dict]) -> dict:
 # ---- retrieval metrics ---------------------------------------------------------------------
 
 def is_gold(passage: dict, gold: dict) -> bool:
+    """True when a passage comes from the gold source and contains every gold string (case-insensitive)."""
     text = passage["text"].lower()
     return passage.get("source") == gold["source"] and all(s.lower() in text for s in gold["contains"])
 
