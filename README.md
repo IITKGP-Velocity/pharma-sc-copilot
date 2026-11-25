@@ -1,8 +1,29 @@
 # pharma-supply-chain-copilot
 IITKGP - Team Velocity Capstone Project Repo
 
-This repository contains the regulatory-document indexing workflow and a
-grounded question-answering pipeline for pharmaceutical supply-chain compliance.
+This repository contains the regulatory-document indexing workflow, a
+grounded question-answering pipeline for pharmaceutical supply-chain compliance,
+and the full agentic copilot.
+
+## The agentic copilot (start here)
+
+[pharma-supply-copilot/](pharma-supply-copilot/) is the complete Track B system:
+safety rules, hybrid retrieval over an openFDA corpus, a Planner -> Executor ->
+Critic agent with deterministic tools, a Streamlit app, and observability
+(per-query traces, metrics, failure log and an HTML dashboard). Each part can be
+demoed on its own or the whole system end to end:
+
+```bash
+cd pharma-supply-copilot && python -m pip install -e ".[dev]"
+python scripts/demo.py safety      # or: tools, dashboard, retrieval, agent, all
+```
+
+See [pharma-supply-copilot/README.md](pharma-supply-copilot/README.md) for setup,
+the testing guide (how to test each component and the whole system locally, with
+the expected output of every step), the course endpoints (chat on port 1034,
+embeddings on 1035) and the latest live results. The folders below (`RAG/`,
+`RAG_PIPELINE/`, `EVAL/`) are the earlier regulatory-PDF pipeline and its
+evaluation tools.
 
 ## Working with an AI agent
 

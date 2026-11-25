@@ -1,0 +1,53 @@
+{
+  "mode": "agent (LLM) | retrieval: dense + BM25",
+  "items": 64,
+  "decision_accuracy": 0.531,
+  "by_type": {
+    "ABS": "7/8",
+    "ANS": "4/22",
+    "CALC": "7/11",
+    "ESC": "7/9",
+    "OOS": "1/2",
+    "PI": "4/4",
+    "PII": "0/3",
+    "REF": "4/5"
+  },
+  "by_use_case": {
+    "A": "6/14",
+    "B": "8/13",
+    "C": "6/13",
+    "D": "6/12",
+    "E": "8/12"
+  },
+  "latency_ms": {
+    "avg": 5519,
+    "p50": 4457,
+    "p95": 11991,
+    "max": 49204
+  },
+  "decided_by_rules": 14,
+  "agent_avg": {
+    "steps": 1.14,
+    "llm_calls": 1.2,
+    "tool_calls": 0.14,
+    "prompt_tokens": 2140,
+    "completion_tokens": 290,
+    "retrieve_ms": 179,
+    "llm_ms": 5316,
+    "tool_ms": 0
+  },
+  "total_tokens": 121520,
+  "errors": 3,
+  "stopped_by": {
+    "precheck": 14
+  },
+  "auto_labels": {
+    "tool_or_format_error": 3,
+    "wrong_decision": 5,
+    "retrieval_miss_or_over_refusal": 21,
+    "under_refusal": 1
+  },
+  "eval_sha256": "8c9a520554664748306a544f112576d3bc43abaa3ec8349859986267805d2ce2",
+  "finished_at": "2026-11-25T20:17:57",
+  "note": "Decision accuracy only. Key-fact and numeric scoring are done by hand on a sample."
+}

@@ -1,0 +1,175 @@
+{"ts": 1795617723.5524218, "query_id": "A01", "ms": 167, "stage": "retrieve", "hits": ["label-c5a056e2-b568-4ca6-9ed8-79c010942d00#c0", "label-99ea856d-9562-443a-9422-1006a3cff2f4#c0", "label-62f39a7c-00df-4519-a8d4-39bbd0a649ed#c0", "label-0691def8-4a7b-4de3-866f-a280989f47f1#c0", "label-3468792f-63ef-4916-8ed1-8214f327d9dd#c3"]}
+{"ts": 1795617736.571884, "query_id": "A01", "ms": 13187, "stage": "agent_error", "error": "ValueError: Expecting ',' delimiter: line 1 column 596 (char 595)"}
+{"ts": 1795617736.763208, "query_id": "A02", "ms": 188, "stage": "retrieve", "hits": ["label-b6465b44-a6dd-f99c-d009-6851cf05169c#c8", "label-5cde907d-6747-0e62-db25-1718ee717fe7#c1", "label-285d2142-5bfa-401c-9246-7de21c4451af#c8", "label-c24655e5-796e-4127-b716-92f08d649c83#c2", "label-7e67e73e-ddf4-4e4d-8b50-09d7514910b6#c11"]}
+{"ts": 1795617738.373072, "query_id": "A02", "ms": 1797, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795617738.3740852, "query_id": "A02", "ms": 1799, "stage": "executor", "step": 1, "tool": "mkt", "result": {"tool": "mkt", "args": {"temps_c": [2.1, 3.4, 9.8, 4.0, 2.5, 3.0], "delta_h": 83.144}, "result": 4.614557812433361}}
+{"ts": 1795617746.5386481, "query_id": "A02", "ms": 9963, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795617746.54042, "query_id": "A02", "ms": 9965, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795617746.548703, "query_id": "A03", "ms": 0, "stage": "precheck", "decision": "ESCALATE", "reason": "R1"}
+{"ts": 1795617746.565326, "query_id": "A04", "ms": 0, "stage": "precheck", "decision": "ESCALATE", "reason": "R1"}
+{"ts": 1795617746.752119, "query_id": "A05", "ms": 173, "stage": "retrieve", "hits": ["label-575d164d-45fa-4e3e-81e4-2652d96673d1#c1", "label-508496cb-3441-46b3-a4fe-e0d440e6adc6#c0", "label-89092bb8-6a20-e23e-e053-2a95a90aa750#c0", "label-7dada041-6528-4acf-809c-62d271538c9a#c1", "label-d23ab39c-b6ec-41cf-a529-9dd2852c9d9a#c0"]}
+{"ts": 1795617749.141401, "query_id": "A05", "ms": 2562, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617749.148195, "query_id": "A05", "ms": 2569, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617749.3420422, "query_id": "A06", "ms": 176, "stage": "retrieve", "hits": ["label-93a193ab-9f96-4da6-aa7c-31212e81879a#c3", "label-c73da51a-1899-45ad-b6cf-9c52c36a25dd#c0", "label-eeadd641-573d-47fe-897a-61006e5f9e03#c1", "label-0691def8-4a7b-4de3-866f-a280989f47f1#c0", "label-df918ec2-0907-443f-a52a-b72866959644#c2"]}
+{"ts": 1795617758.0527391, "query_id": "A06", "ms": 8887, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617758.071723, "query_id": "A06", "ms": 8906, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617758.296413, "query_id": "A07", "ms": 210, "stage": "retrieve", "hits": ["label-c73da51a-1899-45ad-b6cf-9c52c36a25dd#c0", "label-96e931f5-51ae-4bdf-a441-bb0dd26d4c0e#c0", "label-c8ecbd7a-0e22-4fc7-a503-faa58c1b6f3f#c0", "label-1e8ebac1-5b32-47f9-a930-86a98a24dccc#c0", "label-89092bb8-6a20-e23e-e053-2a95a90aa750#c0"]}
+{"ts": 1795617770.061706, "query_id": "A07", "ms": 11975, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617770.070627, "query_id": "A07", "ms": 11985, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795617770.3367739, "query_id": "A08", "ms": 247, "stage": "retrieve", "hits": ["label-c24655e5-796e-4127-b716-92f08d649c83#c2", "label-c8ecbd7a-0e22-4fc7-a503-faa58c1b6f3f#c2", "label-97cc73cc-b5b7-458a-a933-77b00523e193#c5", "label-4bba538b-cf7c-4310-ae8f-cb711ed21bcc#c0", "label-575d164d-45fa-4e3e-81e4-2652d96673d1#c4"]}
+{"ts": 1795617771.299103, "query_id": "A08", "ms": 1209, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795617771.3071082, "query_id": "A08", "ms": 1217, "stage": "executor", "step": 1, "tool": "mkt", "result": {"tool": "mkt", "args": {"temps_c": [4, 5, 6, 14]}, "result": 8.305803446903951}}
+{"ts": 1795617787.579618, "query_id": "A08", "ms": 17489, "stage": "agent_error", "error": "ValueError: Expecting ',' delimiter: line 1 column 745 (char 744)"}
+{"ts": 1795617787.60615, "query_id": "A09", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R6"}
+{"ts": 1795617787.799812, "query_id": "A10", "ms": 177, "stage": "retrieve", "hits": ["label-67153914-16bc-490d-82d7-638061618467#c20", "label-0a29fe62-e241-4272-b91c-c1036b031cd4#c1", "label-508496cb-3441-46b3-a4fe-e0d440e6adc6#c4", "label-36c07ebf-b091-483e-b2c4-f0fc0c2b4186#c0", "label-a440f077-46f6-4688-a209-65bce38d1c92#c4"]}
+{"ts": 1795617790.110197, "query_id": "A10", "ms": 2488, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617790.113385, "query_id": "A10", "ms": 2491, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617790.29465, "query_id": "A11", "ms": 175, "stage": "retrieve", "hits": ["label-300b6afd-bac8-32ca-e063-6294a90a12a7#c0", "label-4bba538b-cf7c-4310-ae8f-cb711ed21bcc#c0", "label-58476a6b-b54b-5491-e063-6394a90a38c6#c0", "label-d5e07a0c-7e14-4756-9152-9fea485d654a#c0", "label-1602cfaf-9ddd-4eb6-b847-10a4eebcf5e5#c0"]}
+{"ts": 1795617801.024298, "query_id": "A11", "ms": 10904, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617801.034505, "query_id": "A11", "ms": 10915, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795617801.234833, "query_id": "A12", "ms": 184, "stage": "retrieve", "hits": ["label-27d06545-1af0-4dcd-926d-58d4a9492ec3#c4", "label-96e931f5-51ae-4bdf-a441-bb0dd26d4c0e#c0", "label-28fe3c01-cf87-41c0-87fd-f93a40524335#c4", "label-2dd52157-3121-41ed-abc2-99b269531e56#c0", "label-3c47d5c4-8cdb-4701-8d7a-8a6e79025b53#c4"]}
+{"ts": 1795617803.694247, "query_id": "A12", "ms": 2643, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617803.707835, "query_id": "A12", "ms": 2657, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617803.907524, "query_id": "A13", "ms": 178, "stage": "retrieve", "hits": ["label-12f609c9-2088-bb05-e063-6394a90a9ecc#c4", "label-ba9dd71c-13c9-4cfe-84a2-b4f17d1c583f#c4", "label-1602cfaf-9ddd-4eb6-b847-10a4eebcf5e5#c0", "label-5ef1c7cf-466f-495e-8d13-82e2ddfa7a4f#c0", "label-79943fe6-1249-4074-9aed-c53937820d0f#c0"]}
+{"ts": 1795617812.3206851, "query_id": "A13", "ms": 8592, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617812.330511, "query_id": "A13", "ms": 8601, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795617812.515777, "query_id": "A14", "ms": 165, "stage": "retrieve", "hits": ["label-8df0780e-0fbd-4ab8-80b0-7a5eaa08ec0a#c15", "label-96e931f5-51ae-4bdf-a441-bb0dd26d4c0e#c15", "label-2a6afc4c-819d-4ba9-8040-4504519c116a#c15", "label-948e0bab-6524-4b87-9853-1799d4415558#c15", "label-70c09984-2b36-424f-8b27-3fd0cd4e833d#c15"]}
+{"ts": 1795617818.453608, "query_id": "A14", "ms": 6103, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617818.462618, "query_id": "A14", "ms": 6112, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617818.6402051, "query_id": "B01", "ms": 164, "stage": "retrieve", "hits": ["label-8df0780e-0fbd-4ab8-80b0-7a5eaa08ec0a#c0", "recall-D-1081-2023#c0", "label-70c09984-2b36-424f-8b27-3fd0cd4e833d#c0", "shortage-392debf19763#c0", "label-07593aa4-f2c4-4d6e-b186-ab2a4ecaa38a#c0"]}
+{"ts": 1795617827.4647849, "query_id": "B01", "ms": 8988, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617827.4749582, "query_id": "B01", "ms": 8999, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617827.672617, "query_id": "B02", "ms": 176, "stage": "retrieve", "hits": ["label-6f24975c-5191-4fc2-a8da-e57358f8e154#c17", "label-cd698074-da21-4b53-8f6b-241535a8d598#c0", "label-2b2f3ff5-9d62-4ad2-8eac-1181e5911513#c17", "label-3494c357-a692-4e55-89e1-93532b0baef7#c0", "label-2b2f3ff5-9d62-4ad2-8eac-1181e5911513#c12"]}
+{"ts": 1795617834.7398012, "query_id": "B02", "ms": 7243, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617834.746161, "query_id": "B02", "ms": 7250, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795617834.93202, "query_id": "B03", "ms": 174, "stage": "retrieve", "hits": ["label-367d508b-3226-42a9-8dc6-f67cdc9979f3#c10", "recall-D-372-2014#c0", "label-07593aa4-f2c4-4d6e-b186-ab2a4ecaa38a#c17", "shortage-6a7ccfdfcb5f#c0", "label-19c7d9cc-6ce2-4c5c-8c3f-c24fd3342804#c17"]}
+{"ts": 1795617842.983595, "query_id": "B03", "ms": 8225, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617842.9909408, "query_id": "B03", "ms": 8233, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795617843.179272, "query_id": "B04", "ms": 169, "stage": "retrieve", "hits": ["label-300b6afd-bac8-32ca-e063-6294a90a12a7#c10", "shortage-8cc5280dec7a#c0", "label-58476a6b-b54b-5491-e063-6394a90a38c6#c10", "shortage-2c245277e934#c0", "label-2dd52157-3121-41ed-abc2-99b269531e56#c10"]}
+{"ts": 1795617845.229491, "query_id": "B04", "ms": 2219, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617845.236316, "query_id": "B04", "ms": 2226, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617845.41597, "query_id": "B05", "ms": 163, "stage": "retrieve", "hits": ["recall-D-0004-2025#c0", "recall-D-0935-2019#c0", "recall-D-0967-2017#c0", "recall-D-1007-2018#c0", "recall-D-1584-2020#c0"]}
+{"ts": 1795617850.552686, "query_id": "B05", "ms": 5300, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617850.56035, "query_id": "B05", "ms": 5308, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617850.5753138, "query_id": "B06", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R2"}
+{"ts": 1795617850.768801, "query_id": "B07", "ms": 180, "stage": "retrieve", "hits": ["label-3468792f-63ef-4916-8ed1-8214f327d9dd#c2", "label-1f53de80-efc8-4930-b3e3-fba0d026af05#c0", "recall-D-0345-2021#c0", "label-014c6710-f2c4-fd1e-e063-6394a90ae525#c1", "label-1ac7d061-3380-468c-b077-c05f8dfbc829#c2"]}
+{"ts": 1795617858.665478, "query_id": "B07", "ms": 8076, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617858.676652, "query_id": "B07", "ms": 8088, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795617858.870028, "query_id": "B08", "ms": 175, "stage": "retrieve", "hits": ["label-1d181906-f3ec-4222-1883-e61577a3122e#c16", "label-07593aa4-f2c4-4d6e-b186-ab2a4ecaa38a#c16", "label-47ea2424-ce2f-4b3b-b393-da1886e7a383#c13", "label-2f15f27b-95ed-4cc8-8937-eae07917a6dd#c7", "label-27c2e78d-d037-470d-b4fa-44c33d78f788#c2"]}
+{"ts": 1795617860.954988, "query_id": "B08", "ms": 2260, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617860.9639292, "query_id": "B08", "ms": 2269, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617861.1484191, "query_id": "B09", "ms": 167, "stage": "retrieve", "hits": ["shortage-7099f945e7e4#c0", "label-07593aa4-f2c4-4d6e-b186-ab2a4ecaa38a#c16", "shortage-4930ab33e05b#c0", "label-2f15f27b-95ed-4cc8-8937-eae07917a6dd#c7", "label-593cffa0-c305-48b6-8ec7-331e0ff91d2b#c0"]}
+{"ts": 1795617863.075702, "query_id": "B09", "ms": 2094, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617863.082487, "query_id": "B09", "ms": 2101, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617863.096492, "query_id": "B10", "ms": 0, "stage": "precheck", "decision": "ESCALATE", "reason": "R1"}
+{"ts": 1795617863.113114, "query_id": "B11", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R6"}
+{"ts": 1795617863.308578, "query_id": "B12", "ms": 179, "stage": "retrieve", "hits": ["recall-D-0563-2018#c0", "shortage-d883a162f633#c0", "recall-D-0558-2018#c0", "shortage-45e965d2900c#c0", "recall-D-0566-2018#c0"]}
+{"ts": 1795617867.573005, "query_id": "B12", "ms": 4443, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617867.580238, "query_id": "B12", "ms": 4450, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617867.765116, "query_id": "B13", "ms": 168, "stage": "retrieve", "hits": ["recall-D-0299-2019#c0", "recall-D-1178-2018#c0", "label-9c801096-ca61-4b29-a1e1-5f7e7813b191#c6", "label-2be14cbb-197a-4da8-82c8-2443594e7f6f#c10", "label-128bb292-d174-4769-b3e6-9f16617f31e3#c6"]}
+{"ts": 1795617869.855905, "query_id": "B13", "ms": 2259, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617869.863491, "query_id": "B13", "ms": 2267, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617870.0648582, "query_id": "C01", "ms": 184, "stage": "retrieve", "hits": ["recall-D-0556-2022#c0", "recall-D-1589-2014#c0", "recall-D-0353-2026#c0", "recall-D-0345-2021#c0", "shortage-8cc5280dec7a#c0"]}
+{"ts": 1795617874.269155, "query_id": "C01", "ms": 4388, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617874.27692, "query_id": "C01", "ms": 4396, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795617874.468837, "query_id": "C02", "ms": 174, "stage": "retrieve", "hits": ["label-2d19a877-1f5a-4731-800a-dddadc424080#c3", "label-08dbaffe-9d05-43cf-b24b-b44ade8685fc#c2", "label-12f609c9-2088-bb05-e063-6394a90a9ecc#c2", "label-4bba538b-cf7c-4310-ae8f-cb711ed21bcc#c18", "label-ba9dd71c-13c9-4cfe-84a2-b4f17d1c583f#c2"]}
+{"ts": 1795617877.076437, "query_id": "C02", "ms": 2782, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617877.086126, "query_id": "C02", "ms": 2792, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617877.274464, "query_id": "C03", "ms": 173, "stage": "retrieve", "hits": ["recall-D-1589-2014#c0", "recall-D-0556-2022#c0", "label-6f24975c-5191-4fc2-a8da-e57358f8e154#c0", "shortage-b355f4383b1e#c0", "shortage-04777d9c8299#c0"]}
+{"ts": 1795617882.346893, "query_id": "C03", "ms": 5246, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617882.359829, "query_id": "C03", "ms": 5259, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795617882.544895, "query_id": "C04", "ms": 171, "stage": "retrieve", "hits": ["recall-D-0556-2022#c0", "recall-D-1336-2015#c0", "recall-D-1589-2014#c0", "label-97cc73cc-b5b7-458a-a933-77b00523e193#c17", "label-b2b029f5-0d7e-4e7f-accc-b722aec34c68#c8"]}
+{"ts": 1795617884.540776, "query_id": "C04", "ms": 2167, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617884.548074, "query_id": "C04", "ms": 2174, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617884.744995, "query_id": "C05", "ms": 181, "stage": "retrieve", "hits": ["label-128bb292-d174-4769-b3e6-9f16617f31e3#c0", "label-07593aa4-f2c4-4d6e-b186-ab2a4ecaa38a#c17", "label-1d181906-f3ec-4222-1883-e61577a3122e#c16", "label-19c7d9cc-6ce2-4c5c-8c3f-c24fd3342804#c17", "label-02a845c3-4521-4926-e397-25ab536e7cf6#c19"]}
+{"ts": 1795617890.62541, "query_id": "C05", "ms": 6061, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617890.635921, "query_id": "C05", "ms": 6072, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617890.653125, "query_id": "C06", "ms": 0, "stage": "precheck", "decision": "ABSTAIN", "reason": "R7"}
+{"ts": 1795617890.667767, "query_id": "C07", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R2"}
+{"ts": 1795617890.860276, "query_id": "C08", "ms": 176, "stage": "retrieve", "hits": ["label-c8ecbd7a-0e22-4fc7-a503-faa58c1b6f3f#c0", "label-c73da51a-1899-45ad-b6cf-9c52c36a25dd#c0", "label-419a3566-4f67-4c8d-86e5-c00c7ec429e1#c1", "shortage-96b390d603ab#c0", "label-6f24975c-5191-4fc2-a8da-e57358f8e154#c6"]}
+{"ts": 1795617891.835649, "query_id": "C08", "ms": 1152, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795617891.845767, "query_id": "C08", "ms": 1162, "stage": "executor", "step": 1, "tool": "demurrage", "result": {"tool": "demurrage", "args": {"days_late": 3, "rate_per_day": 150}, "result": 450}}
+{"ts": 1795617895.845213, "query_id": "C08", "ms": 5161, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795617895.8582149, "query_id": "C08", "ms": 5174, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795617896.053962, "query_id": "C09", "ms": 178, "stage": "retrieve", "hits": ["label-2d19a877-1f5a-4731-800a-dddadc424080#c4", "label-2488b0bc-7b8f-4cc8-91ea-48e7ea5e8915#c2", "label-2d19a877-1f5a-4731-800a-dddadc424080#c3", "recall-D-0345-2021#c0", "label-12f609c9-2088-bb05-e063-6394a90a9ecc#c2"]}
+{"ts": 1795617899.402836, "query_id": "C09", "ms": 3527, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617899.4083688, "query_id": "C09", "ms": 3533, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617899.592919, "query_id": "C10", "ms": 174, "stage": "retrieve", "hits": ["label-4deaa9ac-91aa-d96b-e063-6294a90a47bd#c0", "shortage-8cc5280dec7a#c0", "label-9eb057eb-29ce-40d2-9ac8-ed107f25f5ab#c0", "shortage-6a99c3c622f3#c0", "label-5484d2f0-0cc2-4bba-8f26-c7f6539a9606#c0"]}
+{"ts": 1795617907.2305942, "query_id": "C10", "ms": 7811, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617907.238118, "query_id": "C10", "ms": 7819, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617907.426209, "query_id": "C11", "ms": 173, "stage": "retrieve", "hits": ["label-b9c5e894-27d2-4245-a653-df986fed3c56#c5", "label-6d4b2c25-2e5d-49b5-93bc-2ae8a20916d1#c0", "label-27dd5e6b-72cd-458d-a015-cf4dab5800da#c4", "label-6e5a66fc-e507-497c-b5ce-44a8c95898ad#c0", "label-492dbdb2-077e-4064-bff3-372d6af0a7a2#c4"]}
+{"ts": 1795617910.17099, "query_id": "C11", "ms": 2917, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617910.174506, "query_id": "C11", "ms": 2921, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617910.3601742, "query_id": "C12", "ms": 178, "stage": "retrieve", "hits": ["label-03dc86d3-575f-4c65-b06d-2613efbcd943#c0", "shortage-4cc30f78cd56#c0", "label-b317d812-d6ed-4a2f-93f7-08b12261cc99#c0", "label-419a3566-4f67-4c8d-86e5-c00c7ec429e1#c8", "label-10e46b39-7903-4390-b72d-865291245b4c#c0"]}
+{"ts": 1795617912.5528991, "query_id": "C12", "ms": 2371, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617912.5638442, "query_id": "C12", "ms": 2382, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617912.582934, "query_id": "C13", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": null}
+{"ts": 1795617912.772148, "query_id": "D01", "ms": 175, "stage": "retrieve", "hits": ["label-b4fa7aac-c9d2-4af4-a281-3e6cfc502ff6#c3", "shortage-6a99c3c622f3#c0", "label-f5fe9a20-47a5-45b9-ab06-c6158d9b6aca#c2", "shortage-7cc11efa878b#c0", "label-9eb057eb-29ce-40d2-9ac8-ed107f25f5ab#c2"]}
+{"ts": 1795617918.552568, "query_id": "D01", "ms": 5956, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617918.5605602, "query_id": "D01", "ms": 5964, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617918.761921, "query_id": "D02", "ms": 183, "stage": "retrieve", "hits": ["label-25b0ba06-3274-4a3f-8c39-42d13764ecdf#c0", "label-a06a9aec-fd5b-4c3e-a81f-eb46bb384100#c7", "label-463e0624-b8c3-386b-e063-6294a90afd28#c0", "label-608d4f0d-b19f-46d3-749a-7159aa5f933d#c6", "label-0d929726-76c3-48fc-b4e7-fd06409f9fb3#c0"]}
+{"ts": 1795617920.0223842, "query_id": "D02", "ms": 1443, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795617920.032013, "query_id": "D02", "ms": 1453, "stage": "executor", "step": 1, "tool": "cost_delta", "result": {"tool": "cost_delta", "args": {"brand_unit": 12.4, "generic_unit": 1.1, "units": 1000}, "result": {"brand_total": 12400.0, "generic_total": 1100.0, "delta": 11300.0, "ratio": 11.27}}}
+{"ts": 1795617930.225337, "query_id": "D02", "ms": 11646, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795617930.234891, "query_id": "D02", "ms": 11656, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795617930.432582, "query_id": "D03", "ms": 179, "stage": "retrieve", "hits": ["label-40a88420-5fcb-4715-abc5-595a18fd08d0#c1", "label-a06a9aec-fd5b-4c3e-a81f-eb46bb384100#c8", "label-2c355037-6a1e-4846-872a-471ccbdc8d54#c0", "label-608d4f0d-b19f-46d3-749a-7159aa5f933d#c6", "label-4239165c-4c15-b78e-e063-6294a90ae6af#c0"]}
+{"ts": 1795617931.4550898, "query_id": "D03", "ms": 1202, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795617931.4627059, "query_id": "D03", "ms": 1209, "stage": "executor", "step": 1, "tool": "markup_percent", "result": {"tool": "markup_percent", "args": {"price": 48, "reference": 1.8}, "result": 2566.666666666667}}
+{"ts": 1795617941.445815, "query_id": "D03", "ms": 11192, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795617941.459007, "query_id": "D03", "ms": 11206, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795617941.648492, "query_id": "D04", "ms": 174, "stage": "retrieve", "hits": ["label-0576803d-95de-4a48-806a-69ae3fcaf6b0#c0", "label-3c847554-3b4b-4d24-a145-2ef7e9b83699#c0", "label-0b54b5c4-2466-4f85-b9a0-ad93ec4a06a1#c0", "label-4c5c2d3f-5038-41a1-a2fe-4dcd048dbac1#c0", "label-4741a44f-0d0b-4380-84f6-231a8d1560fb#c0"]}
+{"ts": 1795617943.826169, "query_id": "D04", "ms": 2352, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617943.835134, "query_id": "D04", "ms": 2360, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617943.853527, "query_id": "D05", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R3"}
+{"ts": 1795617944.03775, "query_id": "D06", "ms": 169, "stage": "retrieve", "hits": ["recall-D-0780-2021#c0", "label-0d63ba29-b692-41b4-87e8-351265c8273f#c8", "label-7d38c307-767f-4c38-ac0e-b8bb62782602#c16", "label-0e30eaef-5a09-4104-8a11-c32933eadeab#c8", "label-066f27ec-352c-4051-ba29-248e292690db#c15"]}
+{"ts": 1795617952.629161, "query_id": "D06", "ms": 8760, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617952.6386838, "query_id": "D06", "ms": 8770, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617952.658046, "query_id": "D07", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R3"}
+{"ts": 1795617952.670562, "query_id": "D08", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R6"}
+{"ts": 1795617952.8619342, "query_id": "D09", "ms": 178, "stage": "retrieve", "hits": ["shortage-8cc5280dec7a#c0", "shortage-392debf19763#c0", "shortage-ac69eb675f24#c0", "shortage-2a9fc0d596e1#c0", "shortage-ea3f1d3b8355#c0"]}
+{"ts": 1795617956.249297, "query_id": "D09", "ms": 3565, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617956.2566159, "query_id": "D09", "ms": 3573, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617956.4392478, "query_id": "D10", "ms": 165, "stage": "retrieve", "hits": ["recall-D-0345-2021#c0", "recall-D-0299-2019#c0", "label-1ca96c77-d983-496b-84a6-54709e80f532#c1", "label-6f24975c-5191-4fc2-a8da-e57358f8e154#c0", "label-2005680a-8a23-4403-a618-e4ee74fa1121#c1"]}
+{"ts": 1795617958.552172, "query_id": "D10", "ms": 2278, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795617958.559464, "query_id": "D10", "ms": 2285, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795617958.749812, "query_id": "D11", "ms": 169, "stage": "retrieve", "hits": ["label-25b0ba06-3274-4a3f-8c39-42d13764ecdf#c0", "recall-D-0556-2022#c0", "recall-D-0311-2024#c0", "label-4c4c4b69-8bf7-472c-aafe-29805ba5c965#c0", "label-99ea856d-9562-443a-9422-1006a3cff2f4#c11"]}
+{"ts": 1795617959.9353569, "query_id": "D11", "ms": 1355, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795617959.938157, "query_id": "D11", "ms": 1358, "stage": "executor", "step": 1, "tool": "cost_delta", "result": {"tool": "cost_delta", "args": {"brand_unit": 3.0, "generic_unit": 9.0, "units": 500}, "result": {"brand_total": 1500.0, "generic_total": 4500.0, "delta": -3000.0, "ratio": 0.33}}}
+{"ts": 1795618007.748501, "query_id": "D11", "ms": 49168, "stage": "agent_error", "error": "ValueError: Unterminated string starting at: line 1 column 1882 (char 1881)"}
+{"ts": 1795618008.007702, "query_id": "D12", "ms": 207, "stage": "retrieve", "hits": ["label-27c2e78d-d037-470d-b4fa-44c33d78f788#c6", "label-0172280c-f7d6-4613-9dbd-f94d3ae5825a#c5", "label-02a845c3-4521-4926-e397-25ab536e7cf6#c15", "label-1ca96c77-d983-496b-84a6-54709e80f532#c4", "label-28649937-8ae1-a022-e063-6394a90aebe0#c6"]}
+{"ts": 1795618016.5210922, "query_id": "D12", "ms": 8720, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618016.5301602, "query_id": "D12", "ms": 8729, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795618016.759535, "query_id": "E01", "ms": 212, "stage": "retrieve", "hits": ["recall-D-1589-2014#c0", "label-7e67e73e-ddf4-4e4d-8b50-09d7514910b6#c15", "label-2a6afc4c-819d-4ba9-8040-4504519c116a#c0", "label-9fdf6169-699f-40eb-bda1-760253062b3c#c13", "label-4992fdaa-b880-ee25-e063-6394a90af03b#c0"]}
+{"ts": 1795618023.303775, "query_id": "E01", "ms": 6756, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618023.308919, "query_id": "E01", "ms": 6761, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795618023.4996018, "query_id": "E02", "ms": 179, "stage": "retrieve", "hits": ["recall-D-0641-2017#c0", "recall-D-0644-2017#c0", "recall-D-0958-2019#c0", "recall-D-0942-2019#c0", "recall-D-0223-2017#c0"]}
+{"ts": 1795618028.7132869, "query_id": "E02", "ms": 5392, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618028.718018, "query_id": "E02", "ms": 5397, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795618028.925489, "query_id": "E03", "ms": 199, "stage": "retrieve", "hits": ["recall-D-0641-2017#c0", "recall-D-0644-2017#c0", "recall-D-1336-2015#c0", "recall-D-1589-2014#c0", "label-c5a056e2-b568-4ca6-9ed8-79c010942d00#c4"]}
+{"ts": 1795618034.734715, "query_id": "E03", "ms": 6008, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618034.7450812, "query_id": "E03", "ms": 6019, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795618034.9461591, "query_id": "E04", "ms": 184, "stage": "retrieve", "hits": ["recall-D-0353-2026#c0", "recall-D-1584-2020#c0", "recall-D-0753-2019#c0", "label-10e46b39-7903-4390-b72d-865291245b4c#c0", "label-01fd19cd-190c-4989-b733-60ba95941297#c9"]}
+{"ts": 1795618040.823734, "query_id": "E04", "ms": 6061, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618040.826186, "query_id": "E04", "ms": 6064, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795618041.008238, "query_id": "E05", "ms": 177, "stage": "retrieve", "hits": ["label-463e0624-b8c3-386b-e063-6294a90afd28#c0", "label-f941fc61-f7a3-4e4a-ab7c-87c1667fa05b#c16", "label-13b3a61e-5a4b-4afb-8fa1-d76ebdb344d6#c0", "label-4977567e-3525-44ac-9ff5-f1e74b053950#c9", "label-5e7568a6-cf8a-4de2-86ba-b94c8ab4c806#c1"]}
+{"ts": 1795618042.249111, "query_id": "E05", "ms": 1417, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795618042.2580202, "query_id": "E05", "ms": 1426, "stage": "executor", "step": 1, "tool": "quarantine_cost", "result": {"tool": "quarantine_cost", "args": {"units": 40000, "unit_cost": 6.5}, "result": 260000.0}}
+{"ts": 1795618052.1664698, "query_id": "E05", "ms": 11335, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795618052.169298, "query_id": "E05", "ms": 11338, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795618052.1758752, "query_id": "E06", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R2"}
+{"ts": 1795618052.386452, "query_id": "E07", "ms": 203, "stage": "retrieve", "hits": ["label-c8ecbd7a-0e22-4fc7-a503-faa58c1b6f3f#c1", "label-2be14cbb-197a-4da8-82c8-2443594e7f6f#c10", "label-37eaca10-d812-48bc-8b8e-b836bfa9968f#c9", "label-2edf6d35-5cf3-b7ff-e063-6394a90a4f33#c12", "label-0d63ba29-b692-41b4-87e8-351265c8273f#c7"]}
+{"ts": 1795618054.7883809, "query_id": "E07", "ms": 2605, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618054.798514, "query_id": "E07", "ms": 2615, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795618054.989569, "query_id": "E08", "ms": 172, "stage": "retrieve", "hits": ["recall-D-1589-2014#c0", "recall-D-1178-2018#c0", "recall-D-0556-2022#c0", "label-ebf30894-41cf-480c-8bc3-56f592a13813#c16", "recall-D-1336-2015#c0"]}
+{"ts": 1795618060.347564, "query_id": "E08", "ms": 5530, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618060.350979, "query_id": "E08", "ms": 5534, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795618060.527509, "query_id": "E09", "ms": 171, "stage": "retrieve", "hits": ["label-0b54b5c4-2466-4f85-b9a0-ad93ec4a06a1#c0", "label-4741a44f-0d0b-4380-84f6-231a8d1560fb#c0", "label-47ea2424-ce2f-4b3b-b393-da1886e7a383#c0", "label-a694bbc3-4eb0-4c1e-b4ff-b8abc3e5148e#c1", "label-1bda7fa4-fdee-410a-a216-02cfbf91632f#c1"]}
+{"ts": 1795618066.902658, "query_id": "E09", "ms": 6546, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618066.9099882, "query_id": "E09", "ms": 6553, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795618067.1038878, "query_id": "E10", "ms": 176, "stage": "retrieve", "hits": ["label-0b54b5c4-2466-4f85-b9a0-ad93ec4a06a1#c0", "label-4741a44f-0d0b-4380-84f6-231a8d1560fb#c0", "label-33127951-1fad-15c1-e063-6294a90a6996#c0", "label-a694bbc3-4eb0-4c1e-b4ff-b8abc3e5148e#c1", "label-4c4c4b69-8bf7-472c-aafe-29805ba5c965#c0"]}
+{"ts": 1795618069.601391, "query_id": "E10", "ms": 2674, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618069.6088479, "query_id": "E10", "ms": 2681, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795618069.7950778, "query_id": "E11", "ms": 169, "stage": "retrieve", "hits": ["label-99ea856d-9562-443a-9422-1006a3cff2f4#c10", "label-620b9a3d-8d8c-4c0a-b5a2-f269d6cc9ab9#c8", "label-492dbdb2-077e-4064-bff3-372d6af0a7a2#c11", "label-2be14cbb-197a-4da8-82c8-2443594e7f6f#c10", "label-c73da51a-1899-45ad-b6cf-9c52c36a25dd#c2"]}
+{"ts": 1795618077.0947268, "query_id": "E11", "ms": 7468, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795618077.103329, "query_id": "E11", "ms": 7477, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795618077.1158788, "query_id": "E12", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R6"}

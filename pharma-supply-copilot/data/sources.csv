@@ -1,0 +1,9 @@
+name,url,format,use_cases,status,downloaded_on,sha256,licence
+openFDA drug labeling,https://open.fda.gov/apis/downloads,zipped JSON partitions,A;D,verified,,,public domain (US gov)
+openFDA drug enforcement,https://open.fda.gov,JSON,A;E,verified (endpoint),,,public domain (US gov)
+openFDA drug shortages,https://open.fda.gov/data/drugshortages,JSON,D,verified,,,public domain (US gov)
+FDA Orange Book data files,https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files,tilde-delimited text,B,verified,,,public domain (US gov)
+CMS NADAC pricing,https://data.medicaid.gov,CSV,D,verified,,,public domain (US gov)
+WHO TRS 961 Annex 9,https://www.who.int/publications/m/item/trs961-annex9-modelguidanceforstoragetransport,PDF,A;C,verified (page),,,CC BY-NC-SA 3.0 IGO
+EMA Good Distribution Practice,https://www.ema.europa.eu/en/good-distribution-practice,web page,A;C,verified,,,check
+ICH Q10 (EMA copy),https://www.ema.europa.eu/en/documents/scientific-guideline/international-conference-harmonisation-technical-requirements-registration-pharmaceuticals-human-guideline-q10-pharmaceutical-quality-system-step-5_en.pdf,PDF,B,verified,,,check

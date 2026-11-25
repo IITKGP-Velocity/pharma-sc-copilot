@@ -1,0 +1,22 @@
+"""Build the engine from configuration. Blank endpoints mean the matching feature is off."""
+import json
+
+from copilot.agent import Engine
+from copilot.config import ROOT, embeddings_configured, llm_configured
+from copilot.corpus import load_corpus
+from copilot.llm import ChatClient, EmbedClient
+
+EMBEDDINGS_FILE = ROOT / "data" / "processed" / "embeddings.json"
+
+
+def load_vectors() -> dict[str, list[float]] | None:
+    if EMBEDDINGS_FILE.exists():
+        return json.loads(EMBEDDINGS_FILE.read_text(encoding="utf-8"))
+    return None
+
+
+def build_engine() -> Engine:
+    corpus = load_corpus()
+    chat = ChatClient() if llm_configured() else None
+    embed = EmbedClient() if embeddings_configured() else None
+    return Engine(corpus, chat=chat, embed=embed, vectors=load_vectors())

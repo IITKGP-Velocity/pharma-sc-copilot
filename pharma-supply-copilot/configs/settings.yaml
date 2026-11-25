@@ -1,0 +1,8 @@
+# Non-secret settings. Secrets live in .env only.
+model_name: "set-by-endpoint"   # the single shared <=8B model the university serves
+top_k: 5
+chunk_chars: 800                # passage size; dense label text hits the 512-token embedding limit at 1200
+max_steps: 10                   # agent step cap (guideline)
+token_budget: 8000              # per query
+rate_limit_per_min: 10          # questions per session per minute in the web app
+rerank: false                   # cross-encoder reranker; needs: pip install -e ".[retrieval]"
