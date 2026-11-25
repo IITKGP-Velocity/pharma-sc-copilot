@@ -24,7 +24,7 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 | `src/copilot/safety/` | `rules.py`: rule pre-check R1-R8, redaction (phones, emails, dates of birth, labelled names), output guard |
 | `src/copilot/rag/` | `corpus.py`: openFDA corpus in 800-char passages; `retrieval.py`: BM25 + dense + RRF, optional reranker (`rerank: true`) |
 | `src/copilot/agent/` | `engine.py`: Planner -> Executor -> Critic loop, 10-step cap, token budget, per-query metrics in `last_metrics`; `tools.py`: deterministic tools; `llm.py`: model clients (per-port CA, retries, token counts) |
-| `src/copilot/observability/` | `tracing.py` (`trace.jsonl`), `metrics.py` (result rows, summary, recall@k), `failure_log.py`, `dashboard.py` |
+| `src/copilot/observability/` | `tracing.py` (`trace.jsonl`), `metrics.py` (result rows, summary, recall@k), `failure_log.py`, `dashboard.py`. How it is built into the engine (three layers: `last_metrics`, trace, run reports): README section 5.1 |
 | `src/copilot/runtime.py`, `config.py`, `schemas.py`, `service.py` | Endpoint flags and key files; settings; answer schema; builds the engine |
 | `scripts/` | `demo.py` (per part or `all`), `run_eval.py`, `eval_retrieval.py`, `rebuild_report.py`, `ask.py`, `build_corpus.py`, `check_setup.py`, `freeze_eval.py` |
 | `app/app.py` | Streamlit app; rate limit from `configs/settings.yaml`; caching |

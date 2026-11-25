@@ -149,6 +149,48 @@ Each evaluation run writes `eval/results/run_<date>/`:
 
 Queries and answers are redacted for personal data before they are written.
 
+### 5.1 How observability is built in
+
+Observability is part of the engine, not a wrapper added afterwards. Every call to `Engine.answer()`
+measures itself, whatever started it (the eval, a demo, `ask.py` or the web app), and nothing extra has
+to be running: no tracing server, no internet, plain files only.
+
+```mermaid
+flowchart LR
+  A[Engine.answer] -->|always| M[engine.last_metrics<br/>in memory, per query]
+  A -->|when run_dir is given| T[trace.jsonl<br/>one line per stage]
+  L[ChatClient.usage<br/>token counter] --> M
+  M --> R[run_eval.py]
+  T --> R
+  R --> F[results.jsonl, summary.json<br/>failure_log.csv, dashboard.html]
+```
+
+It works in three layers:
+
+| Layer | Where | What it records | When |
+|---|---|---|---|
+| 1. Per-query metrics | `engine.last_metrics` (`agent/engine.py`) | latency, planner steps, LLM calls, prompt and completion tokens, tool calls, time in retrieval / model / tools, retrieved passage ids, what stopped the query (`precheck`, `step_cap`, `budget`) and any error | Every `answer()` call, kept in memory until the next one |
+| 2. Per-stage trace | `trace.jsonl` (`observability/tracing.py`) | one line per stage: `precheck`, `retrieve`, `planner`, `executor`, `critic`, plus `embed_error`, `agent_error`, `budget`, `step_cap` when they happen; each tagged with the query id and milliseconds since the query started | When `answer()` is given a `run_dir` (the eval and `demo.py agent` do this) |
+| 3. Per-run reports | `observability/metrics.py`, `failure_log.py`, `dashboard.py` | the files in the table above, built from layers 1 and 2 | At the end of `run_eval.py`; rebuild any time with `rebuild_report.py` |
+
+How each number is collected:
+- **Time:** the engine reads a monotonic clock around retrieval, each model call and each tool call.
+- **Tokens and LLM calls:** the chat client (`agent/llm.py`) adds the `usage` the server returns to a running
+  counter; the engine takes the difference before and after the question. A re-ask after invalid JSON counts as
+  an extra LLM call; HTTP retries after a busy server (429/5xx) do not, because only the successful reply is counted.
+- **Errors:** a failed model call or unreadable JSON does not crash the run. The engine returns ABSTAIN, keeps the
+  error type and message in `last_metrics["error"]` and writes an `agent_error` trace line, so it shows up in the
+  dashboard and the failure log.
+- **Privacy:** trace lines hold stage data (passage ids, tool names and results, critic problems), never the
+  question text. Questions and answers in `results.jsonl` and `failure_log.csv` go through `redact_pii()` first.
+
+To trace a new step, call `trace({"stage": "<name>", ...})` inside `Engine._answer` or `_agent_loop`. It then
+appears in `trace.jsonl` and in the dashboard's step list with no other change.
+
+Limits: the web app and `ask.py` fill `last_metrics` but do not write trace files; use `demo.py agent` or
+`run_eval.py` to record a trace. The optional `[tracing]` extra (Arize Phoenix) in `pyproject.toml` is not
+wired in; the JSON files above are the trace store.
+
 ## 6. Latest results (live model, 2026-11-25)
 
 **Decisions** (`eval/results/run_20261125_201203`):
