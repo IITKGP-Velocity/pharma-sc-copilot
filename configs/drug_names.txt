@@ -1,0 +1,21 @@
+# Generic names fetched from openFDA labels. One per line. Edit to change the corpus.
+adalimumab
+insulin glargine
+cisplatin
+oxytocin
+bortezomib
+carboplatin
+heparin
+vancomycin
+ceftriaxone
+epinephrine
+amphotericin b
+filgrastim
+pegfilgrastim
+rituximab
+trastuzumab
+infliximab
+enoxaparin
+methotrexate
+morphine sulfate
+insulin lispro

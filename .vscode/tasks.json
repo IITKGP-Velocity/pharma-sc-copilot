@@ -1,0 +1,105 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Install (editable, with dev tools)",
+      "type": "shell",
+      "command": "python -m pip install -e \".[dev]\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "2. Run tests",
+      "type": "shell",
+      "command": "python -m pytest -q",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "3. Check setup (no secrets shown)",
+      "type": "shell",
+      "command": "python scripts/check_setup.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "4. Check endpoints (live, needs .env)",
+      "type": "shell",
+      "command": "python scripts/check_setup.py --live",
+      "problemMatcher": []
+    },
+    {
+      "label": "5. Build corpus from openFDA",
+      "type": "shell",
+      "command": "python scripts/build_corpus.py --fetch",
+      "problemMatcher": []
+    },
+    {
+      "label": "6. Compute embeddings (needs embeddings endpoint)",
+      "type": "shell",
+      "command": "python scripts/build_corpus.py --embed",
+      "problemMatcher": []
+    },
+    {
+      "label": "7. Ask a question",
+      "type": "shell",
+      "command": "python scripts/ask.py \"What is the storage temperature for unopened adalimumab pens?\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "8. Run evaluation (64 queries)",
+      "type": "shell",
+      "command": "python scripts/run_eval.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "9. Freeze evaluation file (hash)",
+      "type": "shell",
+      "command": "python scripts/freeze_eval.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "10. Install app extra",
+      "type": "shell",
+      "command": "python -m pip install -e \".[app]\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "11. Start web app",
+      "type": "shell",
+      "command": "python -m streamlit run app/app.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "12. Demo: safety (offline)",
+      "type": "shell",
+      "command": "python scripts/demo.py safety",
+      "problemMatcher": []
+    },
+    {
+      "label": "13. Demo: tools (offline)",
+      "type": "shell",
+      "command": "python scripts/demo.py tools",
+      "problemMatcher": []
+    },
+    {
+      "label": "14. Demo: dashboard from fake run (offline)",
+      "type": "shell",
+      "command": "python scripts/demo.py dashboard --open",
+      "problemMatcher": []
+    },
+    {
+      "label": "15. Demo: whole system",
+      "type": "shell",
+      "command": "python scripts/demo.py all",
+      "problemMatcher": []
+    },
+    {
+      "label": "16. Retrieval evaluation (recall@k)",
+      "type": "shell",
+      "command": "python scripts/eval_retrieval.py",
+      "problemMatcher": []
+    }
+  ]
+}

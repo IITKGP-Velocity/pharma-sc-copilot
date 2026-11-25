@@ -1,0 +1,27 @@
+{
+  "_note": "Retrieval gold set for recall@k. A passage counts as a hit when its source matches and its text contains every string in 'contains' (case-insensitive). IDs starting with A/B/C/D/E are eval-set queries the openFDA corpus can support; R-items are extra retrieval probes. Each condition was checked to match at least one passage in the corpus built on 2026-11-25.",
+  "items": [
+    {"id": "A01", "query": "What is the labelled storage temperature for unopened adalimumab pens?",
+     "source": "openFDA drug label", "contains": ["adalimumab", "refrigerat"]},
+    {"id": "A07", "query": "Which products in the corpus list room-temperature storage (20-25 C) with an excursion limit?",
+     "source": "openFDA drug label", "contains": ["excursions permitted"]},
+    {"id": "E04", "query": "Find historical recalls where temperature abuse was the root cause.",
+     "source": "openFDA drug enforcement", "contains": ["temperature"]},
+    {"id": "R01", "query": "How should vancomycin be stored?",
+     "source": "openFDA drug label", "contains": ["vancomycin", "store"]},
+    {"id": "R02", "query": "Can insulin glargine be frozen?",
+     "source": "openFDA drug label", "contains": ["insulin glargine", "do not freeze"]},
+    {"id": "R03", "query": "What are the storage conditions for heparin?",
+     "source": "openFDA drug label", "contains": ["heparin", "store"]},
+    {"id": "R04", "query": "Is lidocaine injection in shortage?",
+     "source": "openFDA drug shortages", "contains": ["lidocaine"]},
+    {"id": "R05", "query": "Is there a shortage of enoxaparin sodium injection?",
+     "source": "openFDA drug shortages", "contains": ["enoxaparin"]},
+    {"id": "R06", "query": "Which recalls were caused by a subpotent product?",
+     "source": "openFDA drug enforcement", "contains": ["subpotent"]},
+    {"id": "R07", "query": "Does rituximab need refrigeration?",
+     "source": "openFDA drug label", "contains": ["rituximab", "refrigerat"]},
+    {"id": "R08", "query": "How should epinephrine injection be stored?",
+     "source": "openFDA drug label", "contains": ["epinephrine", "store"]}
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "bm25_only": {
+    "k": 5,
+    "queries": 11,
+    "recall_at_5": 0.818,
+    "mrr": 0.689,
+    "per_query": [
+      {
+        "id": "A01",
+        "first_gold_rank": null,
+        "top": [
+          "label-c5a056e2-b568-4ca6-9ed8-79c010942d00#c0",
+          "label-0691def8-4a7b-4de3-866f-a280989f47f1#c0",
+          "label-0ad21db3-2b1c-4ed9-a687-bdd6a74d0aae#c0"
+        ]
+      },
+      {
+        "id": "A07",
+        "first_gold_rank": 1,
+        "top": [
+          "label-96e931f5-51ae-4bdf-a441-bb0dd26d4c0e#c0",
+          "label-1e8ebac1-5b32-47f9-a930-86a98a24dccc#c0",
+          "label-1c275825-0275-4c73-b650-e4c1519f13b8#c0"
+        ]
+      },
+      {
+        "id": "E04",
+        "first_gold_rank": 3,
+        "top": [
+          "recall-D-1584-2020#c0",
+          "label-10e46b39-7903-4390-b72d-865291245b4c#c0",
+          "recall-D-0353-2026#c0"
+        ]
+      },
+      {
+        "id": "R01",
+        "first_gold_rank": 1,
+        "top": [
+          "label-418c3c6a-d08d-448c-89c9-54e558c1ce16#c0",
+          "label-00946db3-d6c5-4534-a870-1ec6e63eda43#c3",
+          "label-0576803d-95de-4a48-806a-69ae3fcaf6b0#c3"
+        ]
+      },
+      {
+        "id": "R02",
+        "first_gold_rank": 4,
+        "top": [
+          "label-99ea856d-9562-443a-9422-1006a3cff2f4#c0",
+          "label-216f2167-c201-76fe-81ed-0d51fe53832f#c1",
+          "label-72cfe377-52f6-0348-fc71-5d4ac1992ffb#c1"
+        ]
+      },
+      {
+        "id": "R03",
+        "first_gold_rank": 1,
+        "top": [
+          "label-45dc6b8b-ed5d-40a2-8d9c-084c863ae93a#c0",
+          "label-463e0624-b8c3-386b-e063-6294a90afd28#c1",
+          "label-5cd2d96f-83e5-4326-ae87-d0ede4ba493a#c0"
+        ]
+      },
+      {
+        "id": "R04",
+        "first_gold_rank": 1,
+        "top": [
+          "shortage-33e365c95118#c0",
+          "shortage-bb5449e78ec7#c0",
+          "shortage-630d5f3984e2#c0"
+        ]
+      },
+      {
+        "id": "R05",
+        "first_gold_rank": 1,
+        "top": [
+          "shortage-bce324bd33fb#c0",
+          "shortage-669ec881d1c6#c0",
+          "shortage-27e37eedf71a#c0"
+        ]
+      },
+      {
+        "id": "R06",
+        "first_gold_rank": 1,
+        "top": [
+          "recall-D-1157-2016#c0",
+          "label-8351aa37-552d-471d-b293-c564dcb6ec29#c2",
+          "label-4c5c2d3f-5038-41a1-a2fe-4dcd048dbac1#c2"
+        ]
+      },
+      {
+        "id": "R07",
+        "first_gold_rank": null,
+        "top": [
+          "label-f941fc61-f7a3-4e4a-ab7c-87c1667fa05b#c16",
+          "label-da1c4de7-0e5b-4f72-97ec-7a8d368f085f#c16",
+          "label-3e5b7e82-f018-4eaf-ae78-d6145a906b20#c17"
+        ]
+      },
+      {
+        "id": "R08",
+        "first_gold_rank": 1,
+        "top": [
+          "label-0a29fe62-e241-4272-b91c-c1036b031cd4#c0",
+          "label-28642ad9-b839-ce3a-e063-6394a90ab866#c0",
+          "label-287930f8-c5c6-56bd-e063-6394a90ad32e#c0"
+        ]
+      }
+    ]
+  },
+  "hybrid": {
+    "k": 5,
+    "queries": 11,
+    "recall_at_5": 1.0,
+    "mrr": 0.848,
+    "per_query": [
+      {
+        "id": "A01",
+        "first_gold_rank": 3,
+        "top": [
+          "label-c5a056e2-b568-4ca6-9ed8-79c010942d00#c0",
+          "label-99ea856d-9562-443a-9422-1006a3cff2f4#c0",
+          "label-62f39a7c-00df-4519-a8d4-39bbd0a649ed#c0"
+        ]
+      },
+      {
+        "id": "A07",
+        "first_gold_rank": 2,
+        "top": [
+          "label-c73da51a-1899-45ad-b6cf-9c52c36a25dd#c0",
+          "label-96e931f5-51ae-4bdf-a441-bb0dd26d4c0e#c0",
+          "label-c8ecbd7a-0e22-4fc7-a503-faa58c1b6f3f#c0"
+        ]
+      },
+      {
+        "id": "E04",
+        "first_gold_rank": 1,
+        "top": [
+          "recall-D-0353-2026#c0",
+          "recall-D-1584-2020#c0",
+          "recall-D-0753-2019#c0"
+        ]
+      },
+      {
+        "id": "R01",
+        "first_gold_rank": 1,
+        "top": [
+          "label-418c3c6a-d08d-448c-89c9-54e558c1ce16#c0",
+          "label-3843d0d7-f70a-4b29-9478-dfb45b02425e#c0",
+          "label-00946db3-d6c5-4534-a870-1ec6e63eda43#c3"
+        ]
+      },
+      {
+        "id": "R02",
+        "first_gold_rank": 2,
+        "top": [
+          "label-99ea856d-9562-443a-9422-1006a3cff2f4#c0",
+          "label-536a4b0a-4b7c-2d23-e063-6294a90a7b7c#c0",
+          "label-216f2167-c201-76fe-81ed-0d51fe53832f#c1"
+        ]
+      },
+      {
+        "id": "R03",
+        "first_gold_rank": 1,
+        "top": [
+          "label-45dc6b8b-ed5d-40a2-8d9c-084c863ae93a#c0",
+          "label-2edf6d35-5cf3-b7ff-e063-6394a90a4f33#c0",
+          "label-4deaa9ac-91aa-d96b-e063-6294a90a47bd#c0"
+        ]
+      },
+      {
+        "id": "R04",
+        "first_gold_rank": 1,
+        "top": [
+          "shortage-33e365c95118#c0",
+          "shortage-bb5449e78ec7#c0",
+          "shortage-630d5f3984e2#c0"
+        ]
+      },
+      {
+        "id": "R05",
+        "first_gold_rank": 1,
+        "top": [
+          "shortage-bce324bd33fb#c0",
+          "shortage-669ec881d1c6#c0",
+          "shortage-27e37eedf71a#c0"
+        ]
+      },
+      {
+        "id": "R06",
+        "first_gold_rank": 1,
+        "top": [
+          "recall-D-1157-2016#c0",
+          "recall-D-0004-2025#c0",
+          "label-8351aa37-552d-471d-b293-c564dcb6ec29#c2"
+        ]
+      },
+      {
+        "id": "R07",
+        "first_gold_rank": 1,
+        "top": [
+          "label-3e5b7e82-f018-4eaf-ae78-d6145a906b20#c0",
+          "label-f941fc61-f7a3-4e4a-ab7c-87c1667fa05b#c16",
+          "label-b172773b-3905-4a1c-ad95-bab4b6126563#c0"
+        ]
+      },
+      {
+        "id": "R08",
+        "first_gold_rank": 1,
+        "top": [
+          "label-28642ad9-b839-ce3a-e063-6394a90ab866#c0",
+          "label-287930f8-c5c6-56bd-e063-6394a90ad32e#c0",
+          "label-0a29fe62-e241-4272-b91c-c1036b031cd4#c0"
+        ]
+      }
+    ]
+  }
+}

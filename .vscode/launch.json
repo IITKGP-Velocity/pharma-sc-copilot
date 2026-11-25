@@ -1,0 +1,8 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    { "name": "Ask a question", "type": "debugpy", "request": "launch", "program": "${workspaceFolder}/scripts/ask.py", "args": ["What is the storage temperature for unopened adalimumab pens?"], "console": "integratedTerminal", "cwd": "${workspaceFolder}" },
+    { "name": "Run evaluation", "type": "debugpy", "request": "launch", "program": "${workspaceFolder}/scripts/run_eval.py", "console": "integratedTerminal", "cwd": "${workspaceFolder}" },
+    { "name": "Debug current test file", "type": "debugpy", "request": "launch", "module": "pytest", "args": ["-q", "${file}"], "console": "integratedTerminal", "cwd": "${workspaceFolder}" }
+  ]
+}
