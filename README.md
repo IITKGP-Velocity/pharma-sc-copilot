@@ -1,209 +1,212 @@
-# pharma-supply-chain-copilot
-IITKGP - Team Velocity Capstone Project Repo
+# Pharmaceutical Supply Chain Copilot
 
-This repository contains the regulatory-document indexing workflow, a
-grounded question-answering pipeline for pharmaceutical supply-chain compliance,
-and the full agentic copilot.
+Track B capstone (Team Velocity). A copilot for pharma supply-chain questions, built on one small
+hosted model (Qwen3-8B). It answers with citations, does maths with tools, and hands release or
+approval decisions to a named person.
 
-## The agentic copilot (start here)
+Every reply is one of four decisions: **ANSWER** (cited), **ESCALATE** (a person must decide),
+**REFUSE** (forbidden request), or **ABSTAIN** (not enough evidence).
 
-[pharma-supply-copilot/](pharma-supply-copilot/) is the complete Track B system:
-safety rules, hybrid retrieval over an openFDA corpus, a Planner -> Executor ->
-Critic agent with deterministic tools, a Streamlit app, and observability
-(per-query traces, metrics, failure log and an HTML dashboard).
+```mermaid
+flowchart LR
+  Q[Question] --> S[1. Safety rules<br/>R1-R8, redaction]
+  S -->|clear case| D[Decision]
+  S --> R[2. Retrieval<br/>BM25 + embeddings]
+  R --> P[3. Planner<br/>LLM picks tool or answers]
+  P -->|tool| T[4. Tools<br/>MKT, cost, ...]
+  T --> P
+  P -->|answer| C[5. Critic + guard<br/>schema, citations]
+  C -->|reject| P
+  C --> D
+  D --> O[6. Observability<br/>trace, metrics, dashboard]
+```
 
-### Test it locally
+---
 
-**Set up once** (Python 3.11+):
+## 1. Set up (once)
+
+Python 3.11 or newer.
 
 ```bash
-cd pharma-supply-copilot
-python3 -m venv .venv && source .venv/bin/activate     # Windows: py -m venv .venv; .\.venv\Scripts\Activate.ps1
+git clone https://github.com/IITKGP-Velocity/pharma-sc-copilot.git
+cd pharma-sc-copilot
+python3 -m venv .venv && source .venv/bin/activate        # Windows: py -m venv .venv; .\.venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev]"
 ```
 
-**Test one component.** Run its unit tests to check it works, and its demo to see what it does.
-Rows 1–3 and 7 need nothing else; the rest need the corpus or the course model.
+In VS Code, **Terminal → Run Task** lists every command below as a numbered task.
 
-| # | Component | Unit tests | Demo | Pass when |
+## 2. Testing guide
+
+Test in three levels. Each level needs a little more; stop at the level you have access to.
+
+| Level | What you can test | Needs |
+|---|---|---|
+| **A. Offline** | All 77 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
+| **B. With corpus** | Retrieval on real openFDA data, the agent in offline mode (no LLM) | internet once to download openFDA (section 4) |
+| **C. Live model** | The full agent, the whole-system demo, the 64-query evaluation | course key files and certificates (section 3) |
+
+### 2.1 Test each component
+
+Run a component's unit tests to check it works, and its demo to see what it does.
+
+| # | Component (code) | Unit tests | Demo | What you should see | Level |
+|---|---|---|---|---|---|
+| 1 | **Safety rules + redaction** (`safety.py`) | `python -m pytest tests/test_safety.py -q` → 15 passed | `python scripts/demo.py safety` | A release question → `ESCALATE (R1, to QP)`; injection → `REFUSE (R6)`; "driver Ravi Kumar, phone 9876543210" → `driver [REDACTED], phone [REDACTED]` | A |
+| 2 | **Tools** (`tools.py`) | `python -m pytest tests/test_tools.py -q` → 8 passed | `python scripts/demo.py tools` | `mkt(...) = 4.61`, `demurrage(...) = 450`, `impurity_passes(0.11, 0.10) = False` | A |
+| 3 | **Corpus** (`corpus.py`) | `python -m pytest tests/test_corpus.py -q` → 5 passed | `python scripts/build_corpus.py --fetch` | `Wrote 5495 passages from 548 documents` | A / B |
+| 4 | **Retrieval** (`retrieval.py`) | `python -m pytest tests/test_retrieval.py -q` → 6 passed | `python scripts/demo.py retrieval "How should vancomycin be stored?"` | 5 passages, all vancomycin labels; header says `BM25 only` or `dense + BM25` | A / B |
+| 5 | **Agent loop** (`agent.py`) | `python -m pytest tests/test_agent.py -q` → 11 passed | `python scripts/demo.py agent "What is the storage temperature for unopened adalimumab pens?"` | Every step with its time, then the JSON answer and `latency … steps … LLM calls … tokens …` | A / B / C |
+| 6 | **Model clients + credentials** (`llm.py`, `runtime.py`) | `python -m pytest tests/test_llm.py tests/test_runtime.py -q` → 14 passed | `python scripts/check_setup.py --live "${FLAGS[@]}"` | `Live chat call: OK` and `Live embeddings call: OK` | A / C |
+| 7 | **Observability** (`observability.py`, `tracing.py`) | `python -m pytest tests/test_observability.py -q` → 18 passed | `python scripts/demo.py dashboard --open` | A dashboard in the browser and `eval/demo_output/DEMO_fake_data/failure_log.csv` (fake data) | A |
+| 8 | **Retrieval quality** | (covered by 7) | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | `bm25_only recall@5=…` and `hybrid recall@5=…` | B / C |
+| 9 | **Web app** (`app/app.py`) | — | `python -m pip install -e ".[app]"` then `python -m streamlit run app/app.py` | A page at http://localhost:8501 showing the mode line; the 11th question in a minute is blocked | B / C |
+
+Without the model flags, components 5 and 9 run in offline mode: the answer is the best matching
+passage and no LLM is called. The mode line says so.
+
+### 2.2 Test the whole project
+
+Run these in order. Each step says what a pass looks like.
+
+| Step | Command | Pass when |
+|---|---|---|
+| 1 | `python -m pytest -q` | `77 passed` |
+| 2 | `python scripts/demo.py safety && python scripts/demo.py tools` | Output as in rows 1–2 above |
+| 3 | `python scripts/check_setup.py --live "${FLAGS[@]}"` | Both live calls `OK` (see section 3 for `FLAGS`) |
+| 4 | `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `Wrote embeddings for 5495 passages` (about 4 minutes) |
+| 5 | `python scripts/demo.py all "${FLAGS[@]}"` | Five cases with these decisions: cited answer → `ANSWER` with a citation; tool calculation → `ANSWER` with `mkt` 4.61; escalation → `ESCALATE` to QP; injection → `REFUSE` R6; PII → name and phone shown as `[REDACTED]` |
+| 6 | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | Hybrid recall@5 close to 1.0 (section 6) |
+| 7 | `python scripts/run_eval.py "${FLAGS[@]}"` | Finishes all 64 queries (about 6 minutes); accuracy near the latest result in section 6 |
+| 8 | Open `eval/results/run_<date>/dashboard.html` | Cards, accuracy tables, and a query table whose rows open to show each agent step |
+
+Quick check of just a few queries: `python scripts/run_eval.py --ids A02 C03 E12 "${FLAGS[@]}"`.
+
+## 3. Connect to the course model
+
+Two course servers, each with its own address, CA certificate and key:
+
+| Server | Job | Address | Certificate | Key file |
 |---|---|---|---|---|
-| 1 | Safety rules + redaction | `python -m pytest tests/test_safety.py -q` | `python scripts/demo.py safety` | 15 passed; release question → `ESCALATE (R1, to QP)`; phone and name → `[REDACTED]` |
-| 2 | Tools | `python -m pytest tests/test_tools.py -q` | `python scripts/demo.py tools` | 8 passed; `mkt(...) = 4.61` |
-| 3 | Corpus | `python -m pytest tests/test_corpus.py -q` | `python scripts/build_corpus.py --fetch` | 5 passed; `Wrote 5495 passages from 548 documents` (needs internet) |
-| 4 | Retrieval | `python -m pytest tests/test_retrieval.py -q` | `python scripts/demo.py retrieval "How should vancomycin be stored?"` | 6 passed; 5 vancomycin passages (needs corpus) |
-| 5 | Agent loop | `python -m pytest tests/test_agent.py -q` | `python scripts/demo.py agent "your question"` | 11 passed; each step printed with time and tokens |
-| 6 | Model clients | `python -m pytest tests/test_llm.py tests/test_runtime.py -q` | `python scripts/check_setup.py --live <flags>` | 14 passed; `Live chat call: OK`, `Live embeddings call: OK` |
-| 7 | Observability | `python -m pytest tests/test_observability.py -q` | `python scripts/demo.py dashboard --open` | 18 passed; dashboard opens (fake data) |
+| VM04 | chat model `Qwen/Qwen3-8B` | `https://<COURSE_HOST>:1034/v1` | `vm04-ca.crt` | `vm04-shared-embedding-key.txt` |
+| VM02 | embeddings `bge-small-en-v1.5` | `https://<COURSE_HOST>:1035/v1` | `vm02-ca.crt` | `shared-embedding-key.txt` |
 
-**Test the whole project**, in order:
+A certificate only works on its own port (they look alike: all are "Caddy Local Authority"), and each
+key only works on its own server.
 
-1. `python -m pytest -q` → `77 passed` (offline, no keys).
-2. `python scripts/check_setup.py --live <flags>` → both live calls `OK`.
-3. `python scripts/build_corpus.py --fetch --embed <flags>` → `Wrote embeddings for 5495 passages` (about 4 min).
-4. `python scripts/demo.py all <flags>` → the five demo cases: cited answer, MKT tool (4.61), escalation to QP, injection refused (R6), PII redacted.
-5. `python scripts/run_eval.py <flags>` → all 64 queries (about 6 min), then open `eval/results/run_<date>/dashboard.html`.
+**Keys are passed by the person running, never stored in the project.** `.env` ignores any
+`*_API_KEY` line. Pass a key file (`--api-key-file`, `--embed-api-key-file`), or leave it out and the
+script asks with a hidden prompt. Keep key files outside the project, readable only by you (`chmod 600`).
 
-`<flags>` are the course endpoints, certificates and key files. Keys are never stored in the project;
-pass them as files (`--api-key-file`) or type them at the hidden prompt. The exact flags, the two
-course servers (chat on port 1034, embeddings on 1035) and expected output for every step are in
-[pharma-supply-copilot/README.md](pharma-supply-copilot/README.md), section 2 (testing guide) and
-section 3 (connecting to the course model).
+```bash
+C=/path/to/your/course/files
+FLAGS=(--chat-endpoint https://<COURSE_HOST>:1034/v1 --model Qwen/Qwen3-8B
+       --chat-ca-cert $C/vm04-ca.crt --api-key-file $C/vm04-shared-embedding-key.txt
+       --embed-endpoint https://<COURSE_HOST>:1035/v1 --embed-model bge-small-en-v1.5
+       --embed-ca-cert $C/vm02-ca.crt --embed-api-key-file $C/shared-embedding-key.txt)
 
-The folders below (`RAG/`, `RAG_PIPELINE/`, `EVAL/`) are the earlier regulatory-PDF pipeline and its
-evaluation tools.
+python scripts/check_setup.py --live "${FLAGS[@]}"      # expect: Live chat call: OK / Live embeddings call: OK
+```
 
-## Working with an AI agent
+The same flags work on every script. To avoid repeating the non-secret ones, put the endpoints,
+model names and certificate paths (not keys) in `.env` (copy `.env.example`).
 
-The skill in [.github/skills/velocity-capstone/SKILL.md](.github/skills/velocity-capstone/SKILL.md)
-covers onboarding, debugging, PR review and project status. Any coding agent
-can be pointed at that file (for example "follow the instructions in
-.github/skills/velocity-capstone/SKILL.md"); GitHub Copilot in VS Code loads it
-automatically.
+For the web app or Docker there is no prompt, so export the key for that shell session only:
+`read -s COPILOT_CHAT_API_KEY && export COPILOT_CHAT_API_KEY` (PowerShell:
+`$env:COPILOT_CHAT_API_KEY = Read-Host -MaskInput "key"`).
 
-## Pipelines
+## 4. Build the corpus
 
-### Build the regulatory corpus and search index
+```bash
+python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"     # about 4 minutes
+```
 
-The [RAG/](RAG/) folder contains the source PDFs, metadata, scripts, notebook,
-and generated FAISS/BM25 indexes. Follow [RAG/README.md](RAG/README.md) to
-build or query the index.
+Downloads openFDA labels for the 20 drugs in `configs/drug_names.txt`, 100 current shortages and 100
+Class I recalls (548 documents; public API, no key), splits them into 800-character passages (5,495)
+and embeds them. Raw files and their SHA-256 hashes go to `data/raw/`, passages to
+`data/processed/` (both ignored by Git). Without `--embed`, retrieval uses BM25 only.
 
-### Ask a grounded compliance question
+## 5. Ask, evaluate, observe
 
-[`RAG_PIPELINE/scripts/rag_pipeline.py`](RAG_PIPELINE/scripts/rag_pipeline.py)
-uses the built hybrid index to retrieve regulatory excerpts, applies a
-confidence gate, calls an OpenAI-compatible Qwen3 chat endpoint, and verifies
-citations, section identifiers, and numeric claims against the retrieved
-context. It can attempt one self-repair when verification fails.
+```bash
+python scripts/ask.py "What is the storage temperature for unopened adalimumab pens?" "${FLAGS[@]}"
+python scripts/run_eval.py "${FLAGS[@]}"                  # 64 queries, about 6 minutes
+python scripts/run_eval.py --ids A02 C03 "${FLAGS[@]}"    # chosen queries only
+python scripts/eval_retrieval.py "${FLAGS[@]}"            # recall@k and MRR, BM25 vs hybrid
+python scripts/rebuild_report.py eval/results/run_<date>  # after labelling failure_log.csv
+python -m streamlit run app/app.py                        # web app (pip install -e ".[app]")
+```
 
-The pipeline abstains when retrieval is weak. By default, it blocks answers
-that fail its verifier; `--allow-unverified` returns such answers clearly
-flagged instead. The verifier checks grounding markers and numbers, not whether
-the answer faithfully interprets the source, so human review is still needed.
+Each evaluation run writes `eval/results/run_<date>/`:
 
-### Evaluate the copilot
-
-The [EVAL/](EVAL/) folder holds the 64-query evaluation set from Deliverable 1
-and the scripts that run and score it.
-
-| File | Purpose |
+| File | What it holds |
 |---|---|
-| `EVAL/eval_set_v1.jsonl` | The 64 queries with type and gold behaviour (A 14, B 13, C 13, D 12, E 12). |
-| `EVAL/build_eval_set.py` | Rebuilds the JSONL from the Deliverable 1 `.docx` and prints its SHA-256 for the freeze record. |
-| `EVAL/run_retrieval.py` | Retrieval-only run (embeddings API only): retrieved documents, scores, whether the confidence gate would abstain, and document-level recall@k and MRR. |
-| `EVAL/gold_docs_v1.json` | Gold source documents for the queries the current corpus can support (7 of 64), used for recall@k. |
-| `EVAL/run_eval.py` | Full run through `rag_pipeline.py`: one trace per query (decision, latency, tokens, retrieved documents, verifier result), decision accuracy and first-pass failure labels. |
-| `EVAL/tracing.py` | `traced_ask()` wraps a pipeline call, records timed spans (retrieve, llm_call) and writes one redacted JSON trace per query. |
-| `EVAL/trace_summary.py` | Summarises a trace file: decision mix, latency (avg, p50, p95), tokens and LLM calls per query, verifier failure and repair rates, and where the time goes. |
-| `EVAL/build_dashboard.py` | Builds a self-contained `dashboard.html` for a run (no server or internet needed): KPI cards, decision mix, failure labels, time per step, and a per-query table with its spans. |
-| `EVAL/build_failure_log.py` | Lists every wrong decision of a run in `failure_log.csv` with its first-pass label; people fill `confirmed_label` (taxonomy from Deliverable 1) and `notes`. Re-running keeps what they typed. |
-| `EVAL/safety.py` | Regex PII redaction (rule R4) and prompt-injection detection (rule R6). Names are only caught after a label word such as "driver" or "contact". |
-| `EVAL/tests/test_safety.py` | Offline tests for the above, including a scan of the indexed chunks for instruction-like text: `python EVAL/tests/test_safety.py`. |
+| `results.jsonl` | One line per query: decision, expected, latency, tokens, LLM calls, steps, tool calls, error |
+| `trace.jsonl` | One line per agent stage (precheck, retrieve, planner, executor, critic), with query id and time |
+| `summary.json` | Accuracy by type and use case, latency avg/p50/p95, tokens, tool calls per task, errors, eval-file hash |
+| `failure_log.csv` | Every wrong decision with a first-guess label; a person fills `label`, `description`, `planned_fix` |
+| `dashboard.html` | All of the above on one page; click a query to see its steps |
 
-Results are written to `EVAL/results/<run-name>/`. A full run writes `traces.jsonl`
-(scored decisions), `spans.jsonl` (timed spans per query) and `summary.json`.
+Queries and answers are redacted for personal data before they are written.
 
-```powershell
-# Retrieval only (needs EMBEDDINGS_KEY and secrets/vm02-ca.crt)
-python EVAL/run_retrieval.py --run-name retrieval-v1
+## 6. Latest results (live model, 2026-11-25)
 
-# Full run (also needs LLM_URL, LLM_KEY and secrets/vm04-ca.crt)
-python EVAL/run_eval.py --run-name smoke --limit 3
-python EVAL/run_eval.py --run-name baseline-rag
+**Decisions** (`eval/results/run_20261125_201203`):
 
-# Cost and latency summary of a full run
-python EVAL/trace_summary.py EVAL/results/baseline-rag/spans.jsonl
+| Type | Correct | Type | Correct |
+|---|---|---|---|
+| Prompt injection | 4/4 | Calculation | 7/11 |
+| Abstain | 7/8 | Answer | 4/22 |
+| Escalate | 7/9 | Out of scope | 1/2 |
+| Refuse | 4/5 | PII | 0/3 |
 
-# HTML dashboard for the run (open EVAL/results/baseline-rag/dashboard.html)
-python EVAL/build_dashboard.py EVAL/results/baseline-rag
+- Decision accuracy 53% (34/64). Without the model (rules only) it is 30%.
+- Latency: avg 5.5 s, p95 12.0 s.
+- About 2,430 tokens and 1.2 LLM calls per agent query.
+- 14 of 64 queries were decided by the rules with no model call.
 
-# Failure log to review and label by hand (EVAL/results/baseline-rag/failure_log.csv)
-python EVAL/build_failure_log.py EVAL/results/baseline-rag
+**Retrieval** (`eval/results/retrieval_20261125_201202`, 11 gold queries in `eval/gold/retrieval_gold.json`):
 
-# Offline tests (no keys or network): PII, injection, tracing, trace summary, dashboard, failure log, demo
-python EVAL/tests/test_safety.py
-```
+- BM25 only: recall@5 0.82, MRR 0.69.
+- Hybrid (BM25 + embeddings): recall@5 1.00, MRR 0.85.
 
-### See the dashboard without keys
+**Known weak spots:**
+- Most wrong ANSWER items need data the corpus does not have (Orange Book, products outside the 20 drugs, shortages beyond the first 100).
+- On PII items, the model abstains instead of summarising, although the redaction itself works.
+- 3 queries failed because the model wrote invalid JSON.
 
-`EVAL/demo.py` builds a demo run from the real eval set, but with a fake retriever
-and fake LLM that behave randomly (fixed seed, so everyone sees the same result).
-No keys, certificates or network are needed, and it takes about 10 seconds.
+## 7. Project map
 
-```powershell
-python EVAL/demo.py --open
-```
+| Path | Part |
+|---|---|
+| `src/copilot/safety.py` | 1. Rule pre-check R1–R8, redaction (phones, emails, dates of birth, labelled names), output guard |
+| `src/copilot/retrieval.py`, `corpus.py` | 2. openFDA corpus, passages, BM25 + dense + fusion, optional reranker (`rerank: true`) |
+| `src/copilot/agent.py` | 3–5. Planner → Executor → Critic loop, 10-step cap, token budget, per-query metrics |
+| `src/copilot/tools.py` | 4. Deterministic tools |
+| `src/copilot/llm.py`, `runtime.py` | Model clients (per-port CA, retries, token counts) and how keys/certs are passed |
+| `src/copilot/observability.py` | 6. Results rows, summary, failure log, retrieval metrics, dashboard |
+| `src/copilot/tracing.py` | 6. Writes `trace.jsonl` |
+| `scripts/` | `demo`, `ask`, `run_eval`, `eval_retrieval`, `rebuild_report`, `build_corpus`, `check_setup`, `freeze_eval` |
+| `app/app.py` | Streamlit app with rate limit (from `configs/settings.yaml`) and caching |
+| `eval/gold/` | Frozen 64-query eval set + hash, retrieval gold set |
+| `docs/` | Spec, baseline, failure taxonomy, Responsible AI card, submission guide |
+| `tests/` | 77 offline tests |
 
-It writes `traces.jsonl`, `spans.jsonl`, the summaries, `dashboard.html` and
-`failure_log.csv` to `EVAL/demo_output/DEMO_fake_data/` (git-ignored). The numbers
-are meaningless: only the layout is real. Real results go in
-`EVAL/results/<run-name>/` and come from `run_eval.py`.
+## 8. Troubleshooting
 
-Current limits: only the decision is scored (key facts, numbers and citation
-validity need an LLM judge or manual review); ESCALATE and REFUSE items count as
-wrong until the agent layer returns those decisions; PI, PII and out-of-scope
-items are logged but not scored here. The retrieval-only run shows the
-confidence gate never abstains on this set, so abstention needs a scope check in
-the agent layer. Of the 22 ANSWER items, 15 need data that is not in the current
-6-PDF corpus (product labels, Orange Book, shortages, recalls, NDC data), so they
-should be relabelled ABSTAIN or the corpus extended before the set is frozen.
+| Problem | Fix |
+|---|---|
+| `CERTIFICATE_VERIFY_FAILED` | Certificate and port don't match: VM04 cert with port 1034, VM02 cert with 1035 |
+| `HTTP 401` | Wrong key for that server (each server has its own key) |
+| `HTTP 413` / `422 ... 512 tokens` on embeddings | At most 16 texts per request and passages under 512 tokens; keep `chunk_chars: 800` |
+| `Model endpoint error` in an answer | See `error` in `results.jsonl` or the dashboard; invalid JSON from the model shows as `ValueError` |
+| `No corpus yet` | `python scripts/build_corpus.py --fetch` |
+| `ModuleNotFoundError: copilot` | `python -m pip install -e ".[dev]"` from this folder |
 
-## Setup
+## 9. Rules
 
-Use Python 3.14.6 and install dependencies from the repository root:
-
-```powershell
-python -m pip install -r RAG/requirements.txt
-```
-
-Create the root `.env` from `.env.example` if it does not already exist. Set:
-
-- `EMBEDDINGS_KEY` for the embeddings service.
-- `LLM_URL` for the OpenAI-compatible chat service (base `/v1` URL or full
-  `/chat/completions` URL).
-- `LLM_KEY` if the chat service uses a separate key; otherwise it falls back to
-  `EMBEDDINGS_KEY`.
-- `LLM_MODEL` to override the default `Qwen/Qwen3-8B`.
-
-The embeddings and chat TLS certificates default to the ignored root files
-`secrets/vm02-ca.crt` and `secrets/vm04-ca.crt`. Override them with `EMBED_CERT`
-and `LLM_CERT` if necessary. TLS verification remains enabled.
-
-The single root `.env` and root `.gitignore` keep local credentials and
-certificates out of Git. Do not commit credentials.
-
-## Build and run
-
-If the index has not been built yet, run these steps from the repository root:
-
-```powershell
-python RAG/scripts/build_manifest.py
-python RAG/scripts/parse_and_chunk.py
-python RAG/scripts/embed_and_index.py
-```
-
-Then ask a question:
-
-```powershell
-python RAG_PIPELINE/scripts/rag_pipeline.py --query "Which temperature controls apply under 21 CFR 211.142?"
-```
-
-Useful options:
-
-```powershell
-# Filter retrieval and return structured JSON, including retrieved context
-python RAG_PIPELINE/scripts/rag_pipeline.py --query "What controls apply under 211.142?" --use-case C --json --show-context
-
-# Skip the repair call or allow a failed verification as a flagged answer
-python RAG_PIPELINE/scripts/rag_pipeline.py --query "What controls apply under 211.142?" --no-repair
-python RAG_PIPELINE/scripts/rag_pipeline.py --query "What controls apply under 211.142?" --allow-unverified
-```
-
-Other controls include `--top-k`, `--token-budget`, `--max-tokens`, `--min-cosine`,
-`--min-bm25`, `--doc-id`, `--think`, and `--verbose`. Confidence thresholds
-should be calibrated against in-scope and out-of-scope questions.
-
-The answer pipeline reports a status (`answered`, `abstained`,
-`blocked_unverified`, `unverified_answer`, or `error`), citations, confidence
-signals, verification details, and latency. Use `--json` for a structured
-response.
+- Never commit `.env`, keys, certificates, `data/raw/` or `data/processed/`.
+- The evaluation set is frozen (`eval/gold/eval_set_v1.0.sha256`). Changes need a new version and a logged reason.
+- Quote numbers from `eval/results/run_*`, never from `eval/demo_output/` (fake data). Result folders are
+  ignored by Git; commit the run you report with `git add -f eval/results/<run>`.
+- Keep `src/copilot/safety.py` in line with `configs/refusal_rules.yaml`.
