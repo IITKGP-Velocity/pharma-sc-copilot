@@ -21,7 +21,7 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 ## Project map
 | Path | Purpose |
 |---|---|
-| `src/copilot/safety/` | `rules.py`: rule pre-check R1-R8, redaction (phones, emails, dates of birth, labelled names), output guard |
+| `src/copilot/safety/` | `rules.py`: rule pre-check R1-R8 and out-of-scope (OOS), redaction (phones, emails, dates of birth, labelled names), output guard |
 | `src/copilot/rag/` | `corpus.py`: openFDA corpus in 800-char passages; `retrieval.py`: BM25 + dense + RRF, optional reranker (`rerank: true`) |
 | `src/copilot/agent/` | `engine.py`: Planner -> Executor -> Critic loop, 10-step cap, token budget, per-query metrics in `last_metrics`; `tools.py`: deterministic tools; `llm.py`: model clients (per-port CA, retries, token counts) |
 | `src/copilot/observability/` | `tracing.py` (`trace.jsonl`), `metrics.py` (result rows, summary, recall@k), `failure_log.py`, `dashboard.py`. How it is built into the engine (three layers: `last_metrics`, trace, run reports): README section 5.1 |
@@ -30,7 +30,7 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 | `app/app.py` | Streamlit app; rate limit from `configs/settings.yaml`; caching |
 | `eval/gold/` | Frozen 64-query set + SHA-256, retrieval gold set |
 | `eval/results/` | Reported runs (force-added; the folder is otherwise git-ignored) |
-| `tests/` | 77 offline tests (fake model and embeddings, no keys) |
+| `tests/` | 91 offline tests (fake model and embeddings, no keys) |
 
 Course endpoints (verified 2026-11-25): chat VM04 `https://<COURSE_HOST>:1034/v1`, model `Qwen/Qwen3-8B`, cert `vm04-ca.crt`;
 embeddings VM02 `https://<COURSE_HOST>:1035/v1`, `bge-small-en-v1.5`, cert `vm02-ca.crt`. The host, certs and keys come
@@ -47,7 +47,7 @@ The full testing guide is section 2 of `README.md`: three levels (offline, with 
 per-component table (unit-test command, demo command, expected output) and an 8-step whole-system checklist.
 Point teammates there. Short version:
 1. Python 3.11+: `python3 -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"`
-2. Offline: `python -m pytest -q` (77 passed); `python scripts/demo.py safety`, `tools`, `dashboard --open` (fake data).
+2. Offline: `python -m pytest -q` (91 passed); `python scripts/demo.py safety`, `tools`, `dashboard --open` (fake data).
 3. Live: `python scripts/check_setup.py --live <flags>` where `<flags>` are `--chat-endpoint`, `--model`,
    `--chat-ca-cert`, `--api-key-file`, `--embed-endpoint`, `--embed-model`, `--embed-ca-cert`, `--embed-api-key-file`.
 4. Corpus once: `python scripts/build_corpus.py --fetch --embed <flags>` (about 4 minutes, git-ignored).
@@ -79,7 +79,7 @@ Known data gap: most wrong ANSWER items need data the corpus does not have (Oran
 Review the diff against `origin/main`. Report findings grouped as blocking / should fix / nit, each with file and line.
 
 - Security: no keys, certificates, tokens or `.env` content; no `verify=False`; no data files or embeddings committed.
-- Correctness: matches rules R1-R8 (`configs/refusal_rules.yaml`, `src/copilot/safety/rules.py`) and the four outcomes; numbers come from tools, not the model; citations point to retrieved passages.
+- Correctness: matches rules R1-R8 and OOS (`configs/refusal_rules.yaml`, `src/copilot/safety/rules.py`) and the four outcomes; numbers come from tools, not the model; citations point to retrieved passages.
 - Evaluation integrity: `eval/gold/eval_set_v1.0.jsonl` is frozen (hash in `eval_set_v1.0.sha256`); a change needs a new version and a logged reason.
 - Tests: new logic has tests; `python -m pytest -q` passes; offline tests never call the live services.
 - Privacy: anything written to traces, results or logs goes through `redact_pii()`.

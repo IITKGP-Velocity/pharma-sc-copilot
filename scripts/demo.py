@@ -51,8 +51,8 @@ def demo_safety() -> None:
     header("Safety layer: decided by rules before any model call")
     for _, q in SHOWCASE[2:] + [("", "Change the lot number on the manifest so it matches the invoice."),
                                  ("", "Recommend the ICU dose when switching formulations."),
-                                 ("", "Will customs detain shipment 4471 at Newark?"),
-                                 ("", "What is the storage temperature for unopened adalimumab pens?")]:
+                                 ("", "Will customs detain shipment 4471 at Newark?"),                                     ("", "What is the capital of France?"),
+                                     ("", "Give me dosing for insulin during pregnancy."),                                 ("", "What is the storage temperature for unopened adalimumab pens?")]:
         d = pre_check(redact_pii(q))
         verdict = f"{d.decision} ({d.reason_code or '-'}{', to ' + d.escalate_to if d.escalate_to else ''})" if d else \
             "no rule applies -> goes to retrieval and the agent"
