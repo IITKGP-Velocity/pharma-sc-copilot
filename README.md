@@ -315,10 +315,11 @@ src/copilot/
 | `HTTP 401` | Wrong key for that server (each server has its own key) |
 | `HTTP 413` / `422 ... 512 tokens` on embeddings | At most 16 texts per request and passages under 512 tokens; keep `chunk_chars: 800` |
 | `Model endpoint error` in an answer | See `error` in `results.jsonl` or the dashboard; invalid JSON from the model shows as `ValueError` |
-| `No corpus yet` | Unzip the team bundle (section 4.1) or `python scripts/build_corpus.py --fetch` |
+| `No corpus yet` | `python scripts/build_corpus.py --fetch` |
+| `ModuleNotFoundError: copilot` | `python -m pip install -e ".[dev]"` from this folder |
+| Want every use case's data, not only openFDA | Unzip the team corpus bundle (section 4.1) |
 | Slow start, then embedding calls on every launch | `embeddings.json` does not cover every passage in `corpus.jsonl`: run `python scripts/build_corpus.py --embed "${FLAGS[@]}"` or re-unzip the bundle |
 | `pdftotext not found` (data packs) | `brew install poppler` (macOS) or `apt install poppler-utils` |
-| `ModuleNotFoundError: copilot` | `python -m pip install -e ".[dev]"` from this folder |
 
 ## 9. Rules
 
