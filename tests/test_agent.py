@@ -19,8 +19,9 @@ def test_offline_extractive_answer_cites_top_document(corpus):
     assert r.decision == "ANSWER" and r.citations[0].doc_id == "label-adalimumab"
 
 
-def test_unrelated_question_abstains(corpus):
-    assert Engine(corpus).answer("How do submarines dive?").decision == "ABSTAIN"
+def test_unrelated_question_is_out_of_scope(corpus):
+    resp = Engine(corpus).answer("How do submarines dive?")
+    assert resp.decision == "REFUSE" and resp.reason_code == "OOS" and resp.answer.startswith("Out of scope.")
 
 
 def test_dense_search_is_used_when_embeddings_exist(corpus):

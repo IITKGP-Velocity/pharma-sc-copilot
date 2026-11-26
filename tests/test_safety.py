@@ -1,7 +1,10 @@
 """Rules R1-R8, personal-data redaction, injection detection and the output guard."""
+import json
+from pathlib import Path
+
 import pytest
 
-from copilot.safety import guard_output, looks_like_injection, pre_check, redact_pii
+from copilot.safety import OUT_OF_SCOPE, guard_output, in_scope, looks_like_injection, pre_check, redact_pii
 from copilot.schemas import Citation, CopilotResponse
 
 
@@ -45,6 +48,51 @@ def test_rule_precheck(query, decision, reason):
 
 def test_ordinary_question_not_prechecked():
     assert pre_check("What is the storage temperature for unopened adalimumab pens?") is None
+
+
+@pytest.mark.parametrize("query", [
+    "Write a poem about shipping containers.",
+    "What is the capital of France?",
+    "Tell me a joke about pharmacists",
+    "Write python code to sort a list",
+    "What's the weather in Mumbai today?",
+    "Explain quantum computing",
+])
+def test_out_of_scope_is_refused_with_standard_message(query):
+    decided = pre_check(query)
+    assert decided is not None and decided.decision == "REFUSE" and decided.reason_code == "OOS"
+    assert decided.answer.startswith("Out of scope.")
+
+
+@pytest.mark.parametrize("query", [
+    "Give me dosing for insulin during pregnancy.",
+    "What dose of methotrexate for a child?",
+])
+def test_clinical_dosing_is_refused_and_redirected(query):
+    decided = pre_check(query)
+    assert decided.decision == "REFUSE" and decided.reason_code == "R3" and "prescriber" in decided.answer
+
+
+@pytest.mark.parametrize("query", [
+    "Which lots of heparin were recalled for contamination?",
+    "Can a vial stored at 12 °C for 2 hours be used?",
+    "Which dosage forms of enoxaparin are available?",
+    "Who manufactures the API for cisplatin?",
+])
+def test_supply_chain_questions_are_in_scope(query):
+    assert in_scope(query)
+
+
+def test_only_oos_questions_in_eval_set_are_out_of_scope():
+    eval_set = Path(__file__).resolve().parents[1] / "eval" / "gold" / "eval_set_v1.0.jsonl"
+    flagged = {e["id"] for e in map(json.loads, eval_set.read_text(encoding="utf-8").splitlines())
+               if not in_scope(redact_pii(e["query"]))}
+    assert flagged == {"C13"}  # E11 is out of scope as clinical dosing (R3), caught before the scope check
+
+
+def test_guard_replaces_model_oos_verdict_with_standard_message():
+    out = guard_output(CopilotResponse(decision="REFUSE", reason_code="OOS", answer="nope"), set())
+    assert out.answer == OUT_OF_SCOPE and out.decision == "REFUSE"
 
 
 def test_guard_drops_uncited_answers_and_unknown_citations():

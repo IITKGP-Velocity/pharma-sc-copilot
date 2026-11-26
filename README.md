@@ -42,7 +42,7 @@ Test in three levels. Each level needs a little more; stop at the level you have
 
 | Level | What you can test | Needs |
 |---|---|---|
-| **A. Offline** | All 77 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
+| **A. Offline** | All 91 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
 | **B. With corpus** | Retrieval on real openFDA data, the agent in offline mode (no LLM) | internet once to download openFDA (section 4) |
 | **C. Live model** | The full agent, the whole-system demo, the 64-query evaluation | course key files and certificates (section 3) |
 
@@ -52,7 +52,7 @@ Run a component's unit tests to check it works, and its demo to see what it does
 
 | # | Component (code) | Unit tests | Demo | What you should see | Level |
 |---|---|---|---|---|---|
-| 1 | **Safety rules + redaction** (`safety/`) | `python -m pytest tests/test_safety.py -q` → 15 passed | `python scripts/demo.py safety` | A release question → `ESCALATE (R1, to QP)`; injection → `REFUSE (R6)`; "driver Ravi Kumar, phone 9876543210" → `driver [REDACTED], phone [REDACTED]` | A |
+| 1 | **Safety rules + redaction** (`safety/`) | `python -m pytest tests/test_safety.py -q` → 29 passed | `python scripts/demo.py safety` | A release question → `ESCALATE (R1, to QP)`; injection → `REFUSE (R6)`; "driver Ravi Kumar, phone 9876543210" → `driver [REDACTED], phone [REDACTED]` | A |
 | 2 | **Tools** (`agent/tools.py`) | `python -m pytest tests/test_tools.py -q` → 8 passed | `python scripts/demo.py tools` | `mkt(...) = 4.61`, `demurrage(...) = 450`, `impurity_passes(0.11, 0.10) = False` | A |
 | 3 | **Corpus** (`rag/corpus.py`) | `python -m pytest tests/test_corpus.py -q` → 5 passed | `python scripts/build_corpus.py --fetch` | `Wrote 5495 passages from 548 documents` | A / B |
 | 4 | **Retrieval** (`rag/retrieval.py`) | `python -m pytest tests/test_retrieval.py -q` → 6 passed | `python scripts/demo.py retrieval "How should vancomycin be stored?"` | 5 passages, all vancomycin labels; header says `BM25 only` or `dense + BM25` | A / B |
@@ -71,7 +71,7 @@ Run these in order. Each step says what a pass looks like.
 
 | Step | Command | Pass when |
 |---|---|---|
-| 1 | `python -m pytest -q` | `77 passed` |
+| 1 | `python -m pytest -q` | `91 passed` |
 | 2 | `python scripts/demo.py safety && python scripts/demo.py tools` | Output as in rows 1–2 above |
 | 3 | `python scripts/check_setup.py --live "${FLAGS[@]}"` | Both live calls `OK` (see section 3 for `FLAGS`) |
 | 4 | `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `Wrote embeddings for 5495 passages` (about 4 minutes) |
@@ -237,7 +237,7 @@ src/copilot/
 
 | Path | Part |
 |---|---|
-| `src/copilot/safety/rules.py` | 1. Rule pre-check R1–R8, redaction (phones, emails, dates of birth, labelled names), output guard |
+| `src/copilot/safety/rules.py` | 1. Rule pre-check R1–R8 and out-of-scope (OOS), redaction (phones, emails, dates of birth, labelled names), output guard |
 | `src/copilot/rag/corpus.py` | 2. openFDA download, 800-character passages, raw files with SHA-256 hashes |
 | `src/copilot/rag/retrieval.py` | 2. BM25 + dense + reciprocal rank fusion, optional reranker (`rerank: true`) |
 | `src/copilot/agent/engine.py` | 3–5. Planner → Executor → Critic loop, 10-step cap, token budget, per-query metrics |
@@ -253,7 +253,7 @@ src/copilot/
 | `app/app.py` | Streamlit app with rate limit (from `configs/settings.yaml`) and caching |
 | `eval/gold/` | Frozen 64-query eval set + hash, retrieval gold set |
 | `docs/` | Spec, baseline, failure taxonomy, Responsible AI card, submission guide |
-| `tests/` | 77 offline tests |
+| `tests/` | 91 offline tests |
 
 ## 8. Troubleshooting
 
@@ -273,3 +273,7 @@ src/copilot/
 - Quote numbers from `eval/results/run_*`, never from `eval/demo_output/` (fake data). Result folders are
   ignored by Git; commit the run you report with `git add -f eval/results/<run>`.
 - Keep `src/copilot/safety/rules.py` in line with `configs/refusal_rules.yaml`.
+- Questions outside the five use cases get `REFUSE` with reason `OOS` and a fixed "Out of scope." message, decided by
+  `in_scope()` before any model call (the planner prompt has the same rule as a backstop). Clinical dosing questions
+  get `REFUSE` `R3` and are pointed to the prescriber or pharmacist. To widen the scope, add words to `STEMS` / `WORDS`
+  in `rules.py` or drug names to `configs/drug_names.txt`.
