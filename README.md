@@ -43,8 +43,10 @@ Test in three levels. Each level needs a little more; stop at the level you have
 | Level | What you can test | Needs |
 |---|---|---|
 | **A. Offline** | All 91 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
-| **B. With corpus** | Retrieval on real data for all five use cases, the agent in offline mode (no LLM) | the team corpus bundle (section 4.1), or internet to download openFDA (section 4) |
+| **B. With corpus** | Retrieval on real openFDA data, the agent in offline mode (no LLM) | internet once to download openFDA (section 4) |
 | **C. Live model** | The full agent, the whole-system demo, the 64-query evaluation | course key files and certificates (section 3) |
+
+For level B on all five use cases (not only openFDA), unzip the team corpus bundle first (section 4.1).
 
 ### 2.1 Test each component
 
