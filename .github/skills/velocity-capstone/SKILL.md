@@ -33,7 +33,8 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 | `tests/` | 77 offline tests (fake model and embeddings, no keys) |
 
 Course endpoints (verified 2026-11-25): chat VM04 `https://<COURSE_HOST>:1034/v1`, model `Qwen/Qwen3-8B`, cert `vm04-ca.crt`;
-embeddings VM02 `https://<COURSE_HOST>:1035/v1`, `bge-small-en-v1.5`, cert `vm02-ca.crt`. Each server has its own key
+embeddings VM02 `https://<COURSE_HOST>:1035/v1`, `bge-small-en-v1.5`, cert `vm02-ca.crt`. The host, certs and keys come
+from the course coordinator and must never be committed. Each server has its own key
 and its own CA; a cert only verifies its own port. Ports 1031-1033 belong to other servers.
 
 Capstone requirements (Track B): 60-100 query gold eval set frozen in Week 1, three prompting strategies, hybrid
