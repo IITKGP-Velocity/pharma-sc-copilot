@@ -43,7 +43,7 @@ Test in three levels. Each level needs a little more; stop at the level you have
 | Level | What you can test | Needs |
 |---|---|---|
 | **A. Offline** | All 91 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
-| **B. With corpus** | Retrieval on real openFDA data, the agent in offline mode (no LLM) | internet once to download openFDA (section 4) |
+| **B. With corpus** | Retrieval on real data for all five use cases, the agent in offline mode (no LLM) | the team corpus bundle (section 4.1), or internet to download openFDA (section 4) |
 | **C. Live model** | The full agent, the whole-system demo, the 64-query evaluation | course key files and certificates (section 3) |
 
 ### 2.1 Test each component
@@ -74,7 +74,7 @@ Run these in order. Each step says what a pass looks like.
 | 1 | `python -m pytest -q` | `91 passed` |
 | 2 | `python scripts/demo.py safety && python scripts/demo.py tools` | Output as in rows 1–2 above |
 | 3 | `python scripts/check_setup.py --live "${FLAGS[@]}"` | Both live calls `OK` (see section 3 for `FLAGS`) |
-| 4 | `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `Wrote embeddings for 5495 passages` (about 4 minutes) |
+| 4 | Unzip the team corpus bundle (section 4.1), or `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `check_setup.py` shows about 57,700 passages (bundle) or `Wrote embeddings for 5495 passages` (openFDA only, about 4 minutes) |
 | 5 | `python scripts/demo.py all "${FLAGS[@]}"` | Five cases with these decisions: cited answer → `ANSWER` with a citation; tool calculation → `ANSWER` with `mkt` 4.61; escalation → `ESCALATE` to QP; injection → `REFUSE` R6; PII → name and phone shown as `[REDACTED]` |
 | 6 | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | Hybrid recall@5 close to 1.0 (section 6) |
 | 7 | `python scripts/run_eval.py "${FLAGS[@]}"` | Finishes all 64 queries (about 6 minutes); accuracy near the latest result in section 6 |
@@ -129,6 +129,57 @@ Downloads openFDA labels for the 20 drugs in `configs/drug_names.txt`, 100 curre
 Class I recalls (548 documents; public API, no key), splits them into 800-character passages (5,495)
 and embeds them. Raw files and their SHA-256 hashes go to `data/raw/`, passages to
 `data/processed/` (both ignored by Git). Without `--embed`, retrieval uses BM25 only.
+
+This openFDA corpus covers drug labels, shortages and recalls only. The guidance documents and
+datasets each use case needs (WHO, ICH, CFR, import alerts, NADAC, FAERS, ...) come in data packs,
+which are too large and partly licence-restricted for Git. Use the team bundle (4.1) or rebuild them (4.2).
+
+### 4.1 Use the team corpus bundle (recommended)
+
+One zip, shared inside the team (not on GitHub), holds the full corpus already split and embedded:
+`data/processed/corpus.jsonl` (57,731 passages from 12,613 documents), `embeddings.json`, and each
+pack's `README.txt`, `manifest.csv` (source, URL, licence, SHA-256) and `datasets/` (CSV tables).
+
+```bash
+unzip -o Velocity_corpus_bundle_<date>.zip -d .     # from the repo folder; files land in git-ignored data/
+python scripts/check_setup.py                        # Corpus documents: about 57,700 passages
+```
+
+No `--fetch` or `--embed` is needed afterwards. `BUNDLE_README.txt` in the zip lists checksums and licences.
+
+### 4.2 Rebuild the data packs
+
+```bash
+python scripts/data_packs/make_all.py               # 1-2 hours; needs internet and pdftotext (brew install poppler)
+python scripts/data_packs/load_packs.py             # append every pack to data/processed/corpus.jsonl
+python scripts/build_corpus.py --embed "${FLAGS[@]}" # split and embed (about 45 minutes for the full corpus)
+python scripts/data_packs/bundle.py                 # one zip for the team: data/raw/Velocity_corpus_bundle_<date>.zip
+```
+
+| Pack (folder in `data/raw/packs/`) | Use case, owner | Main contents |
+|---|---|---|
+| `UseCaseA_ColdChain_GDP_PDFs` | A, Siddhesh | 100 PDFs: refrigerated-product labels, NIST vaccine-fridge studies, 21 CFR 205/606/640/1271, 49 CFR dry ice |
+| `UseCaseA_ColdChain_GDP_Guidance_and_Data` | A, Siddhesh | WHO TRS 961 Annex 9 + supplements 2-16, EU GDP 2013/C 343/01, ICH Q1A/Q1E/Q5C, 21 CFR 211/600/610/203 |
+| `UseCaseB_Supplier_Qualification_PDFs` | B, Shrilesh | 100 PDFs: 21 CFR (11, 210, 211, 314, 320, 600-610, ...), quality reviews, ANDA and biosimilar approval letters, labels |
+| `UseCaseB_Supplier_Qualification_Guidance_and_Data` | B, Shrilesh | ICH Q7, Q9(R1), Q10, Q11, Q3A/Q3B, Q5E; EU API GDP; Drugs@FDA TE codes, Purple Book, registered establishments |
+| `UseCaseC_Customs_Import_PreClearance` | C, Swapnesh | 15 FDA drug import alerts + 25,154 firm rows, 21 CFR 1/207/251/314, 19 CFR 12/141/151, tariff ch. 29-30 |
+| `UseCaseD_Shortage_Therapeutic_Substitution` | D, Sandeep | openFDA shortages, NADAC 2026 prices and changes, TE codes, Purple Book, NDC products/packages |
+| `UseCaseE_Pharmacovigilance_Recall_Triage` | E, Sandeep | 18,194 recalls with lot numbers, FAERS summaries, NDC, 21 CFR 7/310/314/600/211, ICH E2A/E2D/E2E/Q9(R1) |
+
+Packs only use public sources. Personal data is removed or masked: establishment contacts, national ID
+numbers on import alert 99-34, and free-mail addresses in FDA records.
+
+### 4.3 Check the data for each use case
+
+Each command searches the corpus without the model (BM25, plus embeddings when present).
+
+| Use case | Command | The top results should include |
+|---|---|---|
+| A cold chain | `python scripts/demo.py retrieval "What does WHO TRS 961 Annex 9 say about qualification of shipping containers?"` | `docA-...WHO-TRS-961-Annex-9-Supplement-13-Qualification...` |
+| B supplier | `python scripts/demo.py retrieval "What does ICH Q7 require for evaluating API suppliers?"` | `docB-...ICH-Q7-Good-manufacturing-practice...` |
+| C import | `python scripts/demo.py retrieval "Which firms in India are on FDA import alert 66-40?"` | `docC-...Import-Alert-66-40...` and `iafirmsC-...-INDIA` |
+| D shortage | `python scripts/demo.py retrieval "What is the NADAC price per unit for vancomycin 1 gram vial?"` | `nadacD-...` price records |
+| E recalls | `python scripts/demo.py retrieval "Which recalls mention temperature abuse or improper storage?"` | recall, label and WHO passages about storage temperature |
 
 ## 5. Ask, evaluate, observe
 
@@ -250,6 +301,7 @@ src/copilot/
 | `src/copilot/runtime.py`, `config.py` | How endpoints, certificates and keys are passed; settings |
 | `src/copilot/schemas.py`, `service.py` | Answer schema (Deliverable 1); builds the engine from the settings |
 | `scripts/` | `demo`, `ask`, `run_eval`, `eval_retrieval`, `rebuild_report`, `build_corpus`, `check_setup`, `freeze_eval` |
+| `scripts/data_packs/` | Build the use-case data packs (`make_all.py`), load them into the corpus (`load_packs.py`), make the team bundle (`bundle.py`) |
 | `app/app.py` | Streamlit app with rate limit (from `configs/settings.yaml`) and caching |
 | `eval/gold/` | Frozen 64-query eval set + hash, retrieval gold set |
 | `docs/` | Spec, baseline, failure taxonomy, Responsible AI card, submission guide |
@@ -263,12 +315,15 @@ src/copilot/
 | `HTTP 401` | Wrong key for that server (each server has its own key) |
 | `HTTP 413` / `422 ... 512 tokens` on embeddings | At most 16 texts per request and passages under 512 tokens; keep `chunk_chars: 800` |
 | `Model endpoint error` in an answer | See `error` in `results.jsonl` or the dashboard; invalid JSON from the model shows as `ValueError` |
-| `No corpus yet` | `python scripts/build_corpus.py --fetch` |
+| `No corpus yet` | Unzip the team bundle (section 4.1) or `python scripts/build_corpus.py --fetch` |
+| Slow start, then embedding calls on every launch | `embeddings.json` does not cover every passage in `corpus.jsonl`: run `python scripts/build_corpus.py --embed "${FLAGS[@]}"` or re-unzip the bundle |
+| `pdftotext not found` (data packs) | `brew install poppler` (macOS) or `apt install poppler-utils` |
 | `ModuleNotFoundError: copilot` | `python -m pip install -e ".[dev]"` from this folder |
 
 ## 9. Rules
 
-- Never commit `.env`, keys, certificates, `data/raw/` or `data/processed/`.
+- Never commit `.env`, keys, certificates, `data/raw/` or `data/processed/`, and never post the corpus bundle publicly:
+  it contains WHO (CC BY-NC-SA), ICH and EU documents.
 - The evaluation set is frozen (`eval/gold/eval_set_v1.0.sha256`). Changes need a new version and a logged reason.
 - Quote numbers from `eval/results/run_*`, never from `eval/demo_output/` (fake data). Result folders are
   ignored by Git; commit the run you report with `git add -f eval/results/<run>`.

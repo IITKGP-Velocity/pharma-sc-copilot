@@ -27,6 +27,7 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 | `src/copilot/observability/` | `tracing.py` (`trace.jsonl`), `metrics.py` (result rows, summary, recall@k), `failure_log.py`, `dashboard.py`. How it is built into the engine (three layers: `last_metrics`, trace, run reports): README section 5.1 |
 | `src/copilot/runtime.py`, `config.py`, `schemas.py`, `service.py` | Endpoint flags and key files; settings; answer schema; builds the engine |
 | `scripts/` | `demo.py` (per part or `all`), `run_eval.py`, `eval_retrieval.py`, `rebuild_report.py`, `ask.py`, `build_corpus.py`, `check_setup.py`, `freeze_eval.py` |
+| `scripts/data_packs/` | `make_all.py` builds the 7 use-case data packs into `data/raw/packs/`; `load_packs.py` appends them to the corpus; `bundle.py` makes the team zip (corpus + embeddings) |
 | `app/app.py` | Streamlit app; rate limit from `configs/settings.yaml`; caching |
 | `eval/gold/` | Frozen 64-query set + SHA-256, retrieval gold set |
 | `eval/results/` | Reported runs (force-added; the folder is otherwise git-ignored) |
@@ -50,7 +51,10 @@ Point teammates there. Short version:
 2. Offline: `python -m pytest -q` (91 passed); `python scripts/demo.py safety`, `tools`, `dashboard --open` (fake data).
 3. Live: `python scripts/check_setup.py --live <flags>` where `<flags>` are `--chat-endpoint`, `--model`,
    `--chat-ca-cert`, `--api-key-file`, `--embed-endpoint`, `--embed-model`, `--embed-ca-cert`, `--embed-api-key-file`.
-4. Corpus once: `python scripts/build_corpus.py --fetch --embed <flags>` (about 4 minutes, git-ignored).
+4. Corpus once: unzip the team bundle in the repo folder (`unzip -o Velocity_corpus_bundle_<date>.zip -d .`,
+   57,731 passages already embedded; README 4.1), or `python scripts/build_corpus.py --fetch --embed <flags>`
+   for openFDA only (about 4 minutes). Check each use case's data with the five queries in README 4.3.
+   Rebuild packs with `scripts/data_packs/make_all.py` (README 4.2). Never commit the bundle or `data/`.
 5. Whole system: `python scripts/demo.py all <flags>`; evaluation: `python scripts/run_eval.py <flags>` (about 6 minutes).
 
 ## 2. Debugging playbook
@@ -66,7 +70,8 @@ Work from the outside in and change one thing at a time.
 | Critic rejects repeatedly / step cap | Schema problems in the model's JSON | Trace shows `critic ... problems`; the problem text is fed back to the model |
 | Answer ABSTAIN though the fact exists | Retrieval miss or data gap | `python scripts/demo.py retrieval "<question>"`; check the passage is in `data/processed/corpus.jsonl` |
 | Slow or expensive query | Which stage? | Dashboard "Where the time goes"; `retrieve_ms`, `llm_ms`, `tool_ms`, tokens in `results.jsonl` |
-| `No corpus yet` | Corpus not built | `python scripts/build_corpus.py --fetch` |
+| `No corpus yet` | Corpus not built | Unzip the team bundle, or `python scripts/build_corpus.py --fetch` |
+| Embedding calls at every start | `embeddings.json` misses passages in `corpus.jsonl` | `build_corpus.py --embed <flags>` or re-unzip the bundle |
 | `ModuleNotFoundError: copilot` | Not installed | `pip install -e ".[dev]"` from the repo root |
 
 Isolate the layer: safety rules (`demo.py safety`) -> retrieval (`demo.py retrieval`, `eval_retrieval.py`) ->
