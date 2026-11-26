@@ -16,6 +16,7 @@ from copilot.config import ROOT, env
 
 RETRYABLE_STATUS = {429, 500, 502, 503, 504}   # busy or temporarily failing server
 MAX_ATTEMPTS = 3
+TOKEN_LIMIT = re.compile(r"less than (\d+) tokens\. Given: (\d+)")
 
 
 class EndpointNotConfigured(RuntimeError):
@@ -123,9 +124,30 @@ class EmbedClient(_OpenAICompatible):
         """Return one vector per text, in the same order as the input."""
         out: list[list[float]] = []
         for i in range(0, len(texts), batch):
-            data = self._post("/embeddings", {"model": self.model, "input": texts[i:i + batch]})
+            chunk = texts[i:i + batch]
+            try:
+                data = self._post("/embeddings", {"model": self.model, "input": chunk})
+            except requests.HTTPError as err:
+                if not TOKEN_LIMIT.search(str(err)):
+                    raise
+                out.extend(self._embed_one(t) for t in chunk)  # one text is over the token limit
+                continue
             out.extend(item["embedding"] for item in sorted(data["data"], key=lambda d: d["index"]))
         return out
+
+    def _embed_one(self, text: str, tries: int = 4) -> list[float]:
+        """Embed one text; if it is over the server's token limit, embed a shortened copy.
+        Table-heavy text can exceed 512 tokens at 800 characters. BM25 still searches the full passage."""
+        for _ in range(tries):
+            try:
+                return self._post("/embeddings", {"model": self.model, "input": [text]})["data"][0]["embedding"]
+            except requests.HTTPError as err:
+                m = TOKEN_LIMIT.search(str(err))
+                if not m:
+                    raise
+                limit, given = int(m.group(1)), int(m.group(2))
+                text = text[: max(1, int(len(text) * (limit - 12) / given))]
+        raise RuntimeError("could not shorten text below the embedding token limit")
 
 
 def parse_json_object(text: str) -> dict:
