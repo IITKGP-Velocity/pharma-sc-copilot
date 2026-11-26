@@ -84,7 +84,10 @@ Quick check of just a few queries: `python scripts/run_eval.py --ids A02 C03 E12
 
 ## 3. Connect to the course model
 
-Two course servers, each with its own address, CA certificate and key:
+Levels A and B in section 2 need none of this. Level C needs access to two course servers. The
+server host, CA certificates and keys are shared privately with course participants (ask your
+course coordinator) and are deliberately not in this repository. `<COURSE_HOST>` below stands for
+that host.
 
 | Server | Job | Address | Certificate | Key file |
 |---|---|---|---|---|
@@ -99,10 +102,11 @@ key only works on its own server.
 script asks with a hidden prompt. Keep key files outside the project, readable only by you (`chmod 600`).
 
 ```bash
+H=your.course.host                  # the host from your coordinator (no https://, no port)
 C=/path/to/your/course/files
-FLAGS=(--chat-endpoint https://<COURSE_HOST>:1034/v1 --model Qwen/Qwen3-8B
+FLAGS=(--chat-endpoint https://$H:1034/v1 --model Qwen/Qwen3-8B
        --chat-ca-cert $C/vm04-ca.crt --api-key-file $C/vm04-shared-embedding-key.txt
-       --embed-endpoint https://<COURSE_HOST>:1035/v1 --embed-model bge-small-en-v1.5
+       --embed-endpoint https://$H:1035/v1 --embed-model bge-small-en-v1.5
        --embed-ca-cert $C/vm02-ca.crt --embed-api-key-file $C/shared-embedding-key.txt)
 
 python scripts/check_setup.py --live "${FLAGS[@]}"      # expect: Live chat call: OK / Live embeddings call: OK
