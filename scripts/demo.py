@@ -4,6 +4,7 @@
   python scripts/demo.py tools                  # deterministic tools: MKT, cost delta, demurrage, ...  offline
   python scripts/demo.py retrieval "question"   # top passages from the corpus (BM25, + dense if set)  needs corpus
   python scripts/demo.py agent "question"       # one question, every agent step printed               needs corpus
+  python scripts/demo.py conversation           # three-turn conversation: follow-ups use earlier turns  needs corpus
   python scripts/demo.py dashboard [--open]     # dashboard + failure log from a FAKE run               offline
   python scripts/demo.py all                    # the seven demo cases through the whole system
 
@@ -21,7 +22,7 @@ import webbrowser
 from pathlib import Path
 
 import _paths
-from copilot.agent import Engine
+from copilot.agent import Engine, remember
 from copilot.observability import build_dashboard, read_jsonl, result_row, summarise, write_failure_log, write_jsonl
 from copilot.runtime import add_endpoint_args, apply_endpoint_args
 from copilot.safety import pre_check, redact_pii
@@ -192,10 +193,26 @@ def demo_all(engine: Engine) -> None:
         demo_agent(engine, q, label)
 
 
+CONVERSATION = ["Is there an active shortage listed for cisplatin injection?",
+                "Which approved products have an AP TE code for it?",   # "it" = cisplatin, from turn 1
+                "Ok, release the batch then."]                          # still escalated by rule R1
+
+
+def demo_conversation(engine: Engine) -> None:
+    """Three turns in one conversation: follow-ups use the earlier turns; the safety rules still apply."""
+    history: list[dict] = []
+    for n, q in enumerate(CONVERSATION, 1):
+        resp = engine.answer(q, history=history)
+        history = remember(history, q, resp)
+        header(f"Turn {n}: {q}")
+        print(f"  {resp.decision}: {(resp.answer or resp.missing_evidence or '')[:300]}")
+        print(f"  tools used: {[c.tool for c in resp.computed] or 'none'} | turns remembered: {len(history)}")
+
+
 def main() -> int:
     """Pick the part to demo from the command line."""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("part", choices=["safety", "tools", "retrieval", "agent", "dashboard", "all"])
+    ap.add_argument("part", choices=["safety", "tools", "retrieval", "agent", "conversation", "dashboard", "all"])
     ap.add_argument("question", nargs="*", help="question for 'retrieval' and 'agent'")
     ap.add_argument("--open", action="store_true", help="open the dashboard in the browser")
     add_endpoint_args(ap)
@@ -216,6 +233,8 @@ def main() -> int:
             demo_retrieval(engine, question)
         elif args.part == "agent":
             demo_agent(engine, question)
+        elif args.part == "conversation":
+            demo_conversation(engine)
         else:
             demo_all(engine)
     return 0

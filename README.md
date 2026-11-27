@@ -58,7 +58,7 @@ Run a component's unit tests to check it works, and its demo to see what it does
 | 2 | **Tools** (`agent/tools.py`) | `python -m pytest tests/test_tools.py -q` → 12 passed | `python scripts/demo.py tools` | `mkt(...) = 4.61`, `demurrage(...) = 450`, `impurity_passes(0.11, 0.10) = False` | A |
 | 3 | **Corpus** (`rag/corpus.py`) | `python -m pytest tests/test_corpus.py -q` → 5 passed | `python scripts/build_corpus.py --fetch` | `Wrote 5495 passages from 548 documents` | A / B |
 | 4 | **Retrieval** (`rag/retrieval.py`) | `python -m pytest tests/test_retrieval.py -q` → 6 passed | `python scripts/demo.py retrieval "How should vancomycin be stored?"` | 5 passages, all vancomycin labels; header says `BM25 only` or `dense + BM25` | A / B |
-| 5 | **Agent loop** (`agent/engine.py`) | `python -m pytest tests/test_agent.py -q` → 11 passed | `python scripts/demo.py agent "What is the storage temperature for unopened adalimumab pens?"` | Every step with its time, then the JSON answer and `latency … steps … LLM calls … tokens …` | A / B / C |
+| 5 | **Agent loop** (`agent/engine.py`) | `python -m pytest tests/test_agent.py -q` → 16 passed | `python scripts/demo.py agent "What is the storage temperature for unopened adalimumab pens?"` | Every step with its time, then the JSON answer and `latency … steps … LLM calls … tokens …` | A / B / C |
 | 6 | **Model clients + credentials** (`agent/llm.py`, `runtime.py`) | `python -m pytest tests/test_llm.py tests/test_runtime.py -q` → 14 passed | `python scripts/check_setup.py --live "${FLAGS[@]}"` | `Live chat call: OK` and `Live embeddings call: OK` | A / C |
 | 7 | **Observability** (`observability/`) | `python -m pytest tests/test_observability.py -q` → 18 passed | `python scripts/demo.py dashboard --open` | A dashboard in the browser and `eval/demo_output/DEMO_fake_data/failure_log.csv` (fake data) | A |
 | 8 | **Retrieval quality** | (covered by 7) | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | `bm25_only recall@5=…`, `hybrid recall@5=…` and `hybrid_rerank recall@5=…` | B / C |
@@ -73,14 +73,15 @@ Run these in order. Each step says what a pass looks like.
 
 | Step | Command | Pass when |
 |---|---|---|
-| 1 | `python -m pytest -q` | `106 passed` |
+| 1 | `python -m pytest -q` | `118 passed` |
 | 2 | `python scripts/demo.py safety && python scripts/demo.py tools` | Output as in rows 1–2 above |
 | 3 | `python scripts/check_setup.py --live "${FLAGS[@]}"` | Both live calls `OK` (see section 3 for `FLAGS`) |
 | 4 | Unzip the team corpus bundle (section 4.1), or `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `check_setup.py` shows about 57,700 passages (bundle) or `Wrote embeddings for 5495 passages` (openFDA only, about 4 minutes) |
 | 5 | `python scripts/demo.py all "${FLAGS[@]}"` | Seven cases with these decisions: cited answer → `ANSWER` with a citation; tool calculation → `ANSWER` with `mkt` 4.61; escalation → `ESCALATE` to QP; injection → `REFUSE` R6; PII → name and phone shown as `[REDACTED]`; customs prediction → `ABSTAIN` R7 (rule); supplier D's certificate of analysis → `ABSTAIN` (no supporting evidence, live model) |
-| 6 | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | Hybrid + rerank recall@5 1.0 (section 6) |
-| 7 | `python scripts/run_eval.py "${FLAGS[@]}"` | Finishes all 64 queries (about 6 minutes); accuracy near the latest result in section 6 |
-| 8 | Open `eval/results/run_<date>/dashboard.html` | Cards, accuracy tables, and a query table whose rows open to show each agent step |
+| 6 | `python scripts/demo.py conversation "${FLAGS[@]}"` | Three turns: turn 2 ("...AP TE code for it?") lists cisplatin applicants because "it" comes from turn 1; turn 3 ("release the batch") → `ESCALATE` (rule R1) |
+| 7 | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | Hybrid + rerank recall@5 1.0 (section 6) |
+| 8 | `python scripts/run_eval.py "${FLAGS[@]}"` | Finishes all 64 queries (about 9 minutes); accuracy near the latest result in section 6 |
+| 9 | Open `eval/results/run_<date>/dashboard.html` | Cards, accuracy tables, and a query table whose rows open to show each agent step |
 
 Quick check of just a few queries: `python scripts/run_eval.py --ids A02 C03 E12 "${FLAGS[@]}"`.
 
@@ -308,7 +309,7 @@ src/copilot/
 | `src/copilot/schemas.py`, `service.py` | Answer schema (Deliverable 1); builds the engine from the settings |
 | `scripts/` | `demo`, `ask`, `run_eval`, `run_baseline`, `eval_retrieval`, `rebuild_report`, `build_corpus`, `check_setup`, `freeze_eval` |
 | `scripts/data_packs/` | Build the use-case data packs (`make_all.py`), load them into the corpus (`load_packs.py`), make the team bundle (`bundle.py`) |
-| `app/app.py` | Streamlit app with rate limit (from `configs/settings.yaml`) and caching |
+| `app/app.py` | Streamlit app with rate limit (from `configs/settings.yaml`), caching, and conversation memory (last 3 turns per session) |
 | `eval/gold/` | Frozen 64-query eval set + hash, retrieval gold set |
 | `docs/` | Spec, baseline, failure taxonomy, Responsible AI card, submission guide |
 | `tests/` | 106 offline tests |
