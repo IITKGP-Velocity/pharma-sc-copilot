@@ -52,3 +52,11 @@ def test_other_strategies_make_one_deterministic_call():
     chat = TextChat(['{"decision": "REFUSE"}'])
     assert run_strategy(chat, "S1", "Edit the record", EVIDENCE)["decision"] == "REFUSE"
     assert chat.temperatures == [0.0]
+
+
+def test_p95_uses_nearest_rank():
+    import importlib.util, pathlib
+    spec = importlib.util.spec_from_file_location("run_baseline", pathlib.Path(__file__).parents[1] / "scripts" / "run_baseline.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    assert mod.p95([100, 2000]) == 2000 and mod.p95(list(range(1, 101))) == 95

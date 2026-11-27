@@ -10,6 +10,7 @@ and prints a table to paste into docs/02_baseline.md.
 """
 import argparse
 import json
+import math
 import statistics
 import sys
 import time
@@ -35,6 +36,12 @@ def evidence_for(engine, question: str) -> list[dict]:
     return [{"doc_id": d, "text": engine.texts[d][:800]} for d, _ in hits]
 
 
+def p95(values: list[int]) -> int:
+    """95th percentile, nearest-rank method."""
+    ordered = sorted(values)
+    return ordered[max(0, math.ceil(0.95 * len(ordered)) - 1)]
+
+
 def summarise(rows: list[dict]) -> dict:
     """Headline numbers for one strategy."""
     by_case = defaultdict(list)
@@ -45,7 +52,7 @@ def summarise(rows: list[dict]) -> dict:
             "decision_accuracy": round(sum(r["ok"] for r in rows) / len(rows), 3),
             "format_validity": round(sum(r["format_ok"] for r in rows) / len(rows), 3),
             "by_use_case": {k: f"{sum(v)}/{len(v)}" for k, v in sorted(by_case.items())},
-            "latency_ms_avg": int(statistics.mean(lat)), "latency_ms_p95": int(sorted(lat)[int(0.95 * (len(lat) - 1))]),
+            "latency_ms_avg": int(statistics.mean(lat)), "latency_ms_p95": p95(lat),
             "llm_calls": sum(r["llm_calls"] for r in rows),
             "tokens_per_query": int(statistics.mean(r["prompt_tokens"] + r["completion_tokens"] for r in rows)),
             "errors": sum(1 for r in rows if r["error"])}
