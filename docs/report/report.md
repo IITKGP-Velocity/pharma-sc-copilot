@@ -50,18 +50,11 @@ Nothing else is downloaded or called.
 
 # 2. Architecture
 
-```
-question
-  │
-  ├─ 1. Redact personal data (names after a label word, phones, emails, dates of birth)
-  ├─ 2. Rule pre-check R1–R8 + scope ── decides clear cases with no model call
-  ├─ 3. Hybrid retrieval: BM25 + dense embeddings → reciprocal rank fusion (top 20)
-  ├─ 4. Rerank: one call to the course chat model orders the 20 passages → top 5
-  ├─ 5. Planner (LLM) ⇄ Executor (Python tools), up to 10 steps and an 8,000-token budget
-  ├─ 6. Critic: schema check, "an ANSWER needs a citation or a tool result"
-  └─ 7. Output guard: drop citations that were not retrieved, redact again, abstain if unsupported
-answer (JSON: decision, answer, citations, computed, escalate_to, missing_evidence, reason_code)
-```
+![Figure 1. Request pipeline. Blue steps are deterministic code; orange steps call the course chat model.
+Source: `docs/report/architecture.mmd`.](architecture.png){width=62%}
+
+The answer is one JSON object: decision, answer, citations, computed, escalate_to, missing_evidence and
+reason_code.
 
 **Code layout.** One folder per component under `src/copilot/`: `safety/`, `rag/`, `agent/`,
 `observability/`, plus `schemas.py` for the output contract. The web app is `app/app.py`.
@@ -332,6 +325,9 @@ Each evaluation run writes `results.jsonl`, `summary.json`, `trace.jsonl`, `fail
 dashboard. The dashboard shows accuracy by type and use case, latency, tokens, and a table of questions whose
 rows open to show each agent step. `rebuild_report.py` recounts the reviewed failure labels and flags any label
 not in the taxonomy.
+
+![Figure 2. Dashboard of the reported run (`eval/results/run_20261127_110934/dashboard.html`), top of the
+page. The "first-pass label" panel shows the automatic first guesses; the reviewed labels are in section 6.](dashboard.png){width=100%}
 
 # 10. Limitations
 

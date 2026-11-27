@@ -1,0 +1,18 @@
+flowchart TD
+    Q([Question + last 3 turns]) --> R[1. Redact personal data]
+    R --> P{2. Rule pre-check<br/>R1–R8 + scope}
+    P -- "clear case<br/>(no model call)" --> OUT
+    P -- passes --> H[3. Hybrid retrieval<br/>BM25 + bge-small embeddings<br/>→ reciprocal rank fusion, top 20]
+    H --> RR[4. Rerank<br/>course chat model → top 5]
+    RR --> PL[5. Planner<br/>Qwen3-8B, JSON reply]
+    PL -- "tool call" --> EX[Executor<br/>Python tools + fixed-SQL lookup]
+    EX -- "exact result" --> PL
+    PL -- answer --> CR{6. Critic<br/>schema valid?<br/>citation or tool result?}
+    CR -- "no: error fed back<br/>(max 10 steps, 8,000 tokens)" --> PL
+    CR -- yes --> G[7. Output guard<br/>drop unretrieved citations,<br/>redact, abstain if unsupported]
+    G --> OUT([Decision: ANSWER · ESCALATE · REFUSE · ABSTAIN<br/>+ citations + tool results])
+
+    classDef code fill:#e8f1fb,stroke:#3b6ea8;
+    classDef model fill:#fdf0e1,stroke:#c07a24;
+    class R,P,H,EX,CR,G code;
+    class RR,PL model;
