@@ -1,0 +1,323 @@
+{
+  "bm25_only": {
+    "k": 5,
+    "queries": 11,
+    "recall_at_5": 0.455,
+    "mrr": 0.326,
+    "per_query": [
+      {
+        "id": "A01",
+        "first_gold_rank": null,
+        "top": [
+          "label-c5a056e2-b568-4ca6-9ed8-79c010942d00#c0",
+          "label-0691def8-4a7b-4de3-866f-a280989f47f1#c0",
+          "pdfA-A068_label_BLA205747_insulin-lispro#c144"
+        ]
+      },
+      {
+        "id": "A07",
+        "first_gold_rank": null,
+        "top": [
+          "pdfA-A007_study_NISTIR-7656_ref#c96",
+          "pdfA-A053_label_BLA125553_filgrastim#c28",
+          "pdfA-A048_label_BLA022472_insulin-human#c76"
+        ]
+      },
+      {
+        "id": "E04",
+        "first_gold_rank": null,
+        "top": [
+          "docB-B003_guidance_ICH-Q10-Pharmaceutical-quality-system#c35",
+          "docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c137",
+          "docA-A001_guidance_WHO-TRS-961-Annex-9-Model-guidance-for-the-storage#c91"
+        ]
+      },
+      {
+        "id": "R01",
+        "first_gold_rank": null,
+        "top": [
+          "docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c76",
+          "label-00946db3-d6c5-4534-a870-1ec6e63eda43#c3",
+          "label-0576803d-95de-4a48-806a-69ae3fcaf6b0#c3"
+        ]
+      },
+      {
+        "id": "R02",
+        "first_gold_rank": null,
+        "top": [
+          "label-99ea856d-9562-443a-9422-1006a3cff2f4#c0",
+          "pdfA-A089_label_BLA761201_insulin-glargine#c236",
+          "pdfB-B096_label_BLA761201_insulin-glargine#c239"
+        ]
+      },
+      {
+        "id": "R03",
+        "first_gold_rank": 3,
+        "top": [
+          "label-34b8fe93-ee34-4a35-9af5-5d41705a28e9#c5",
+          "label-3a998729-c912-4e21-8e49-d1e72ba6fe9e#c11",
+          "label-45dc6b8b-ed5d-40a2-8d9c-084c863ae93a#c0"
+        ]
+      },
+      {
+        "id": "R04",
+        "first_gold_rank": 1,
+        "top": [
+          "shortageD-1517#c0",
+          "shortageD-62#c0",
+          "shortageD-94#c0"
+        ]
+      },
+      {
+        "id": "R05",
+        "first_gold_rank": 1,
+        "top": [
+          "shortage-bce324bd33fb#c0",
+          "shortage-669ec881d1c6#c0",
+          "shortage-27e37eedf71a#c0"
+        ]
+      },
+      {
+        "id": "R06",
+        "first_gold_rank": 4,
+        "top": [
+          "pdfB-B006_regulation_21-CFR-Part-251_cfr#c127",
+          "docC-C018_regulation_21-CFR-Part-251-Section-804-importation-program#c127",
+          "docE-E001_regulation_21-CFR-Part-7-Enforcement-policy-Subpart-C-recalls#c32"
+        ]
+      },
+      {
+        "id": "R07",
+        "first_gold_rank": null,
+        "top": [
+          "pdfB-B023_quality_review_BLA761103_rituximab#c291",
+          "docA-A016_guidance_WHO-TRS-961-Annex-9-Supplement-16-Environmental-ma#c33",
+          "docA-A009_guidance_WHO-TRS-961-Annex-9-Supplement-9-Maintenance-of-re#c45"
+        ]
+      },
+      {
+        "id": "R08",
+        "first_gold_rank": 1,
+        "top": [
+          "label-0a29fe62-e241-4272-b91c-c1036b031cd4#c0",
+          "label-28642ad9-b839-ce3a-e063-6394a90ab866#c0",
+          "label-287930f8-c5c6-56bd-e063-6394a90ad32e#c0"
+        ]
+      }
+    ]
+  },
+  "hybrid": {
+    "k": 5,
+    "queries": 11,
+    "recall_at_5": 0.909,
+    "mrr": 0.689,
+    "per_query": [
+      {
+        "id": "A01",
+        "first_gold_rank": 4,
+        "top": [
+          "label-c5a056e2-b568-4ca6-9ed8-79c010942d00#c0",
+          "pdfA-A060_label_BLA208583_liraglutide#c131",
+          "label-0691def8-4a7b-4de3-866f-a280989f47f1#c0"
+        ]
+      },
+      {
+        "id": "A07",
+        "first_gold_rank": null,
+        "top": [
+          "pdfA-A007_study_NISTIR-7656_ref#c96",
+          "docA-A001_guidance_WHO-TRS-961-Annex-9-Model-guidance-for-the-storage#c41",
+          "pdfA-A053_label_BLA125553_filgrastim#c28"
+        ]
+      },
+      {
+        "id": "E04",
+        "first_gold_rank": 1,
+        "top": [
+          "recallE-D-1030-2022#c1",
+          "docA-A008_guidance_WHO-TRS-961-Annex-9-Supplement-8-Temperature-mappi#c25",
+          "docB-B003_guidance_ICH-Q10-Pharmaceutical-quality-system#c35"
+        ]
+      },
+      {
+        "id": "R01",
+        "first_gold_rank": 2,
+        "top": [
+          "docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c76",
+          "label-3843d0d7-f70a-4b29-9478-dfb45b02425e#c0",
+          "label-00946db3-d6c5-4534-a870-1ec6e63eda43#c3"
+        ]
+      },
+      {
+        "id": "R02",
+        "first_gold_rank": 3,
+        "top": [
+          "label-99ea856d-9562-443a-9422-1006a3cff2f4#c0",
+          "pdfB-B096_label_BLA761201_insulin-glargine#c240",
+          "label-536a4b0a-4b7c-2d23-e063-6294a90a7b7c#c0"
+        ]
+      },
+      {
+        "id": "R03",
+        "first_gold_rank": 1,
+        "top": [
+          "label-45dc6b8b-ed5d-40a2-8d9c-084c863ae93a#c0",
+          "label-34b8fe93-ee34-4a35-9af5-5d41705a28e9#c5",
+          "label-41dd053d-49f6-4eb1-b9e7-3508ede82df8#c0"
+        ]
+      },
+      {
+        "id": "R04",
+        "first_gold_rank": 1,
+        "top": [
+          "shortageD-1544#c0",
+          "shortageD-1517#c0",
+          "shortageD-62#c0"
+        ]
+      },
+      {
+        "id": "R05",
+        "first_gold_rank": 1,
+        "top": [
+          "shortage-bce324bd33fb#c0",
+          "shortage-669ec881d1c6#c0",
+          "shortageD-87#c0"
+        ]
+      },
+      {
+        "id": "R06",
+        "first_gold_rank": 1,
+        "top": [
+          "recallE-D-0031-2021#c1",
+          "pdfB-B006_regulation_21-CFR-Part-251_cfr#c127",
+          "recallE-D-0701-2023#c1"
+        ]
+      },
+      {
+        "id": "R07",
+        "first_gold_rank": 2,
+        "top": [
+          "pdfB-B023_quality_review_BLA761103_rituximab#c291",
+          "label-b172773b-3905-4a1c-ad95-bab4b6126563#c0",
+          "docA-A016_guidance_WHO-TRS-961-Annex-9-Supplement-16-Environmental-ma#c33"
+        ]
+      },
+      {
+        "id": "R08",
+        "first_gold_rank": 1,
+        "top": [
+          "label-28642ad9-b839-ce3a-e063-6394a90ab866#c0",
+          "label-287930f8-c5c6-56bd-e063-6394a90ad32e#c0",
+          "label-0a29fe62-e241-4272-b91c-c1036b031cd4#c0"
+        ]
+      }
+    ]
+  },
+  "hybrid_rerank": {
+    "k": 5,
+    "queries": 11,
+    "recall_at_5": 1.0,
+    "mrr": 0.886,
+    "per_query": [
+      {
+        "id": "A01",
+        "first_gold_rank": 1,
+        "top": [
+          "label-62f39a7c-00df-4519-a8d4-39bbd0a649ed#c0",
+          "pdfB-B084_label_BLA761118_adalimumab#c198",
+          "label-2488b0bc-7b8f-4cc8-91ea-48e7ea5e8915#c3"
+        ]
+      },
+      {
+        "id": "A07",
+        "first_gold_rank": 4,
+        "top": [
+          "docA-A003_guidance_WHO-TRS-961-Annex-9-Supplement-3-Estimating-the-ca#c37",
+          "pdfA-A048_label_BLA022472_insulin-human#c76",
+          "pdfA-A086_label_BLA761358_infliximab#c122"
+        ]
+      },
+      {
+        "id": "E04",
+        "first_gold_rank": 1,
+        "top": [
+          "recallE-D-1030-2022#c1",
+          "recallE-D-0353-2026#c2",
+          "recallE-D-1361-2016#c1"
+        ]
+      },
+      {
+        "id": "R01",
+        "first_gold_rank": 1,
+        "top": [
+          "label-06dcfd36-942f-4752-86ad-4c5a6fc3e48f#c0",
+          "label-3e041ec6-811b-4f26-9303-959cb09d5f57#c0",
+          "label-0713a847-a334-4b73-af22-343aa06621b9#c0"
+        ]
+      },
+      {
+        "id": "R02",
+        "first_gold_rank": 2,
+        "top": [
+          "label-99ea856d-9562-443a-9422-1006a3cff2f4#c0",
+          "label-536a4b0a-4b7c-2d23-e063-6294a90a7b7c#c0",
+          "label-3ac85ebb-5594-59c8-77fd-df254329d151#c1"
+        ]
+      },
+      {
+        "id": "R03",
+        "first_gold_rank": 1,
+        "top": [
+          "label-41dd053d-49f6-4eb1-b9e7-3508ede82df8#c0",
+          "label-34b8fe93-ee34-4a35-9af5-5d41705a28e9#c0",
+          "label-239b4816-6a55-451b-bf40-e611be07d12f#c0"
+        ]
+      },
+      {
+        "id": "R04",
+        "first_gold_rank": 1,
+        "top": [
+          "shortageD-1544#c0",
+          "shortageD-1517#c0",
+          "shortageD-138#c0"
+        ]
+      },
+      {
+        "id": "R05",
+        "first_gold_rank": 1,
+        "top": [
+          "shortage-bce324bd33fb#c0",
+          "shortage-669ec881d1c6#c0",
+          "shortageD-87#c0"
+        ]
+      },
+      {
+        "id": "R06",
+        "first_gold_rank": 1,
+        "top": [
+          "recallE-D-0031-2021#c1",
+          "recallE-D-1495-2020#c1",
+          "recallE-D-0114-2018#c1"
+        ]
+      },
+      {
+        "id": "R07",
+        "first_gold_rank": 1,
+        "top": [
+          "label-b172773b-3905-4a1c-ad95-bab4b6126563#c0",
+          "label-da1c4de7-0e5b-4f72-97ec-7a8d368f085f#c0",
+          "label-f941fc61-f7a3-4e4a-ab7c-87c1667fa05b#c0"
+        ]
+      },
+      {
+        "id": "R08",
+        "first_gold_rank": 1,
+        "top": [
+          "label-0a29fe62-e241-4272-b91c-c1036b031cd4#c1",
+          "label-28649937-8ae1-a022-e063-6394a90aebe0#c0",
+          "label-01fd19cd-190c-4989-b733-60ba95941297#c0"
+        ]
+      }
+    ]
+  }
+}
