@@ -76,9 +76,13 @@ def demo_tools() -> None:
         "impurity_passes": {"value_pct": 0.11, "limit_pct": 0.10},
         "quarantine_cost": {"units": 40000, "unit_cost": 6.50},
         "manifest_mismatch": {"declared_units": 1200, "invoice_units": 1140},
+        "lookup_approved_products": {"drug": "cisplatin", "dosage_form": "injectable"},
     }
     for name in TOOLS:
-        print(f"- {name}({examples[name]}) = {run_tool(name, examples[name])}")
+        result = run_tool(name, examples[name])
+        if name == "lookup_approved_products":  # a table is long; show the count and the first row
+            result = f"{result['rows_found']} rows, first: {result['rows'][0]}"
+        print(f"- {name}({examples[name]}) = {result}")
 
 
 def demo_retrieval(engine: Engine, question: str) -> None:

@@ -7,3 +7,4 @@ CMS NADAC pricing,https://data.medicaid.gov,CSV,D,verified,,,public domain (US g
 WHO TRS 961 Annex 9,https://www.who.int/publications/m/item/trs961-annex9-modelguidanceforstoragetransport,PDF,A;C,verified (page),,,CC BY-NC-SA 3.0 IGO
 EMA Good Distribution Practice,https://www.ema.europa.eu/en/good-distribution-practice,web page,A;C,verified,,,check
 ICH Q10 (EMA copy),https://www.ema.europa.eu/en/documents/scientific-guideline/international-conference-harmonisation-technical-requirements-registration-pharmaceuticals-human-guideline-q10-pharmaceutical-quality-system-step-5_en.pdf,PDF,B,verified,,,check
+Drugs@FDA approved products (TE codes) for the project drugs,https://download.open.fda.gov/drug/drugsfda/drug-drugsfda-0001-of-0001.json.zip,CSV (data/tables/fda_approved_products.csv),B;D,verified,2026-11-26,8ff5e6fa08e833f8deb6e86af732af60e14336154a35b576f9bae5a4e651df81,public domain (US gov)

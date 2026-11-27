@@ -18,7 +18,7 @@ from pydantic import ValidationError
 from copilot.config import ROOT, load_settings
 from copilot.rag.retrieval import BM25Index, DenseIndex, hybrid_search, rerank
 from copilot.safety import guard_output, looks_like_injection, pre_check, redact_pii
-from copilot.schemas import Citation, CopilotResponse
+from copilot.schemas import Citation, ComputedValue, CopilotResponse
 from copilot.agent.tools import TOOLS, run_tool
 from copilot.observability.tracing import log_event
 
@@ -182,6 +182,9 @@ class Engine:
                     tool_results.append({"critic": f"schema check failed: {problems}"})
                     trace({"stage": "critic", "step": step, "ok": False, "problems": problems})
                     continue
+                # Attach the tool results ourselves: values stay exact and the model never re-types them.
+                resp.computed = [ComputedValue(tool=t["tool"], inputs=t["args"], result=t["result"])
+                                 for t in tool_results if "result" in t]
                 if resp.decision == "ANSWER" and not resp.citations and not resp.computed:
                     tool_results.append({"critic": "an ANSWER needs a citation or a computed value"})
                     trace({"stage": "critic", "step": step, "ok": False})

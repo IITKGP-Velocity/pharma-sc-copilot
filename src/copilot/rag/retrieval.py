@@ -98,13 +98,21 @@ def rerank(query: str, hits: list[tuple[str, float]], texts: dict[str, str], cha
     Turn it on with `rerank: true` in configs/settings.yaml."""
     if chat is None or len(hits) <= 1:
         return hits[:k]
+
+    # 1. Number the passages and send the model a short preview of each.
     ids = [d for d, _ in hits]
     listing = [{"n": n, "text": texts[d][:300]} for n, d in enumerate(ids, start=1)]
+    question = json.dumps({"question": query, "passages": listing})
+
+    # 2. Ask for the passage numbers in order of relevance.
     try:
         reply = chat.complete_json([{"role": "system", "content": RERANK_PROMPT},
-                                    {"role": "user", "content": json.dumps({"question": query, "passages": listing})}])
-        picked = [ids[n - 1] for n in reply.get("ranking", []) if isinstance(n, int) and 1 <= n <= len(ids)]
-    except Exception:  # model or endpoint trouble: never lose the retrieval result
+                                    {"role": "user", "content": question}])
+    except Exception:  # endpoint or JSON trouble: never lose the retrieval result
         return hits[:k]
-    order = list(dict.fromkeys(picked + ids))  # passages the model left out keep their fused order at the end
+
+    # 3. Keep only valid passage numbers; passages the model left out follow in their fused order.
+    numbers = reply.get("ranking", []) if isinstance(reply, dict) else []
+    picked = [ids[n - 1] for n in numbers if isinstance(n, int) and 1 <= n <= len(ids)]
+    order = list(dict.fromkeys(picked + ids))  # dict.fromkeys drops repeats and keeps order
     return [(d, 1.0 / (rank + 1)) for rank, d in enumerate(order[:k])]

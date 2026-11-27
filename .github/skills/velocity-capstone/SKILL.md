@@ -94,7 +94,7 @@ Review the diff against `origin/main`. Report findings grouped as blocking / sho
 ## 4. Project outcome and status
 Use only evidence from the repo or run results.
 - Quote numbers from `eval/results/run_*/summary.json` and `eval/results/retrieval_*/retrieval_summary.json`, with the run name. Do not estimate.
-  Latest: `run_20261125_201203` (decision accuracy 53%, avg latency 5.5 s) and `retrieval_20261127_104859` (recall@5 BM25 0.455, hybrid 0.909, hybrid + rerank 1.00).
+  Latest: `run_20261127_110934` (decision accuracy 78%, avg latency 8.1 s) and `retrieval_20261127_104859` (recall@5 BM25 0.455, hybrid 0.909, hybrid + rerank 1.00).
 - Report retrieval quality (`eval_retrieval.py`) separately from decision accuracy (`run_eval.py`).
 - Failure taxonomy counts come from the `label` column of `failure_log.csv`, filled by a person. `auto_label` is only a first guess.
 - Never quote numbers from `eval/demo_output/` (fake data).
