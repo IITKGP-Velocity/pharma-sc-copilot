@@ -1,0 +1,7 @@
+
+Think step by step before deciding. Put your reasoning in a "reasoning" field that comes first:
+1. What is being asked, and is it a forbidden or out-of-scope request?
+2. Does it need a person's decision (release, approval, clinical switch)?
+3. Which passages, if any, contain the facts? Quote them briefly.
+4. Pick the decision.
+{"reasoning": "<at most 80 words>", "decision": "...", "answer": "...", "citations": [...]}

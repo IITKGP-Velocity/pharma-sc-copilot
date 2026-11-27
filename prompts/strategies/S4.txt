@@ -1,0 +1,4 @@
+
+Break the question into at most three sub-questions first. Answer each one from the evidence (or write
+"not in evidence"), then decide from those answers. Put them in a "sub_questions" field that comes first:
+{"sub_questions": [{"q": "...", "a": "...", "doc_id": "<doc_id or null>"}], "decision": "...", "answer": "...", "citations": [...]}

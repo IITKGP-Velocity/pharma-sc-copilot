@@ -42,7 +42,7 @@ Test in three levels. Each level needs a little more; stop at the level you have
 
 | Level | What you can test | Needs |
 |---|---|---|
-| **A. Offline** | All 94 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
+| **A. Offline** | All 106 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
 | **B. With corpus** | Retrieval on real openFDA data, the agent in offline mode (no LLM) | internet once to download openFDA (section 4) |
 | **C. Live model** | The full agent, the whole-system demo, the 64-query evaluation | course key files and certificates (section 3) |
 
@@ -73,7 +73,7 @@ Run these in order. Each step says what a pass looks like.
 
 | Step | Command | Pass when |
 |---|---|---|
-| 1 | `python -m pytest -q` | `94 passed` |
+| 1 | `python -m pytest -q` | `106 passed` |
 | 2 | `python scripts/demo.py safety && python scripts/demo.py tools` | Output as in rows 1–2 above |
 | 3 | `python scripts/check_setup.py --live "${FLAGS[@]}"` | Both live calls `OK` (see section 3 for `FLAGS`) |
 | 4 | Unzip the team corpus bundle (section 4.1), or `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `check_setup.py` shows about 57,700 passages (bundle) or `Wrote embeddings for 5495 passages` (openFDA only, about 4 minutes) |
@@ -83,6 +83,9 @@ Run these in order. Each step says what a pass looks like.
 | 8 | Open `eval/results/run_<date>/dashboard.html` | Cards, accuracy tables, and a query table whose rows open to show each agent step |
 
 Quick check of just a few queries: `python scripts/run_eval.py --ids A02 C03 E12 "${FLAGS[@]}"`.
+
+Prompting baseline (Deliverable 2): `python scripts/run_baseline.py "${FLAGS[@]}"` compares five single-prompt
+strategies (S0-S4) on the same 64 questions and evidence; results and findings are in `docs/02_baseline.md`.
 
 ## 3. Connect to the course model
 
@@ -302,12 +305,12 @@ src/copilot/
 | `src/copilot/observability/dashboard.py` | 6. `dashboard.html` |
 | `src/copilot/runtime.py`, `config.py` | How endpoints, certificates and keys are passed; settings |
 | `src/copilot/schemas.py`, `service.py` | Answer schema (Deliverable 1); builds the engine from the settings |
-| `scripts/` | `demo`, `ask`, `run_eval`, `eval_retrieval`, `rebuild_report`, `build_corpus`, `check_setup`, `freeze_eval` |
+| `scripts/` | `demo`, `ask`, `run_eval`, `run_baseline`, `eval_retrieval`, `rebuild_report`, `build_corpus`, `check_setup`, `freeze_eval` |
 | `scripts/data_packs/` | Build the use-case data packs (`make_all.py`), load them into the corpus (`load_packs.py`), make the team bundle (`bundle.py`) |
 | `app/app.py` | Streamlit app with rate limit (from `configs/settings.yaml`) and caching |
 | `eval/gold/` | Frozen 64-query eval set + hash, retrieval gold set |
 | `docs/` | Spec, baseline, failure taxonomy, Responsible AI card, submission guide |
-| `tests/` | 94 offline tests |
+| `tests/` | 106 offline tests |
 
 ## 8. Troubleshooting
 
