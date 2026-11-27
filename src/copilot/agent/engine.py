@@ -8,6 +8,9 @@ Modes (chosen automatically from the configuration):
 Observability: every answer() call leaves its numbers in engine.last_metrics (latency, steps, LLM calls,
 tokens, tool calls, time per stage, error) and, when run_dir is given, one trace line per stage tagged
 with the query id.
+
+Multi-turn: pass history (built with remember()) to answer() so follow-ups like "is it still in shortage?"
+know what "it" is. The safety rules always judge the current question on its own.
 """
 import json
 import time
@@ -17,7 +20,7 @@ from pydantic import ValidationError
 
 from copilot.config import ROOT, load_settings
 from copilot.rag.retrieval import BM25Index, DenseIndex, hybrid_search, rerank
-from copilot.safety import guard_output, looks_like_injection, pre_check, redact_pii
+from copilot.safety import guard_output, in_scope, looks_like_injection, pre_check, redact_pii
 from copilot.schemas import Citation, ComputedValue, CopilotResponse
 from copilot.agent.tools import TOOLS, run_tool
 from copilot.observability.tracing import log_event
@@ -27,6 +30,15 @@ MAX_STEPS = int(SETTINGS.get("max_steps", 10))
 TOKEN_BUDGET = int(SETTINGS.get("token_budget", 8000))
 USE_RERANKER = bool(SETTINGS.get("rerank", False))
 PLANNER_PROMPT = (ROOT / "prompts" / "system" / "planner.txt").read_text(encoding="utf-8")
+HISTORY_TURNS = 3  # earlier turns kept for follow-up questions
+
+
+def remember(history: list[dict], question: str, resp: CopilotResponse) -> list[dict]:
+    """Return the conversation with this turn added, keeping only the last HISTORY_TURNS turns."""
+    if resp.decision == "REFUSE":  # refused text (injections, off-topic) must not steer later turns
+        return history
+    turn = {"question": redact_pii(question), "decision": resp.decision, "answer": (resp.answer or "")[:300]}
+    return (history + [turn])[-HISTORY_TURNS:]
 
 
 def _new_metrics() -> dict:
@@ -64,8 +76,9 @@ class Engine:
         retrieval = "dense + BM25" if self.dense is not None else "BM25 only"
         return f"{generation} | retrieval: {retrieval}"
 
-    def answer(self, query: str, run_dir: Path | None = None, query_id: str | None = None) -> CopilotResponse:
-        """Answer one question and record its metrics in self.last_metrics."""
+    def answer(self, query: str, run_dir: Path | None = None, query_id: str | None = None,
+               history: list[dict] | None = None) -> CopilotResponse:
+        """Answer one question and record its metrics in self.last_metrics. history: earlier turns, see remember()."""
         m = self.last_metrics = _new_metrics()
         start = time.monotonic()
         usage = getattr(self.chat, "usage", None)
@@ -77,7 +90,7 @@ class Engine:
                 log_event(run_dir, {"query_id": query_id, "ms": int((time.monotonic() - start) * 1000), **event})
 
         try:
-            return self._answer(query, trace, m)
+            return self._answer(query, trace, m, history or [])
         finally:
             m["latency_ms"] = int((time.monotonic() - start) * 1000)
             if before is not None:
@@ -87,10 +100,15 @@ class Engine:
             else:
                 m["llm_calls"] = m["steps"]        # fake chat clients in tests have no usage counter
 
-    def _answer(self, query: str, trace, m: dict) -> CopilotResponse:
+    def _answer(self, query: str, trace, m: dict, history: list[dict]) -> CopilotResponse:
         """The pipeline for one question; answer() wraps it with timing and token accounting."""
         clean = redact_pii(query)
-        decided = pre_check(clean)
+        decided = pre_check(clean)  # the rules see only the current question, never the history
+        # Exception: a follow-up like "what is its TE code?" names no drug, so the scope rule alone may
+        # borrow the topic of the previous turn. Scope is checked last, so no other rule fired here.
+        if decided is not None and decided.reason_code == "OOS" and history \
+                and in_scope(f"{history[-1]['question']} {clean}"):
+            decided = None
         if decided is not None:
             m["stopped_by"] = "precheck"
             trace({"stage": "precheck", "decision": decided.decision, "reason": decided.reason_code})
@@ -100,15 +118,17 @@ class Engine:
                                    missing_evidence="No corpus indexed. Run: python scripts/build_corpus.py --fetch")
 
         t = time.monotonic()
+        # A follow-up such as "is it still in shortage?" has no drug name, so search with the previous question too.
+        search = f"{history[-1]['question']} {clean}" if history else clean
         qvec = None
         if self.embed is not None and self.dense is not None:
             try:
-                qvec = self.embed.embed([clean])[0]
+                qvec = self.embed.embed([search])[0]
             except Exception as err:  # endpoint trouble: fall back to BM25, never crash
                 trace({"stage": "embed_error", "error": f"{type(err).__name__}: {str(err)[:200]}"})
-        hits = hybrid_search(clean, self.corpus, self.bm25, self.dense, qvec, k=20 if USE_RERANKER else 5)
+        hits = hybrid_search(search, self.corpus, self.bm25, self.dense, qvec, k=20 if USE_RERANKER else 5)
         if USE_RERANKER and hits:
-            hits = rerank(clean, hits, self.texts, self.chat, k=5)
+            hits = rerank(search, hits, self.texts, self.chat, k=5)
         m["retrieve_ms"] = int((time.monotonic() - t) * 1000)
         if not hits:
             trace({"stage": "retrieve", "hits": 0})
@@ -124,14 +144,15 @@ class Engine:
             return guard_output(resp, retrieved)
 
         try:
-            return self._agent_loop(clean, query, hits, retrieved, trace, m)
+            return self._agent_loop(clean, query, hits, retrieved, trace, m, history)
         except Exception as err:  # endpoint or parsing failure: abstain, never invent
             m["error"] = f"{type(err).__name__}: {str(err)[:200]}"
             trace({"stage": "agent_error", "error": m["error"]})
             return CopilotResponse(decision="ABSTAIN",
                                    missing_evidence="Model endpoint error. Check the endpoint and try again.")
 
-    def _agent_loop(self, clean: str, original: str, hits, retrieved: set[str], trace, m: dict) -> CopilotResponse:
+    def _agent_loop(self, clean: str, original: str, hits, retrieved: set[str], trace, m: dict,
+                    history: list[dict]) -> CopilotResponse:
         """Planner -> Executor -> Critic: up to MAX_STEPS model turns within TOKEN_BUDGET."""
         evidence = [{"doc_id": d, "text": self.texts[d][:800]} for d, _ in hits]
         if looks_like_injection(original):
@@ -142,6 +163,8 @@ class Engine:
 
         for step in range(1, MAX_STEPS + 1):
             payload = {"question": clean, "evidence": evidence, "tool_results": tool_results}
+            if history:
+                payload["conversation"] = history  # earlier turns, oldest first
             user = json.dumps(payload, ensure_ascii=False)
             used_chars += len(user)
             if used_chars > TOKEN_BUDGET * 4:  # rough: about 4 characters per token

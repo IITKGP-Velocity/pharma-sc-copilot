@@ -4,6 +4,6 @@ engine.py  the Engine: rules -> retrieval -> planner (LLM) -> tools -> critic, w
 tools.py   deterministic tools the planner can call (MKT, cost delta, demurrage, ...)
 llm.py     chat and embeddings clients for the course endpoints (per-port CA, retries, token counts)
 """
-from copilot.agent.engine import Engine
+from copilot.agent.engine import Engine, remember
 
-__all__ = ["Engine"]
+__all__ = ["Engine", "remember"]
