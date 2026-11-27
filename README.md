@@ -42,7 +42,7 @@ Test in three levels. Each level needs a little more; stop at the level you have
 
 | Level | What you can test | Needs |
 |---|---|---|
-| **A. Offline** | All 93 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
+| **A. Offline** | All 94 unit tests, safety rules, tools, observability (dashboard, failure log) | the install above |
 | **B. With corpus** | Retrieval on real openFDA data, the agent in offline mode (no LLM) | internet once to download openFDA (section 4) |
 | **C. Live model** | The full agent, the whole-system demo, the 64-query evaluation | course key files and certificates (section 3) |
 
@@ -71,7 +71,7 @@ Run these in order. Each step says what a pass looks like.
 
 | Step | Command | Pass when |
 |---|---|---|
-| 1 | `python -m pytest -q` | `93 passed` |
+| 1 | `python -m pytest -q` | `94 passed` |
 | 2 | `python scripts/demo.py safety && python scripts/demo.py tools` | Output as in rows 1–2 above |
 | 3 | `python scripts/check_setup.py --live "${FLAGS[@]}"` | Both live calls `OK` (see section 3 for `FLAGS`) |
 | 4 | `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `Wrote embeddings for 5495 passages` (about 4 minutes) |
@@ -253,7 +253,7 @@ src/copilot/
 | `app/app.py` | Streamlit app with rate limit (from `configs/settings.yaml`) and caching |
 | `eval/gold/` | Frozen 64-query eval set + hash, retrieval gold set |
 | `docs/` | Spec, baseline, failure taxonomy, Responsible AI card, submission guide |
-| `tests/` | 93 offline tests |
+| `tests/` | 94 offline tests |
 
 ## 8. Troubleshooting
 

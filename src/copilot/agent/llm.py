@@ -135,7 +135,7 @@ class EmbedClient(_OpenAICompatible):
             out.extend(item["embedding"] for item in sorted(data["data"], key=lambda d: d["index"]))
         return out
 
-    def _embed_one(self, text: str, tries: int = 4) -> list[float]:
+    def _embed_one(self, text: str, tries: int = 10) -> list[float]:
         """Embed one text; if it is over the server's token limit, embed a shortened copy.
         Table-heavy text can exceed 512 tokens at 800 characters. BM25 still searches the full passage."""
         for _ in range(tries):
@@ -146,7 +146,9 @@ class EmbedClient(_OpenAICompatible):
                 if not m:
                     raise
                 limit, given = int(m.group(1)), int(m.group(2))
-                text = text[: max(1, int(len(text) * (limit - 12) / given))]
+                # Dot leaders and symbols tokenize unevenly, so the ratio alone can converge slowly: cut at least 10%.
+                keep = min(int(len(text) * (limit - 12) / given), int(len(text) * 0.9))
+                text = text[: max(1, keep)]
         raise RuntimeError("could not shorten text below the embedding token limit")
 
 

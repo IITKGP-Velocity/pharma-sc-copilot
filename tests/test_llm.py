@@ -72,6 +72,18 @@ def test_embed_shortens_only_texts_over_the_token_limit():
     assert vectors[1][0] <= 50                          # the long text was shortened to fit
 
 
+def test_embed_shortening_converges_when_token_counts_barely_drop():
+    class Stubborn(_TokenLimitedServer):
+        def _post(self, path, payload):
+            text = payload["input"][0]
+            if len(payload["input"]) == 1 and len(text) > 30:  # dot-leader text: count stays just over the limit
+                raise requests.HTTPError("HTTP 422 from /embeddings: `inputs` must have less than 50 tokens. Given: 51")
+            if len(payload["input"]) > 1:
+                raise requests.HTTPError("HTTP 422 from /embeddings: `inputs` must have less than 50 tokens. Given: 51")
+            return {"data": [{"index": 0, "embedding": [float(len(text))]}]}
+    assert Stubborn().embed(["." * 200, "x"])[0][0] <= 30
+
+
 def test_embed_reraises_other_http_errors():
     class Broken(_TokenLimitedServer):
         def _post(self, path, payload):
