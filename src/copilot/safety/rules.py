@@ -106,9 +106,10 @@ def pre_check(query: str) -> CopilotResponse | None:
 
 def guard_output(resp: CopilotResponse, retrieved_ids: set[str]) -> CopilotResponse:
     """Post-check: redact personal data, drop citations to documents that were not retrieved,
-    and downgrade an ANSWER with no support to ABSTAIN (R8). A model OOS verdict gets the standard reply."""
+    and downgrade an ANSWER with no support to ABSTAIN (R8). Scope is decided by the rules before the model
+    runs, so a model "out of scope" verdict on an in-scope question becomes ABSTAIN, not a refusal."""
     if resp.reason_code == "OOS":
-        return CopilotResponse(decision="REFUSE", reason_code="OOS", answer=OUT_OF_SCOPE)
+        return CopilotResponse(decision="ABSTAIN", missing_evidence="Not enough evidence to answer this question.")
     resp.answer = redact_pii(resp.answer)
     resp.citations = [c for c in resp.citations if c.doc_id in retrieved_ids]
     if resp.decision == "ANSWER" and not resp.citations and not resp.computed:
