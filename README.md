@@ -77,7 +77,7 @@ Run these in order. Each step says what a pass looks like.
 | 2 | `python scripts/demo.py safety && python scripts/demo.py tools` | Output as in rows 1–2 above |
 | 3 | `python scripts/check_setup.py --live "${FLAGS[@]}"` | Both live calls `OK` (see section 3 for `FLAGS`) |
 | 4 | Unzip the team corpus bundle (section 4.1), or `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `check_setup.py` shows about 57,700 passages (bundle) or `Wrote embeddings for 5495 passages` (openFDA only, about 4 minutes) |
-| 5 | `python scripts/demo.py all "${FLAGS[@]}"` | Five cases with these decisions: cited answer → `ANSWER` with a citation; tool calculation → `ANSWER` with `mkt` 4.61; escalation → `ESCALATE` to QP; injection → `REFUSE` R6; PII → name and phone shown as `[REDACTED]` |
+| 5 | `python scripts/demo.py all "${FLAGS[@]}"` | Six cases with these decisions: cited answer → `ANSWER` with a citation; tool calculation → `ANSWER` with `mkt` 4.61; escalation → `ESCALATE` to QP; injection → `REFUSE` R6; PII → name and phone shown as `[REDACTED]`; customs prediction → `ABSTAIN` R7 |
 | 6 | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | Hybrid recall@5 close to 1.0 (section 6) |
 | 7 | `python scripts/run_eval.py "${FLAGS[@]}"` | Finishes all 64 queries (about 6 minutes); accuracy near the latest result in section 6 |
 | 8 | Open `eval/results/run_<date>/dashboard.html` | Cards, accuracy tables, and a query table whose rows open to show each agent step |
