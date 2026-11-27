@@ -1,4 +1,6 @@
 """Agent loop: modes, rule pre-check, tool calls, critic checks, step cap and error handling."""
+import pytest
+
 from copilot.agent import Engine
 from copilot.schemas import CopilotResponse
 from conftest import FakeEmbed, ScriptedChat
@@ -39,6 +41,9 @@ def test_agent_calls_tool_then_answers(corpus):
     ])
     r = Engine(corpus, chat=chat).answer("storage temperature unopened adalimumab pens")
     assert r.decision == "ANSWER" and r.computed[0].tool == "mkt"
+    # The engine replaces the model's copy (temps_c [2.1], result 4.6) with the real tool call.
+    assert r.computed[0].inputs["temps_c"] == [2.1, 3.4, 9.8, 4.0, 2.5, 3.0]
+    assert r.computed[0].result == pytest.approx(4.6, abs=0.2)
     assert chat.calls == 2
 
 

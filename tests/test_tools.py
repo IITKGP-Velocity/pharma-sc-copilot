@@ -44,3 +44,26 @@ def test_cost_delta_and_markup():
 def test_quarantine_and_manifest():
     assert tools.quarantine_cost(40_000, 6.50) == 260_000
     assert tools.manifest_mismatch(1200, 1140) == 60
+
+
+def test_lookup_finds_approved_products_with_te_codes():
+    out = tools.run_tool("lookup_approved_products", {"drug": "Cisplatin", "dosage_form": "injectable"})
+    assert 0 < len(out["rows"]) <= 5 <= out["rows_found"]
+    assert {"application_number", "sponsor_name", "te_code", "reference_drug"} <= set(out["rows"][0])
+    assert out["rows"][0]["marketing_status"] != "Discontinued"
+
+
+def test_lookup_dosage_form_narrows_the_search():
+    every_form = tools.run_tool("lookup_approved_products", {"drug": "morphine sulfate"})["rows_found"]
+    tablets = tools.run_tool("lookup_approved_products", {"drug": "morphine sulfate", "dosage_form": "tablet"})
+    assert 0 < tablets["rows_found"] < every_form
+
+
+def test_lookup_returns_no_rows_for_a_drug_not_in_the_table():
+    # B01 asks about amlodipine, which the table does not hold: the agent must abstain, not guess.
+    assert tools.run_tool("lookup_approved_products", {"drug": "amlodipine"})["rows_found"] == 0
+
+
+def test_lookup_treats_sql_in_the_argument_as_plain_text():
+    out = tools.run_tool("lookup_approved_products", {"drug": "cisplatin' OR '1'='1"})
+    assert out["rows_found"] == 0

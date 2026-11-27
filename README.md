@@ -55,7 +55,7 @@ Run a component's unit tests to check it works, and its demo to see what it does
 | # | Component (code) | Unit tests | Demo | What you should see | Level |
 |---|---|---|---|---|---|
 | 1 | **Safety rules + redaction** (`safety/`) | `python -m pytest tests/test_safety.py -q` → 29 passed | `python scripts/demo.py safety` | A release question → `ESCALATE (R1, to QP)`; injection → `REFUSE (R6)`; "driver Ravi Kumar, phone 9876543210" → `driver [REDACTED], phone [REDACTED]` | A |
-| 2 | **Tools** (`agent/tools.py`) | `python -m pytest tests/test_tools.py -q` → 8 passed | `python scripts/demo.py tools` | `mkt(...) = 4.61`, `demurrage(...) = 450`, `impurity_passes(0.11, 0.10) = False` | A |
+| 2 | **Tools** (`agent/tools.py`) | `python -m pytest tests/test_tools.py -q` → 12 passed | `python scripts/demo.py tools` | `mkt(...) = 4.61`, `demurrage(...) = 450`, `impurity_passes(0.11, 0.10) = False` | A |
 | 3 | **Corpus** (`rag/corpus.py`) | `python -m pytest tests/test_corpus.py -q` → 5 passed | `python scripts/build_corpus.py --fetch` | `Wrote 5495 passages from 548 documents` | A / B |
 | 4 | **Retrieval** (`rag/retrieval.py`) | `python -m pytest tests/test_retrieval.py -q` → 6 passed | `python scripts/demo.py retrieval "How should vancomycin be stored?"` | 5 passages, all vancomycin labels; header says `BM25 only` or `dense + BM25` | A / B |
 | 5 | **Agent loop** (`agent/engine.py`) | `python -m pytest tests/test_agent.py -q` → 11 passed | `python scripts/demo.py agent "What is the storage temperature for unopened adalimumab pens?"` | Every step with its time, then the JSON answer and `latency … steps … LLM calls … tokens …` | A / B / C |
@@ -251,21 +251,21 @@ Limits: the web app and `ask.py` fill `last_metrics` but do not write trace file
 `run_eval.py` to record a trace. The optional `[tracing]` extra (Arize Phoenix) in `pyproject.toml` is not
 wired in; the JSON files above are the trace store.
 
-## 6. Latest results (live model, 2026-11-25)
+## 6. Latest results (live model, 2026-11-27)
 
-**Decisions** (`eval/results/run_20261125_201203`):
+**Decisions** (`eval/results/run_20261127_110934`; full corpus, reranker on, table lookup tool):
 
 | Type | Correct | Type | Correct |
 |---|---|---|---|
-| Prompt injection | 4/4 | Calculation | 7/11 |
-| Abstain | 7/8 | Answer | 4/22 |
-| Escalate | 7/9 | Out of scope | 1/2 |
-| Refuse | 4/5 | PII | 0/3 |
+| Prompt injection | 4/4 | Calculation | 10/11 |
+| Abstain | 5/8 | Answer | 16/22 |
+| Escalate | 8/9 | Out of scope | 2/2 |
+| Refuse | 4/5 | PII | 1/3 |
 
-- Decision accuracy 53% (34/64). Without the model (rules only) it is 30%.
-- Latency: avg 5.5 s, p95 12.0 s.
-- About 2,430 tokens and 1.2 LLM calls per agent query.
-- 14 of 64 queries were decided by the rules with no model call.
+- Decision accuracy 78% (50/64), up from 53% on 2026-11-25. By use case: A 12/14, B 12/13, C 10/13, D 8/12, E 8/12.
+- Latency: avg 8.1 s, p95 14.3 s (the reranker adds one model call).
+- About 4,740 tokens and 2.2 LLM calls per agent query.
+- 15 of 64 queries were decided by the rules with no model call.
 
 **Retrieval** (`eval/results/retrieval_20261127_104859`, 11 gold queries in `eval/gold/retrieval_gold.json`, full corpus of 57,731 passages):
 
@@ -274,9 +274,9 @@ wired in; the JSON files above are the trace store.
 - Hybrid + rerank (the course chat model reorders the top 20): recall@5 1.00, MRR 0.886. The reranker is on by default (`rerank: true`).
 
 **Known weak spots:**
-- Most wrong ANSWER items need data the corpus does not have (Orange Book, products outside the 20 drugs, shortages beyond the first 100).
-- On PII items, the model abstains instead of summarising, although the redaction itself works.
-- 3 queries failed because the model wrote invalid JSON.
+- 2 queries (E09, E10) failed with HTTP 429: the shared course key allows only a few requests at once.
+- B01 (amlodipine) is labelled ANSWER, but the table has no amlodipine, so the copilot abstains, as the gold text asks.
+- On PII items, the model often abstains instead of summarising, although the redaction itself works.
 
 ## 7. Project map
 
@@ -298,7 +298,7 @@ src/copilot/
 | `src/copilot/rag/corpus.py` | 2. openFDA download, 800-character passages, raw files with SHA-256 hashes |
 | `src/copilot/rag/retrieval.py` | 2. BM25 + dense + reciprocal rank fusion, reranker using the course chat model (`rerank: true`) |
 | `src/copilot/agent/engine.py` | 3–5. Planner → Executor → Critic loop, 10-step cap, token budget, per-query metrics |
-| `src/copilot/agent/tools.py` | 4. Deterministic tools |
+| `src/copilot/agent/tools.py` | 4. Deterministic tools: calculators and a SQL lookup on the FDA approved-products table (`data/tables/`) |
 | `src/copilot/agent/llm.py` | Chat and embeddings clients (per-port CA, retries, token counts) |
 | `src/copilot/observability/tracing.py` | 6. Writes `trace.jsonl` |
 | `src/copilot/observability/metrics.py` | 6. `results.jsonl` rows, run summary, recall@k and MRR |

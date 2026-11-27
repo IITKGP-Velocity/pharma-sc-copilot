@@ -1,7 +1,16 @@
-"""Deterministic tools. The model chooses a tool and its arguments; these functions do the arithmetic."""
+"""Deterministic tools. The model chooses a tool and its arguments; these functions do the arithmetic
+and the table lookups, so numbers and identifiers never come from the model's memory."""
+import csv
 import math
+import sqlite3
+
+from copilot.config import ROOT
 
 R_J_PER_MOL_K = 8.314
+
+# FDA approved-products table (Drugs@FDA, public domain): one row per approved product, with its TE code.
+PRODUCTS_CSV = ROOT / "data" / "tables" / "fda_approved_products.csv"
+_DB = None  # in-memory SQLite copy of the table, built on first use
 
 
 def mkt_celsius(temps_c: list[float], delta_h_kj: float = 83.144) -> float:
@@ -47,6 +56,39 @@ def manifest_mismatch(declared_units: int, invoice_units: int) -> int:
     return declared_units - invoice_units
 
 
+def _products_db() -> sqlite3.Connection:
+    """Load the CSV into an in-memory SQLite table once, then reuse it."""
+    global _DB
+    if _DB is None:
+        with PRODUCTS_CSV.open(encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+        columns = list(rows[0].keys())  # column names come from our own CSV header, not from the model
+        _DB = sqlite3.connect(":memory:", check_same_thread=False)
+        _DB.row_factory = sqlite3.Row  # rows can then be turned into dicts
+        _DB.execute(f"CREATE TABLE products ({', '.join(columns)})")
+        _DB.executemany(f"INSERT INTO products VALUES ({', '.join('?' * len(columns))})",
+                        [[r[c] for c in columns] for r in rows])
+    return _DB
+
+
+# Fixed SQL. The model's words only fill the two ? placeholders, so it can never change the query.
+LOOKUP_SQL = """
+    SELECT application_number, sponsor_name, active_ingredients, marketing_status, te_code, reference_drug
+    FROM products
+    WHERE lower(drug) = lower(?)
+      AND lower(dosage_form) LIKE '%' || lower(?) || '%'
+    ORDER BY marketing_status = 'Discontinued', application_number
+"""  # the ORDER BY puts products still on the market first
+
+
+def lookup_approved_products(drug: str, dosage_form: str = "") -> dict:
+    """Find FDA-approved products for a drug: applicant, TE code, reference drug and marketing status.
+    No rows means the drug is not in the table, so the agent must abstain rather than guess."""
+    rows = [dict(r) for r in _products_db().execute(LOOKUP_SQL, (str(drug).strip(), str(dosage_form).strip()))]
+    # Return the count plus the first 5 rows only, to keep the planner's next prompt short.
+    return {"source": "FDA Drugs@FDA products table", "rows_found": len(rows), "rows": rows[:5]}
+
+
 # Tool registry: name -> (function, required argument names). The agent may only call these.
 TOOLS = {
     "mkt": (mkt_celsius, ["temps_c"]),
@@ -56,7 +98,11 @@ TOOLS = {
     "markup_percent": (markup_percent, ["price", "reference"]),
     "quarantine_cost": (quarantine_cost, ["units", "unit_cost"]),
     "manifest_mismatch": (manifest_mismatch, ["declared_units", "invoice_units"]),
+    "lookup_approved_products": (lookup_approved_products, ["drug"]),
 }
+
+# Extra arguments a tool accepts when the model supplies them.
+OPTIONAL = {"lookup_approved_products": ["dosage_form"]}
 
 
 def run_tool(name: str, args: dict):
@@ -67,4 +113,5 @@ def run_tool(name: str, args: dict):
     missing = [a for a in required if a not in args]
     if missing:
         raise ValueError(f"tool {name} missing arguments: {missing}")
-    return func(**{a: args[a] for a in required})
+    allowed = required + OPTIONAL.get(name, [])
+    return func(**{a: args[a] for a in allowed if a in args})
