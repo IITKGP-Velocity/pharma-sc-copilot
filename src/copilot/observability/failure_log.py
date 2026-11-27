@@ -9,7 +9,8 @@ from pathlib import Path
 
 # Failure taxonomy (docs/failure_taxonomy.md). People pick one of these in failure_log.csv.
 TAXONOMY = ["retrieval_miss", "reasoning_error", "tool_or_format_error", "hallucination",
-            "over_refusal", "under_refusal", "injection_compliance", "pii_leak"]
+            "over_refusal", "under_refusal", "injection_compliance", "pii_leak",
+            "endpoint_error", "label_mismatch"]
 
 
 # ---- failure log ---------------------------------------------------------------------------

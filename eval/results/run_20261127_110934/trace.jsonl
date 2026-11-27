@@ -1,0 +1,180 @@
+{"ts": 1795757976.2944598, "query_id": "A01", "ms": 1808, "stage": "retrieve", "hits": ["label-62f39a7c-00df-4519-a8d4-39bbd0a649ed#c0", "pdfB-B084_label_BLA761118_adalimumab#c198", "label-2488b0bc-7b8f-4cc8-91ea-48e7ea5e8915#c3", "label-2d19a877-1f5a-4731-800a-dddadc424080#c4", "label-12f609c9-2088-bb05-e063-6394a90a9ecc#c4"]}
+{"ts": 1795757983.805891, "query_id": "A01", "ms": 9319, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795757983.809191, "query_id": "A01", "ms": 9323, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795757986.2343092, "query_id": "A02", "ms": 2418, "stage": "retrieve", "hits": ["docA-A008_guidance_WHO-TRS-961-Annex-9-Supplement-8-Temperature-mappi#c53", "docA-A013_guidance_WHO-TRS-961-Annex-9-Supplement-13-Qualification-of#c47", "pdfA-A007_study_NISTIR-7656_ref#c19", "pdfA-A008_study_NISTIR-7753_ref#c21", "pdfA-A007_study_NISTIR-7656_ref#c20"]}
+{"ts": 1795757987.876731, "query_id": "A02", "ms": 4060, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795757987.877862, "query_id": "A02", "ms": 4062, "stage": "executor", "step": 1, "tool": "mkt", "result": {"tool": "mkt", "args": {"temps_c": [2.1, 3.4, 9.8, 4.0, 2.5, 3.0], "delta_h": 83.144}, "result": 4.614557812433361}}
+{"ts": 1795757993.2516658, "query_id": "A02", "ms": 9435, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795757993.25345, "query_id": "A02", "ms": 9437, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795757993.26417, "query_id": "A03", "ms": 0, "stage": "precheck", "decision": "ESCALATE", "reason": "R1"}
+{"ts": 1795757993.279974, "query_id": "A04", "ms": 0, "stage": "precheck", "decision": "ESCALATE", "reason": "R1"}
+{"ts": 1795757996.29154, "query_id": "A05", "ms": 3004, "stage": "retrieve", "hits": ["docA-A008_guidance_WHO-TRS-961-Annex-9-Supplement-8-Temperature-mappi#c0", "docA-A008_guidance_WHO-TRS-961-Annex-9-Supplement-8-Temperature-mappi#c13", "docA-A008_guidance_WHO-TRS-961-Annex-9-Supplement-8-Temperature-mappi#c38", "docA-A008_guidance_WHO-TRS-961-Annex-9-Supplement-8-Temperature-mappi#c15", "docA-A008_guidance_WHO-TRS-961-Annex-9-Supplement-8-Temperature-mappi#c11"]}
+{"ts": 1795758004.1595688, "query_id": "A05", "ms": 10872, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758004.171697, "query_id": "A05", "ms": 10884, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758007.24266, "query_id": "A06", "ms": 3063, "stage": "retrieve", "hits": ["pdfA-A007_study_NISTIR-7656_ref#c98", "pdfA-A008_study_NISTIR-7753_ref#c87", "docA-A007_guidance_WHO-TRS-961-Annex-9-Supplement-7-Qualification-of-#c62", "docA-A006_guidance_WHO-TRS-961-Annex-9-Supplement-6-Temperature-and-h#c9", "docA-A007_guidance_WHO-TRS-961-Annex-9-Supplement-7-Qualification-of-#c24"]}
+{"ts": 1795758015.281217, "query_id": "A06", "ms": 11102, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758015.284069, "query_id": "A06", "ms": 11105, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758018.454453, "query_id": "A07", "ms": 3165, "stage": "retrieve", "hits": ["pdfA-A048_label_BLA022472_insulin-human#c76", "pdfB-B017_quality_review_BLA761080_filgrastim#c350", "pdfB-B017_quality_review_BLA761080_filgrastim#c351", "pdfA-A086_label_BLA761358_infliximab#c122", "docA-A012_guidance_WHO-TRS-961-Annex-9-Supplement-12-Temperature-cont#c15"]}
+{"ts": 1795758026.2871182, "query_id": "A07", "ms": 10998, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758026.296431, "query_id": "A07", "ms": 11007, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758029.476309, "query_id": "A08", "ms": 3163, "stage": "retrieve", "hits": ["pdfA-A008_study_NISTIR-7753_ref#c57", "pdfB-B091_label_BLA761140_rituximab#c56", "docA-A008_guidance_WHO-TRS-961-Annex-9-Supplement-8-Temperature-mappi#c44", "docA-A001_guidance_WHO-TRS-961-Annex-9-Model-guidance-for-the-storage#c43", "docA-A006_guidance_WHO-TRS-961-Annex-9-Supplement-6-Temperature-and-h#c29"]}
+{"ts": 1795758030.450399, "query_id": "A08", "ms": 4137, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758030.456962, "query_id": "A08", "ms": 4144, "stage": "executor", "step": 1, "tool": "mkt", "result": {"tool": "mkt", "args": {"temps_c": [4, 5, 6, 14]}, "result": 8.305803446903951}}
+{"ts": 1795758036.432331, "query_id": "A08", "ms": 10119, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758036.4385831, "query_id": "A08", "ms": 10125, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758036.453996, "query_id": "A09", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R6"}
+{"ts": 1795758061.4072058, "query_id": "A10", "ms": 24939, "stage": "retrieve", "hits": ["docA-A001_guidance_WHO-TRS-961-Annex-9-Model-guidance-for-the-storage#c37", "docA-A001_guidance_WHO-TRS-961-Annex-9-Model-guidance-for-the-storage#c43", "docA-A001_guidance_WHO-TRS-961-Annex-9-Model-guidance-for-the-storage#c42", "docA-A015_guidance_WHO-TRS-961-Annex-9-Supplement-15-Temperature-and-#c24", "docA-A006_guidance_WHO-TRS-961-Annex-9-Supplement-6-Temperature-and-h#c11"]}
+{"ts": 1795758069.410382, "query_id": "A10", "ms": 32942, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758069.422231, "query_id": "A10", "ms": 32954, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758072.584348, "query_id": "A11", "ms": 3142, "stage": "retrieve", "hits": ["pdfA-A007_study_NISTIR-7656_ref#c34", "pdfA-A008_study_NISTIR-7753_ref#c118", "pdfA-A056_label_BLA103795_etanercept#c180", "pdfB-B069_label_BLA761024_adalimumab#c232", "pdfA-A048_label_BLA022472_insulin-human#c76"]}
+{"ts": 1795758080.225492, "query_id": "A11", "ms": 10783, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758080.2354171, "query_id": "A11", "ms": 10793, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795758082.206683, "query_id": "A12", "ms": 1948, "stage": "retrieve", "hits": ["docA-A013_guidance_WHO-TRS-961-Annex-9-Supplement-13-Qualification-of#c47", "docA-A012_guidance_WHO-TRS-961-Annex-9-Supplement-12-Temperature-cont#c51", "docC-C023_guidance_WHO-TRS-961-Annex-9-Supplement-12-Temperature-cont#c51", "docA-A012_guidance_WHO-TRS-961-Annex-9-Supplement-12-Temperature-cont#c39", "docC-C023_guidance_WHO-TRS-961-Annex-9-Supplement-12-Temperature-cont#c39"]}
+{"ts": 1795758090.695534, "query_id": "A12", "ms": 10437, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758090.7071989, "query_id": "A12", "ms": 10449, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758093.7947478, "query_id": "A13", "ms": 3073, "stage": "retrieve", "hits": ["pdfB-B017_quality_review_BLA761080_filgrastim#c350", "pdfA-A011_quality_review_BLA022472_insulin-human#c52", "pdfB-B017_quality_review_BLA761080_filgrastim#c347", "pdfB-B026_quality_review_BLA761081_trastuzumab#c85", "pdfB-B026_quality_review_BLA761081_trastuzumab#c218"]}
+{"ts": 1795758100.306108, "query_id": "A13", "ms": 9585, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758100.312979, "query_id": "A13", "ms": 9592, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758103.406492, "query_id": "A14", "ms": 3077, "stage": "retrieve", "hits": ["docA-A001_guidance_WHO-TRS-961-Annex-9-Model-guidance-for-the-storage#c115", "docA-A003_guidance_WHO-TRS-961-Annex-9-Supplement-3-Estimating-the-ca#c35", "pdfA-A007_study_NISTIR-7656_ref#c99", "pdfA-A007_study_NISTIR-7656_ref#c25", "pdfA-A008_study_NISTIR-7753_ref#c30"]}
+{"ts": 1795758113.1608179, "query_id": "A14", "ms": 12832, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758113.169766, "query_id": "A14", "ms": 12841, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758116.174932, "query_id": "B01", "ms": 2987, "stage": "retrieve", "hits": ["htsC-2039#c0", "pdfB-B047_approval_letter_ANDA211880_epinephrine#c2", "pdfB-B048_approval_letter_ANDA207568_epinephrine#c1", "pdfB-B046_approval_letter_ANDA219239_epinephrine#c1", "pdfB-B047_approval_letter_ANDA211880_epinephrine#c1"]}
+{"ts": 1795758117.07357, "query_id": "B01", "ms": 3886, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758117.0982049, "query_id": "B01", "ms": 3911, "stage": "executor", "step": 1, "tool": "lookup_approved_products", "result": {"tool": "lookup_approved_products", "args": {"drug": "amlodipine", "dosage_form": "tablet"}, "result": {"source": "FDA Drugs@FDA products table", "rows_found": 0, "rows": []}}}
+{"ts": 1795758125.57657, "query_id": "B01", "ms": 12389, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758125.58605, "query_id": "B01", "ms": 12399, "stage": "critic", "step": 2, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758128.752981, "query_id": "B02", "ms": 3148, "stage": "retrieve", "hits": ["docB-B006_guidance_ICH-Q3B-R2-Impurities-in-new-drug-products#c32", "docB-B006_guidance_ICH-Q3B-R2-Impurities-in-new-drug-products#c29", "pdfA-A012_quality_review_NDA211939_teriparatide#c40", "pdfA-A012_quality_review_NDA211939_teriparatide#c39", "pdfB-B020_quality_review_BLA761111_pegfilgrastim#c164"]}
+{"ts": 1795758129.929379, "query_id": "B02", "ms": 4324, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758129.938688, "query_id": "B02", "ms": 4334, "stage": "executor", "step": 1, "tool": "impurity_passes", "result": {"tool": "impurity_passes", "args": {"value_pct": 0.42, "limit_pct": 0.2}, "result": false}}
+{"ts": 1795758135.768322, "query_id": "B02", "ms": 10163, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758135.777768, "query_id": "B02", "ms": 10173, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758138.8901062, "query_id": "B03", "ms": 3093, "stage": "retrieve", "hits": ["docC-C008_import_alert_FDA-Import-Alert-66-66-revised-10-22-2024-APIs-Tha#c5", "docC-C008_import_alert_FDA-Import-Alert-66-66-revised-10-22-2024-APIs-Tha#c10", "docC-C008_import_alert_FDA-Import-Alert-66-66-revised-10-22-2024-APIs-Tha#c4", "docC-C010_import_alert_FDA-Import-Alert-66-72-revised-10-15-2026-Detentio#c13", "docC-C019_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c414"]}
+{"ts": 1795758147.2355788, "query_id": "B03", "ms": 11439, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758147.2440472, "query_id": "B03", "ms": 11447, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795758150.410895, "query_id": "B04", "ms": 3150, "stage": "retrieve", "hits": ["docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c23", "docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c74", "docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c72", "docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c70", "docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c110"]}
+{"ts": 1795758164.1801841, "query_id": "B04", "ms": 16919, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758164.190825, "query_id": "B04", "ms": 16930, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758167.2260952, "query_id": "B05", "ms": 3018, "stage": "retrieve", "hits": ["docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c102", "pdfB-B005_regulation_21-CFR-Part-211_cfr#c39", "docE-E005_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c39", "docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c39", "docB-B001_guidance_ICH-Q7-Good-manufacturing-practice-guide-for-activ#c101"]}
+{"ts": 1795758173.4958131, "query_id": "B05", "ms": 9288, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758173.5043788, "query_id": "B05", "ms": 9297, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758173.5218089, "query_id": "B06", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R2"}
+{"ts": 1795758176.566155, "query_id": "B07", "ms": 3028, "stage": "retrieve", "hits": ["docB-B005_guidance_ICH-Q3A-R2-Impurities-in-new-drug-substances#c32", "docB-B005_guidance_ICH-Q3A-R2-Impurities-in-new-drug-substances#c21", "docB-B005_guidance_ICH-Q3A-R2-Impurities-in-new-drug-substances#c30", "docB-B005_guidance_ICH-Q3A-R2-Impurities-in-new-drug-substances#c27", "docB-B005_guidance_ICH-Q3A-R2-Impurities-in-new-drug-substances#c15"]}
+{"ts": 1795758182.195963, "query_id": "B07", "ms": 8657, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758182.203817, "query_id": "B07", "ms": 8665, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758185.2050629, "query_id": "B08", "ms": 2985, "stage": "retrieve", "hits": ["docB-B002_guidance_ICH-Q9-R1-Quality-risk-management#c9", "docB-B002_guidance_ICH-Q9-R1-Quality-risk-management#c20", "docB-B002_guidance_ICH-Q9-R1-Quality-risk-management#c7", "docB-B002_guidance_ICH-Q9-R1-Quality-risk-management#c44", "docB-B002_guidance_ICH-Q9-R1-Quality-risk-management#c36"]}
+{"ts": 1795758190.1669672, "query_id": "B08", "ms": 7946, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758190.17448, "query_id": "B08", "ms": 7954, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758192.879915, "query_id": "B09", "ms": 2689, "stage": "retrieve", "hits": ["docB-B003_guidance_ICH-Q10-Pharmaceutical-quality-system#c1", "docB-B003_guidance_ICH-Q10-Pharmaceutical-quality-system#c0", "docB-B003_guidance_ICH-Q10-Pharmaceutical-quality-system#c8", "docB-B003_guidance_ICH-Q10-Pharmaceutical-quality-system#c12", "docB-B003_guidance_ICH-Q10-Pharmaceutical-quality-system#c11"]}
+{"ts": 1795758199.026175, "query_id": "B09", "ms": 8836, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758199.031019, "query_id": "B09", "ms": 8841, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758199.039221, "query_id": "B10", "ms": 0, "stage": "precheck", "decision": "ESCALATE", "reason": "R1"}
+{"ts": 1795758199.046478, "query_id": "B11", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R6"}
+{"ts": 1795758202.2231302, "query_id": "B12", "ms": 3171, "stage": "retrieve", "hits": ["docC-C014_import_alert_FDA-Import-Alert-66-80-revised-11-25-2026-Detentio#c13", "docC-C011_import_alert_FDA-Import-Alert-66-76-revised-03-26-2025-Detentio#c7", "docC-C012_import_alert_FDA-Import-Alert-66-78-revised-07-09-2026-Detentio#c3", "docC-C014_import_alert_FDA-Import-Alert-66-80-revised-11-25-2026-Detentio#c14", "docC-C014_import_alert_FDA-Import-Alert-66-80-revised-11-25-2026-Detentio#c0"]}
+{"ts": 1795758208.600875, "query_id": "B12", "ms": 9548, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758208.608629, "query_id": "B12", "ms": 9556, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758211.646276, "query_id": "B13", "ms": 3018, "stage": "retrieve", "hits": ["docD-D001_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c27", "docE-E003_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c27", "pdfB-B008_regulation_21-CFR-Part-320_cfr#c16", "docD-D002_regulation_21-CFR-Part-320-Bioavailability-and-bioequivalence#c16", "pdfB-B007_regulation_21-CFR-Part-314_cfr#c37"]}
+{"ts": 1795758218.423955, "query_id": "B13", "ms": 9796, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758218.43041, "query_id": "B13", "ms": 9802, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758221.681897, "query_id": "C01", "ms": 3239, "stage": "retrieve", "hits": ["docC-C022_regulation_19-CFR-Part-151-Customs-examination-sampling-and-t#c143", "docC-C021_regulation_19-CFR-Part-141-Customs-entry-of-merchandise#c73", "docC-C021_regulation_19-CFR-Part-141-Customs-entry-of-merchandise#c189", "htsC-1768#c0", "pdfA-A097_label_BLA203314_insulin-degludec#c108"]}
+{"ts": 1795758227.29666, "query_id": "C01", "ms": 8854, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758227.306984, "query_id": "C01", "ms": 8864, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795758230.486916, "query_id": "C02", "ms": 3161, "stage": "retrieve", "hits": ["docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c19", "pdfB-B005_regulation_21-CFR-Part-211_cfr#c19", "docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c0", "docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c5", "docE-E005_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c5"]}
+{"ts": 1795758239.0550232, "query_id": "C02", "ms": 11729, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758239.066834, "query_id": "C02", "ms": 11741, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758242.121525, "query_id": "C03", "ms": 3033, "stage": "retrieve", "hits": ["docC-C004_import_alert_FDA-Import-Alert-57-22-revised-05-29-2026-Detentio#c6", "docC-C007_import_alert_FDA-Import-Alert-66-57-revised-03-23-2026-Detentio#c5", "docC-C010_import_alert_FDA-Import-Alert-66-72-revised-10-15-2026-Detentio#c7", "docC-C010_import_alert_FDA-Import-Alert-66-72-revised-10-15-2026-Detentio#c3", "docC-C015_import_alert_FDA-Import-Alert-99-34-revised-11-02-2026-DETENTIO#c5"]}
+{"ts": 1795758250.1780312, "query_id": "C03", "ms": 11089, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758250.185268, "query_id": "C03", "ms": 11096, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795758252.8658292, "query_id": "C04", "ms": 2664, "stage": "retrieve", "hits": ["pdfB-B017_quality_review_BLA761080_filgrastim#c231", "pdfB-B017_quality_review_BLA761080_filgrastim#c197", "pdfB-B012_quality_review_BLA761154_adalimumab#c154", "pdfB-B016_quality_review_BLA761118_adalimumab#c115", "pdfB-B017_quality_review_BLA761080_filgrastim#c228"]}
+{"ts": 1795758254.879512, "query_id": "C04", "ms": 4677, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758254.887093, "query_id": "C04", "ms": 4685, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758258.180354, "query_id": "C05", "ms": 3272, "stage": "retrieve", "hits": ["iafirmsC-99-34-VIETNAM#c6", "iafirmsC-99-34-VIETNAM#c5", "iafirmsC-99-34-VIETNAM#c4", "iafirmsC-99-34-VIETNAM#c12", "iafirmsC-99-34-VIETNAM#c11"]}
+{"ts": 1795758260.7468338, "query_id": "C05", "ms": 5839, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758260.758228, "query_id": "C05", "ms": 5850, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758260.777459, "query_id": "C06", "ms": 0, "stage": "precheck", "decision": "ABSTAIN", "reason": "R7"}
+{"ts": 1795758260.7925172, "query_id": "C07", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R2"}
+{"ts": 1795758263.813344, "query_id": "C08", "ms": 2997, "stage": "retrieve", "hits": ["pdfA-A065_label_BLA761088_rituximab#c51", "recallE-D-0285-2025#c1", "pdfA-A085_label_BLA103234_epoetin-alfa#c75", "htsC-1117#c0", "pdfA-A085_label_BLA103234_epoetin-alfa#c208"]}
+{"ts": 1795758264.8953228, "query_id": "C08", "ms": 4079, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758264.9049711, "query_id": "C08", "ms": 4089, "stage": "executor", "step": 1, "tool": "demurrage", "result": {"tool": "demurrage", "args": {"days_late": 3, "rate_per_day": 150}, "result": 450}}
+{"ts": 1795758269.422456, "query_id": "C08", "ms": 8607, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758269.434169, "query_id": "C08", "ms": 8618, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758272.67825, "query_id": "C09", "ms": 3230, "stage": "retrieve", "hits": ["docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c72", "docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c73", "docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c19", "docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c82", "docA-A021_regulation_21-CFR-Part-211-cGMP-for-finished-pharmaceuticals-#c0"]}
+{"ts": 1795758277.05137, "query_id": "C09", "ms": 7603, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758277.0579772, "query_id": "C09", "ms": 7610, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758280.205855, "query_id": "C10", "ms": 3132, "stage": "retrieve", "hits": ["pdfB-B007_regulation_21-CFR-Part-314_cfr#c331", "docD-D001_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c331", "docC-C019_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c490", "docD-D001_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c490", "pdfB-B010_regulation_21-CFR-Part-601_cfr#c25"]}
+{"ts": 1795758286.94523, "query_id": "C10", "ms": 9871, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758286.953494, "query_id": "C10", "ms": 9879, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795758290.064435, "query_id": "C11", "ms": 3091, "stage": "retrieve", "hits": ["docC-C015_import_alert_FDA-Import-Alert-99-34-revised-11-02-2026-DETENTIO#c7", "docC-C007_import_alert_FDA-Import-Alert-66-57-revised-03-23-2026-Detentio#c6", "docC-C012_import_alert_FDA-Import-Alert-66-78-revised-07-09-2026-Detentio#c6", "docC-C011_import_alert_FDA-Import-Alert-66-76-revised-03-26-2025-Detentio#c7", "docC-C014_import_alert_FDA-Import-Alert-66-80-revised-11-25-2026-Detentio#c7"]}
+{"ts": 1795758299.8325372, "query_id": "C11", "ms": 12860, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758299.838618, "query_id": "C11", "ms": 12866, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758303.226288, "query_id": "C12", "ms": 3377, "stage": "retrieve", "hits": ["iafirmsC-99-34-INDIA#c10", "iafirmsC-99-34-INDIA#c9", "iafirmsC-99-34-INDIA#c12", "iafirmsC-99-34-INDIA#c11", "iafirmsC-66-40-INDIA#c257"]}
+{"ts": 1795758314.121716, "query_id": "C12", "ms": 14272, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758314.1288471, "query_id": "C12", "ms": 14279, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758314.142195, "query_id": "C13", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "OOS"}
+{"ts": 1795758316.590401, "query_id": "D01", "ms": 2440, "stage": "retrieve", "hits": ["shortage-6a99c3c622f3#c0", "shortageD-544#c0", "shortageD-696#c0", "shortageD-65#c0", "shortageD-73#c0"]}
+{"ts": 1795758320.651528, "query_id": "D01", "ms": 6501, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758320.659328, "query_id": "D01", "ms": 6509, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758323.838739, "query_id": "D02", "ms": 3158, "stage": "retrieve", "hits": ["nadacD-183#c0", "nadacD-175#c0", "nadacD-176#c0", "nadacD-178#c0", "nadacD-179#c0"]}
+{"ts": 1795758325.058418, "query_id": "D02", "ms": 4378, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758325.0738611, "query_id": "D02", "ms": 4394, "stage": "executor", "step": 1, "tool": "cost_delta", "result": {"tool": "cost_delta", "args": {"brand_unit": 12.4, "generic_unit": 1.1, "units": 1000}, "result": {"brand_total": 12400.0, "generic_total": 1100.0, "delta": 11300.0, "ratio": 11.27}}}
+{"ts": 1795758330.5133288, "query_id": "D02", "ms": 9833, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758330.521311, "query_id": "D02", "ms": 9841, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758333.708082, "query_id": "D03", "ms": 3165, "stage": "retrieve", "hits": ["nadacD-14#c0", "nadacD-20#c0", "nadacD-18#c0", "nadacD-17#c0", "nadacD-19#c0"]}
+{"ts": 1795758334.6088362, "query_id": "D03", "ms": 4065, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758334.615508, "query_id": "D03", "ms": 4072, "stage": "executor", "step": 1, "tool": "markup_percent", "result": {"tool": "markup_percent", "args": {"price": 48, "reference": 3.45}, "result": 1291.3043478260868}}
+{"ts": 1795758338.8675258, "query_id": "D03", "ms": 8324, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758338.942977, "query_id": "D03", "ms": 8399, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758341.182369, "query_id": "D04", "ms": 2220, "stage": "retrieve", "hits": ["pdfB-B007_regulation_21-CFR-Part-314_cfr#c27", "docD-D001_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c27", "docC-C019_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c27", "pdfB-B007_regulation_21-CFR-Part-314_cfr#c120", "docD-D001_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c48"]}
+{"ts": 1795758342.199126, "query_id": "D04", "ms": 3236, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758342.207975, "query_id": "D04", "ms": 3245, "stage": "executor", "step": 1, "tool": "lookup_approved_products", "result": {"tool": "lookup_approved_products", "args": {"drug": "product X", "dosage_form": null}, "result": {"source": "FDA Drugs@FDA products table", "rows_found": 0, "rows": []}}}
+{"ts": 1795758347.636211, "query_id": "D04", "ms": 8673, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758347.645368, "query_id": "D04", "ms": 8683, "stage": "critic", "step": 2, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758347.665157, "query_id": "D05", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R3"}
+{"ts": 1795758350.76271, "query_id": "D06", "ms": 3078, "stage": "retrieve", "hits": ["recallE-D-1566-2014#c1", "pdfA-A085_label_BLA103234_epoetin-alfa#c211", "pdfA-A085_label_BLA103234_epoetin-alfa#c189", "pdfA-A085_label_BLA103234_epoetin-alfa#c56", "pdfA-A084_label_BLA125545_epoetin-alfa#c55"]}
+{"ts": 1795758357.456506, "query_id": "D06", "ms": 9772, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758357.469501, "query_id": "D06", "ms": 9785, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758357.482961, "query_id": "D07", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R3"}
+{"ts": 1795758357.497797, "query_id": "D08", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R6"}
+{"ts": 1795758360.665119, "query_id": "D09", "ms": 3151, "stage": "retrieve", "hits": ["shortage-8cc5280dec7a#c0", "shortage-392debf19763#c0", "shortageD-31#c0", "shortageD-187#c0", "shortageD-205#c0"]}
+{"ts": 1795758365.3052318, "query_id": "D09", "ms": 7791, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758365.317048, "query_id": "D09", "ms": 7803, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758368.6280792, "query_id": "D10", "ms": 3289, "stage": "retrieve", "hits": ["pdfB-B021_quality_review_BLA761140_rituximab#c86", "pdfB-B022_quality_review_BLA761088_rituximab#c220", "pdfB-B021_quality_review_BLA761140_rituximab#c134", "pdfA-A017_quality_review_BLA761028_bevacizumab#c52", "pdfB-B022_quality_review_BLA761088_rituximab#c390"]}
+{"ts": 1795758375.15771, "query_id": "D10", "ms": 9818, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758375.170155, "query_id": "D10", "ms": 9831, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758377.140054, "query_id": "D11", "ms": 1951, "stage": "retrieve", "hits": ["nadacD-38#c0", "nadacD-39#c0", "nadacD-40#c0", "nadacD-41#c0", "nadacD-42#c0"]}
+{"ts": 1795758378.315296, "query_id": "D11", "ms": 3126, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758378.3211148, "query_id": "D11", "ms": 3132, "stage": "executor", "step": 1, "tool": "cost_delta", "result": {"tool": "cost_delta", "args": {"brand_unit": 9.0, "generic_unit": 3.0, "units": 500}, "result": {"brand_total": 4500.0, "generic_total": 1500.0, "delta": 3000.0, "ratio": 3.0}}}
+{"ts": 1795758382.063992, "query_id": "D11", "ms": 6875, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758382.0745978, "query_id": "D11", "ms": 6885, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758384.395668, "query_id": "D12", "ms": 2307, "stage": "retrieve", "hits": ["label-27c2e78d-d037-470d-b4fa-44c33d78f788#c6", "label-0172280c-f7d6-4613-9dbd-f94d3ae5825a#c5", "label-28649937-8ae1-a022-e063-6394a90aebe0#c6", "label-28642ad9-b839-ce3a-e063-6394a90ab866#c8", "label-287930f8-c5c6-56bd-e063-6394a90ad32e#c8"]}
+{"ts": 1795758391.883759, "query_id": "D12", "ms": 9795, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758391.897768, "query_id": "D12", "ms": 9809, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795758393.9192939, "query_id": "E01", "ms": 2000, "stage": "retrieve", "hits": ["faersE-adalimumab#c0", "recallE-D-1263-2014#c1", "pdfB-B022_quality_review_BLA761088_rituximab#c223", "recallE-D-0955-2016#c1", "pdfB-B031_quality_review_BLA761086_infliximab#c146"]}
+{"ts": 1795758401.336073, "query_id": "E01", "ms": 9417, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758401.346373, "query_id": "E01", "ms": 9427, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758404.274545, "query_id": "E02", "ms": 2913, "stage": "retrieve", "hits": ["docE-E001_regulation_21-CFR-Part-7-Enforcement-policy-Subpart-C-recalls#c18", "recallE-D-0032-2018#c1", "recallE-D-0880-2018#c1", "recallE-D-0345-2018#c1", "recallE-D-0308-2015#c1"]}
+{"ts": 1795758410.663639, "query_id": "E02", "ms": 9302, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758410.670348, "query_id": "E02", "ms": 9309, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758413.730051, "query_id": "E03", "ms": 3043, "stage": "retrieve", "hits": ["pdfA-A024_label_BLA761362_denosumab#c46", "recallE-D-0691-2017#c1", "recallE-D-0079-2017#c1", "recallE-D-1357-2015#c1", "recallE-D-1266-2014#c0"]}
+{"ts": 1795758420.0956202, "query_id": "E03", "ms": 9408, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758420.103057, "query_id": "E03", "ms": 9416, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795758423.090189, "query_id": "E04", "ms": 2971, "stage": "retrieve", "hits": ["recallE-D-1030-2022#c1", "recallE-D-0353-2026#c2", "recallE-D-1361-2016#c1", "recallE-D-1821-2015#c1", "recallE-D-1826-2015#c1"]}
+{"ts": 1795758428.29416, "query_id": "E04", "ms": 8175, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758428.300372, "query_id": "E04", "ms": 8182, "stage": "critic", "step": 1, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758431.442797, "query_id": "E05", "ms": 3131, "stage": "retrieve", "hits": ["pdfA-A084_label_BLA125545_epoetin-alfa#c56", "pdfA-A085_label_BLA103234_epoetin-alfa#c90", "pdfB-B077_label_BLA761170_trastuzumab#c2", "pdfB-B024_quality_review_BLA761170_trastuzumab#c66", "pdfB-B024_quality_review_BLA761170_trastuzumab#c73"]}
+{"ts": 1795758432.559356, "query_id": "E05", "ms": 4248, "stage": "planner", "step": 1, "action": "tool"}
+{"ts": 1795758432.570802, "query_id": "E05", "ms": 4259, "stage": "executor", "step": 1, "tool": "quarantine_cost", "result": {"tool": "quarantine_cost", "args": {"units": 40000, "unit_cost": 6.5}, "result": 260000.0}}
+{"ts": 1795758443.818862, "query_id": "E05", "ms": 15507, "stage": "planner", "step": 2, "action": "answer"}
+{"ts": 1795758443.833538, "query_id": "E05", "ms": 15522, "stage": "critic", "step": 2, "ok": true, "decision": "ANSWER"}
+{"ts": 1795758443.8535612, "query_id": "E06", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R2"}
+{"ts": 1795758445.9818282, "query_id": "E07", "ms": 2112, "stage": "retrieve", "hits": ["pdfB-B009_regulation_21-CFR-Part-600_cfr#c73", "pdfB-B007_regulation_21-CFR-Part-314_cfr#c228", "pdfB-B006_regulation_21-CFR-Part-251_cfr#c120", "docC-C018_regulation_21-CFR-Part-251-Section-804-importation-program#c120", "docC-C019_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c228"]}
+{"ts": 1795758450.7151859, "query_id": "E07", "ms": 6845, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758450.726339, "query_id": "E07", "ms": 6856, "stage": "critic", "step": 1, "ok": true, "decision": "ABSTAIN"}
+{"ts": 1795758453.826442, "query_id": "E08", "ms": 3087, "stage": "retrieve", "hits": ["docE-E006_guidance_ICH-E2A-Clinical-safety-data-management-definition#c15", "pdfB-B006_regulation_21-CFR-Part-251_cfr#c119", "docC-C018_regulation_21-CFR-Part-251-Section-804-importation-program#c119", "pdfB-B006_regulation_21-CFR-Part-251_cfr#c114", "docC-C018_regulation_21-CFR-Part-251-Section-804-importation-program#c114"]}
+{"ts": 1795758463.888653, "query_id": "E08", "ms": 13149, "stage": "planner", "step": 1, "action": "answer"}
+{"ts": 1795758463.8993752, "query_id": "E08", "ms": 13160, "stage": "critic", "step": 1, "ok": true, "decision": "ESCALATE"}
+{"ts": 1795758471.375152, "query_id": "E09", "ms": 7456, "stage": "retrieve", "hits": ["docB-B002_guidance_ICH-Q9-R1-Quality-risk-management#c37", "docD-D001_regulation_21-CFR-Part-314-Applications-for-FDA-approval-314-#c239", "docE-E009_guidance_ICH-Q9-R1-Quality-risk-management#c37", "pdfB-B003_regulation_21-CFR-Part-207_cfr#c45", "docC-C020_regulation_19-CFR-Part-12-Customs-special-classes-of-merchand#c184"]}
+{"ts": 1795758477.683821, "query_id": "E09", "ms": 13765, "stage": "agent_error", "error": "HTTPError: HTTP 429 from /chat/completions: {\"detail\":\"per-key concurrent request limit exceeded\"}"}
+{"ts": 1795758485.103227, "query_id": "E10", "ms": 7398, "stage": "retrieve", "hits": ["pdfB-B003_regulation_21-CFR-Part-207_cfr#c43", "docC-C017_regulation_21-CFR-Part-207-Establishment-registration-and-dru#c43", "pdfB-B003_regulation_21-CFR-Part-207_cfr#c45", "pdfB-B003_regulation_21-CFR-Part-207_cfr#c46", "docC-C017_regulation_21-CFR-Part-207-Establishment-registration-and-dru#c45"]}
+{"ts": 1795758491.4327412, "query_id": "E10", "ms": 13727, "stage": "agent_error", "error": "HTTPError: HTTP 429 from /chat/completions: {\"detail\":\"per-key concurrent request limit exceeded\"}"}
+{"ts": 1795758491.4631941, "query_id": "E11", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R3"}
+{"ts": 1795758491.482618, "query_id": "E12", "ms": 0, "stage": "precheck", "decision": "REFUSE", "reason": "R6"}
