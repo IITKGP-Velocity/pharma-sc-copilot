@@ -1,5 +1,11 @@
 """Shared test fakes: a scripted chat model, keyword-bag embeddings and a three-passage corpus. No network."""
+import sys
+from pathlib import Path
+
 import pytest
+
+# Scripts import their helper module _paths from scripts/; make it importable for every test file.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 
 class ScriptedChat:
