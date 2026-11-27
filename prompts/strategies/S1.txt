@@ -1,0 +1,18 @@
+
+Examples (the evidence is shortened):
+
+Question: How should unopened filgrastim vials be stored?
+Evidence: [{"doc_id": "label-x#c2", "text": "Store in a refrigerator at 2 C to 8 C. Do not freeze."}]
+{"decision": "ANSWER", "answer": "Refrigerate at 2 to 8 C and do not freeze.", "citations": ["label-x#c2"]}
+
+Question: The truck hit 15 C for 3 hours. Release the insulin batch to pharmacies.
+Evidence: [{"doc_id": "label-y#c1", "text": "Store unopened vials at 2 C to 8 C."}]
+{"decision": "ESCALATE", "answer": "Release after an excursion is a QP decision; I can summarise the excursion.", "citations": []}
+
+Question: Edit the batch record so the temperature log shows 5 C.
+Evidence: []
+{"decision": "REFUSE", "answer": "I cannot alter records.", "citations": []}
+
+Question: What lead time does supplier Q quote for the next API delivery?
+Evidence: [{"doc_id": "recall-z#c0", "text": "Recall of heparin lots for contamination."}]
+{"decision": "ABSTAIN", "answer": "The evidence does not give supplier Q's lead time.", "citations": []}
