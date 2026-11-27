@@ -1,5 +1,6 @@
 """Retrieval: BM25 (always on), dense cosine search (when the embeddings endpoint is set),
-reciprocal rank fusion of both, and an optional cross-encoder reranker (needs the 'retrieval' extra)."""
+reciprocal rank fusion of both, and an optional reranker that uses the course chat model."""
+import json
 import math
 import re
 from collections import Counter
@@ -88,18 +89,22 @@ def hybrid_search(query: str, docs: list[dict], bm25: BM25Index, dense: DenseInd
     return [(d, 1.0 / (rank + 1)) for rank, d in enumerate(fused[:k])]
 
 
-_RERANKER = None   # loaded once on first use; loading takes a few seconds
+RERANK_PROMPT = ("Rank the passages by how well they answer the question, most relevant first. "
+                 'Reply with one JSON object and nothing else: {"ranking": [passage numbers]}.')
 
 
-def rerank(query: str, hits: list[tuple[str, float]], texts: dict[str, str], k: int = 5) -> list[tuple[str, float]]:
-    """Cross-encoder rerank if sentence-transformers is installed; otherwise keep the fused order.
-    Turn it on with `rerank: true` in configs/settings.yaml (needs the 'retrieval' extra)."""
-    global _RERANKER
-    try:
-        from sentence_transformers import CrossEncoder  # optional extra
-    except ImportError:
+def rerank(query: str, hits: list[tuple[str, float]], texts: dict[str, str], chat, k: int = 5) -> list[tuple[str, float]]:
+    """Reorder the fused hits with one call to the course chat model; keep the fused order if that fails.
+    Turn it on with `rerank: true` in configs/settings.yaml."""
+    if chat is None or len(hits) <= 1:
         return hits[:k]
-    if _RERANKER is None:
-        _RERANKER = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
-    scores = _RERANKER.predict([(query, texts[d]) for d, _ in hits])
-    return sorted(zip([d for d, _ in hits], [float(s) for s in scores]), key=lambda x: x[1], reverse=True)[:k]
+    ids = [d for d, _ in hits]
+    listing = [{"n": n, "text": texts[d][:300]} for n, d in enumerate(ids, start=1)]
+    try:
+        reply = chat.complete_json([{"role": "system", "content": RERANK_PROMPT},
+                                    {"role": "user", "content": json.dumps({"question": query, "passages": listing})}])
+        picked = [ids[n - 1] for n in reply.get("ranking", []) if isinstance(n, int) and 1 <= n <= len(ids)]
+    except Exception:  # model or endpoint trouble: never lose the retrieval result
+        return hits[:k]
+    order = list(dict.fromkeys(picked + ids))  # passages the model left out keep their fused order at the end
+    return [(d, 1.0 / (rank + 1)) for rank, d in enumerate(order[:k])]

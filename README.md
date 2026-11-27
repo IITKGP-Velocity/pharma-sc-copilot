@@ -61,7 +61,7 @@ Run a component's unit tests to check it works, and its demo to see what it does
 | 5 | **Agent loop** (`agent/engine.py`) | `python -m pytest tests/test_agent.py -q` → 11 passed | `python scripts/demo.py agent "What is the storage temperature for unopened adalimumab pens?"` | Every step with its time, then the JSON answer and `latency … steps … LLM calls … tokens …` | A / B / C |
 | 6 | **Model clients + credentials** (`agent/llm.py`, `runtime.py`) | `python -m pytest tests/test_llm.py tests/test_runtime.py -q` → 14 passed | `python scripts/check_setup.py --live "${FLAGS[@]}"` | `Live chat call: OK` and `Live embeddings call: OK` | A / C |
 | 7 | **Observability** (`observability/`) | `python -m pytest tests/test_observability.py -q` → 18 passed | `python scripts/demo.py dashboard --open` | A dashboard in the browser and `eval/demo_output/DEMO_fake_data/failure_log.csv` (fake data) | A |
-| 8 | **Retrieval quality** | (covered by 7) | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | `bm25_only recall@5=…` and `hybrid recall@5=…` | B / C |
+| 8 | **Retrieval quality** | (covered by 7) | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | `bm25_only recall@5=…`, `hybrid recall@5=…` and `hybrid_rerank recall@5=…` | B / C |
 | 9 | **Web app** (`app/app.py`) | — | `python -m pip install -e ".[app]"` then `python -m streamlit run app/app.py` | A page at http://localhost:8501 showing the mode line; the 11th question in a minute is blocked | B / C |
 
 Without the model flags, components 5 and 9 run in offline mode: the answer is the best matching
@@ -78,7 +78,7 @@ Run these in order. Each step says what a pass looks like.
 | 3 | `python scripts/check_setup.py --live "${FLAGS[@]}"` | Both live calls `OK` (see section 3 for `FLAGS`) |
 | 4 | Unzip the team corpus bundle (section 4.1), or `python scripts/build_corpus.py --fetch --embed "${FLAGS[@]}"` | `check_setup.py` shows about 57,700 passages (bundle) or `Wrote embeddings for 5495 passages` (openFDA only, about 4 minutes) |
 | 5 | `python scripts/demo.py all "${FLAGS[@]}"` | Seven cases with these decisions: cited answer → `ANSWER` with a citation; tool calculation → `ANSWER` with `mkt` 4.61; escalation → `ESCALATE` to QP; injection → `REFUSE` R6; PII → name and phone shown as `[REDACTED]`; customs prediction → `ABSTAIN` R7 (rule); supplier D's certificate of analysis → `ABSTAIN` (no supporting evidence, live model) |
-| 6 | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | Hybrid recall@5 close to 1.0 (section 6) |
+| 6 | `python scripts/eval_retrieval.py "${FLAGS[@]}"` | Hybrid + rerank recall@5 1.0 (section 6) |
 | 7 | `python scripts/run_eval.py "${FLAGS[@]}"` | Finishes all 64 queries (about 6 minutes); accuracy near the latest result in section 6 |
 | 8 | Open `eval/results/run_<date>/dashboard.html` | Cards, accuracy tables, and a query table whose rows open to show each agent step |
 
@@ -192,7 +192,7 @@ Each command searches the corpus without the model (BM25, plus embeddings when p
 python scripts/ask.py "What is the storage temperature for unopened adalimumab pens?" "${FLAGS[@]}"
 python scripts/run_eval.py "${FLAGS[@]}"                  # 64 queries, about 6 minutes
 python scripts/run_eval.py --ids A02 C03 "${FLAGS[@]}"    # chosen queries only
-python scripts/eval_retrieval.py "${FLAGS[@]}"            # recall@k and MRR, BM25 vs hybrid
+python scripts/eval_retrieval.py "${FLAGS[@]}"            # recall@k and MRR: BM25, hybrid, hybrid + rerank
 python scripts/rebuild_report.py eval/results/run_<date>  # after labelling failure_log.csv
 python -m streamlit run app/app.py                        # web app (pip install -e ".[app]")
 ```
@@ -267,10 +267,11 @@ wired in; the JSON files above are the trace store.
 - About 2,430 tokens and 1.2 LLM calls per agent query.
 - 14 of 64 queries were decided by the rules with no model call.
 
-**Retrieval** (`eval/results/retrieval_20261125_201202`, 11 gold queries in `eval/gold/retrieval_gold.json`):
+**Retrieval** (`eval/results/retrieval_20261127_104859`, 11 gold queries in `eval/gold/retrieval_gold.json`, full corpus of 57,731 passages):
 
-- BM25 only: recall@5 0.82, MRR 0.69.
-- Hybrid (BM25 + embeddings): recall@5 1.00, MRR 0.85.
+- BM25 only: recall@5 0.455, MRR 0.326.
+- Hybrid (BM25 + embeddings): recall@5 0.909, MRR 0.689.
+- Hybrid + rerank (the course chat model reorders the top 20): recall@5 1.00, MRR 0.886. The reranker is on by default (`rerank: true`).
 
 **Known weak spots:**
 - Most wrong ANSWER items need data the corpus does not have (Orange Book, products outside the 20 drugs, shortages beyond the first 100).
@@ -295,7 +296,7 @@ src/copilot/
 |---|---|
 | `src/copilot/safety/rules.py` | 1. Rule pre-check R1–R8 and out-of-scope (OOS), redaction (phones, emails, dates of birth, labelled names), output guard |
 | `src/copilot/rag/corpus.py` | 2. openFDA download, 800-character passages, raw files with SHA-256 hashes |
-| `src/copilot/rag/retrieval.py` | 2. BM25 + dense + reciprocal rank fusion, optional reranker (`rerank: true`) |
+| `src/copilot/rag/retrieval.py` | 2. BM25 + dense + reciprocal rank fusion, reranker using the course chat model (`rerank: true`) |
 | `src/copilot/agent/engine.py` | 3–5. Planner → Executor → Critic loop, 10-step cap, token budget, per-query metrics |
 | `src/copilot/agent/tools.py` | 4. Deterministic tools |
 | `src/copilot/agent/llm.py` | Chat and embeddings clients (per-port CA, retries, token counts) |

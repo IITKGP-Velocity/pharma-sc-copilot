@@ -5,4 +5,4 @@ chunk_chars: 800                # passage size; dense label text hits the 512-to
 max_steps: 10                   # agent step cap (guideline)
 token_budget: 8000              # per query
 rate_limit_per_min: 10          # questions per session per minute in the web app
-rerank: false                   # cross-encoder reranker; needs: pip install -e ".[retrieval]"
+rerank: true                    # reorder the top 20 passages with the course chat model (one extra call per question)

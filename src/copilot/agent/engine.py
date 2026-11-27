@@ -108,7 +108,7 @@ class Engine:
                 trace({"stage": "embed_error", "error": f"{type(err).__name__}: {str(err)[:200]}"})
         hits = hybrid_search(clean, self.corpus, self.bm25, self.dense, qvec, k=20 if USE_RERANKER else 5)
         if USE_RERANKER and hits:
-            hits = rerank(clean, hits, self.texts, k=5)
+            hits = rerank(clean, hits, self.texts, self.chat, k=5)
         m["retrieve_ms"] = int((time.monotonic() - t) * 1000)
         if not hits:
             trace({"stage": "retrieve", "hits": 0})

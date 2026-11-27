@@ -22,7 +22,7 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 | Path | Purpose |
 |---|---|
 | `src/copilot/safety/` | `rules.py`: rule pre-check R1-R8 and out-of-scope (OOS), redaction (phones, emails, dates of birth, labelled names), output guard |
-| `src/copilot/rag/` | `corpus.py`: openFDA corpus in 800-char passages; `retrieval.py`: BM25 + dense + RRF, optional reranker (`rerank: true`) |
+| `src/copilot/rag/` | `corpus.py`: openFDA corpus in 800-char passages; `retrieval.py`: BM25 + dense + RRF, reranker using the course chat model (`rerank: true`) |
 | `src/copilot/agent/` | `engine.py`: Planner -> Executor -> Critic loop, 10-step cap, token budget, per-query metrics in `last_metrics`; `tools.py`: deterministic tools; `llm.py`: model clients (per-port CA, retries, token counts) |
 | `src/copilot/observability/` | `tracing.py` (`trace.jsonl`), `metrics.py` (result rows, summary, recall@k), `failure_log.py`, `dashboard.py`. How it is built into the engine (three layers: `last_metrics`, trace, run reports): README section 5.1 |
 | `src/copilot/runtime.py`, `config.py`, `schemas.py`, `service.py` | Endpoint flags and key files; settings; answer schema; builds the engine |
@@ -94,7 +94,7 @@ Review the diff against `origin/main`. Report findings grouped as blocking / sho
 ## 4. Project outcome and status
 Use only evidence from the repo or run results.
 - Quote numbers from `eval/results/run_*/summary.json` and `eval/results/retrieval_*/retrieval_summary.json`, with the run name. Do not estimate.
-  Latest: `run_20261125_201203` (decision accuracy 53%, avg latency 5.5 s) and `retrieval_20261125_201202` (recall@5 BM25 0.82, hybrid 1.00).
+  Latest: `run_20261125_201203` (decision accuracy 53%, avg latency 5.5 s) and `retrieval_20261127_104859` (recall@5 BM25 0.455, hybrid 0.909, hybrid + rerank 1.00).
 - Report retrieval quality (`eval_retrieval.py`) separately from decision accuracy (`run_eval.py`).
 - Failure taxonomy counts come from the `label` column of `failure_log.csv`, filled by a person. `auto_label` is only a first guess.
 - Never quote numbers from `eval/demo_output/` (fake data).

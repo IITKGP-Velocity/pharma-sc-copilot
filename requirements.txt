@@ -1,5 +1,5 @@
 # Core runtime. Full install with tests: pip install -e ".[dev]"
-# Optional extras: ".[app]" (Streamlit), ".[retrieval]" (cross-encoder reranker), ".[tracing]" (Phoenix)
+# Optional extras: ".[app]" (Streamlit), ".[tracing]" (Phoenix)
 pydantic>=2.6
 pyyaml>=6.0
 requests>=2.31
