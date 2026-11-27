@@ -40,3 +40,10 @@ def corpus():
         {"id": "who-trs961", "text": "Temperature mapping of transport and storage is a qualification activity."},
         {"id": "shortage-cisplatin", "text": "Drug shortage: cisplatin injection. Status: Currently in shortage."},
     ]
+
+
+@pytest.fixture(autouse=True)
+def no_rerank(monkeypatch):
+    """Scripted chat replies count every model call, so keep the reranker call out of agent tests.
+    The reranker has its own tests in test_retrieval.py."""
+    monkeypatch.setattr("copilot.agent.engine.USE_RERANKER", False)

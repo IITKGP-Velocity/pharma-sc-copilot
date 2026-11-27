@@ -1,5 +1,5 @@
 """BM25, dense search and reciprocal rank fusion on a tiny corpus."""
-from copilot.rag.retrieval import BM25Index, DenseIndex, hybrid_search, reciprocal_rank_fusion, tokenize
+from copilot.rag.retrieval import BM25Index, DenseIndex, hybrid_search, reciprocal_rank_fusion, rerank, tokenize
 
 DOCS = [
     {"id": "d1", "text": "Store unopened pens refrigerated at 2 to 8 C. Do not freeze."},
@@ -32,3 +32,33 @@ def test_rrf_prefers_documents_high_in_both_lists():
 def test_hybrid_without_dense_equals_bm25_order():
     hits = hybrid_search("unopened pens", DOCS, BM25Index(DOCS), None, None, k=2)
     assert hits[0][0] == "d1"
+
+
+class FakeChat:
+    """Stands in for the course chat model: returns a fixed ranking or raises."""
+    def __init__(self, reply=None, error=False):
+        self.reply, self.error = reply, error
+
+    def complete_json(self, messages, **kwargs):
+        if self.error:
+            raise RuntimeError("endpoint down")
+        return self.reply
+
+
+HITS = [("d1", 1.0), ("d2", 0.5), ("d3", 0.33)]
+TEXTS = {d["id"]: d["text"] for d in DOCS}
+
+
+def test_rerank_follows_model_order_and_keeps_left_out_passages():
+    out = rerank("excursion", HITS, TEXTS, FakeChat({"ranking": [3, 1]}), k=3)
+    assert [d for d, _ in out] == ["d3", "d1", "d2"]
+
+
+def test_rerank_ignores_bad_numbers():
+    out = rerank("q", HITS, TEXTS, FakeChat({"ranking": [9, "x", 2]}), k=2)
+    assert [d for d, _ in out] == ["d2", "d1"]
+
+
+def test_rerank_keeps_fused_order_without_model_or_on_error():
+    assert rerank("q", HITS, TEXTS, None, k=2) == HITS[:2]
+    assert rerank("q", HITS, TEXTS, FakeChat(error=True), k=2) == HITS[:2]
