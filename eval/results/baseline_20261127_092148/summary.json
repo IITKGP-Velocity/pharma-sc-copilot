@@ -1,0 +1,92 @@
+{
+  "S0": {
+    "name": "control (zero-shot)",
+    "queries": 64,
+    "decision_accuracy": 0.641,
+    "format_validity": 1.0,
+    "by_use_case": {
+      "A": "8/14",
+      "B": "8/13",
+      "C": "8/13",
+      "D": "8/12",
+      "E": "9/12"
+    },
+    "latency_ms_avg": 2685,
+    "latency_ms_p95": 4830,
+    "llm_calls": 64,
+    "tokens_per_query": 1511,
+    "errors": 0
+  },
+  "S1": {
+    "name": "structured output + few-shot",
+    "queries": 64,
+    "decision_accuracy": 0.547,
+    "format_validity": 1.0,
+    "by_use_case": {
+      "A": "7/14",
+      "B": "6/13",
+      "C": "9/13",
+      "D": "6/12",
+      "E": "7/12"
+    },
+    "latency_ms_avg": 2046,
+    "latency_ms_p95": 4894,
+    "llm_calls": 64,
+    "tokens_per_query": 1774,
+    "errors": 0
+  },
+  "S2": {
+    "name": "chain-of-thought",
+    "queries": 64,
+    "decision_accuracy": 0.578,
+    "format_validity": 1.0,
+    "by_use_case": {
+      "A": "8/14",
+      "B": "10/13",
+      "C": "8/13",
+      "D": "4/12",
+      "E": "7/12"
+    },
+    "latency_ms_avg": 3959,
+    "latency_ms_p95": 6310,
+    "llm_calls": 64,
+    "tokens_per_query": 1678,
+    "errors": 0
+  },
+  "S3": {
+    "name": "self-consistency (5 samples)",
+    "queries": 64,
+    "decision_accuracy": 0.578,
+    "format_validity": 1.0,
+    "by_use_case": {
+      "A": "7/14",
+      "B": "10/13",
+      "C": "9/13",
+      "D": "4/12",
+      "E": "7/12"
+    },
+    "latency_ms_avg": 22332,
+    "latency_ms_p95": 35749,
+    "llm_calls": 320,
+    "tokens_per_query": 8383,
+    "errors": 0
+  },
+  "S4": {
+    "name": "decomposition",
+    "queries": 64,
+    "decision_accuracy": 0.578,
+    "format_validity": 1.0,
+    "by_use_case": {
+      "A": "8/14",
+      "B": "9/13",
+      "C": "7/13",
+      "D": "6/12",
+      "E": "7/12"
+    },
+    "latency_ms_avg": 7902,
+    "latency_ms_p95": 10855,
+    "llm_calls": 64,
+    "tokens_per_query": 1794,
+    "errors": 0
+  }
+}
