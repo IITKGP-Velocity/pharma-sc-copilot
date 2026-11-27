@@ -59,7 +59,7 @@ Licences
   data/processed/ to the public repo (both are git-ignored).
 """
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
-        z.writestr("BUNDLE_README.txt", readme)
+        z.writestr("data/processed/BUNDLE_README.txt", readme)  # git-ignored location, keeps the repo clean
         z.write(corpus, "data/processed/corpus.jsonl")
         z.write(emb, "data/processed/embeddings.json")
         for p in PACKS:

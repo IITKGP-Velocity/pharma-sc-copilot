@@ -147,7 +147,7 @@ unzip -o Velocity_corpus_bundle_<date>.zip -d .     # from the repo folder; file
 python scripts/check_setup.py                        # Corpus documents: about 57,700 passages
 ```
 
-No `--fetch` or `--embed` is needed afterwards. `BUNDLE_README.txt` in the zip lists checksums and licences.
+No `--fetch` or `--embed` is needed afterwards. `data/processed/BUNDLE_README.txt` (from the zip) lists checksums and licences.
 
 ### 4.2 Rebuild the data packs
 
