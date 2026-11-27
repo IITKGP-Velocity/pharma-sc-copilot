@@ -90,9 +90,10 @@ def test_only_oos_questions_in_eval_set_are_out_of_scope():
     assert flagged == {"C13"}  # E11 is out of scope as clinical dosing (R3), caught before the scope check
 
 
-def test_guard_replaces_model_oos_verdict_with_standard_message():
-    out = guard_output(CopilotResponse(decision="REFUSE", reason_code="OOS", answer="nope"), set())
-    assert out.answer == OUT_OF_SCOPE and out.decision == "REFUSE"
+def test_guard_turns_a_model_oos_verdict_into_abstain():
+    # The question already passed the rule scope check, so the model may not refuse it as out of scope.
+    out = guard_output(CopilotResponse(decision="REFUSE", reason_code="OOS", answer="Out of scope."), set())
+    assert out.decision == "ABSTAIN" and out.reason_code is None and OUT_OF_SCOPE not in (out.answer or "")
 
 
 def test_guard_drops_uncited_answers_and_unknown_citations():

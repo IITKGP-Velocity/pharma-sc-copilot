@@ -332,6 +332,6 @@ src/copilot/
   ignored by Git; commit the run you report with `git add -f eval/results/<run>`.
 - Keep `src/copilot/safety/rules.py` in line with `configs/refusal_rules.yaml`.
 - Questions outside the five use cases get `REFUSE` with reason `OOS` and a fixed "Out of scope." message, decided by
-  `in_scope()` before any model call (the planner prompt has the same rule as a backstop). Clinical dosing questions
+  `in_scope()` before any model call; only this check can refuse as out of scope (a model `OOS` verdict becomes `ABSTAIN`). Clinical dosing questions
   get `REFUSE` `R3` and are pointed to the prescriber or pharmacist. To widen the scope, add words to `STEMS` / `WORDS`
   in `rules.py` or drug names to `configs/drug_names.txt`.
