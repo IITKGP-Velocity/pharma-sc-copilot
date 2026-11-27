@@ -164,13 +164,13 @@ python scripts/data_packs/bundle.py                 # one zip for the team: data
 
 | Pack (folder in `data/raw/packs/`) | Use case, owner | Main contents |
 |---|---|---|
-| `UseCaseA_ColdChain_GDP_PDFs` | A, Siddhesh | 100 PDFs: refrigerated-product labels, NIST vaccine-fridge studies, 21 CFR 205/606/640/1271, 49 CFR dry ice |
+| `UseCaseA_ColdChain_GDP_PDFs` | A, Premshankar  | 100 PDFs: refrigerated-product labels, NIST vaccine-fridge studies, 21 CFR 205/606/640/1271, 49 CFR dry ice |
 | `UseCaseA_ColdChain_GDP_Guidance_and_Data` | A, Siddhesh | WHO TRS 961 Annex 9 + supplements 2-16, EU GDP 2013/C 343/01, ICH Q1A/Q1E/Q5C, 21 CFR 211/600/610/203 |
 | `UseCaseB_Supplier_Qualification_PDFs` | B, Shrilesh | 100 PDFs: 21 CFR (11, 210, 211, 314, 320, 600-610, ...), quality reviews, ANDA and biosimilar approval letters, labels |
 | `UseCaseB_Supplier_Qualification_Guidance_and_Data` | B, Shrilesh | ICH Q7, Q9(R1), Q10, Q11, Q3A/Q3B, Q5E; EU API GDP; Drugs@FDA TE codes, Purple Book, registered establishments |
 | `UseCaseC_Customs_Import_PreClearance` | C, Swapnesh | 15 FDA drug import alerts + 25,154 firm rows, 21 CFR 1/207/251/314, 19 CFR 12/141/151, tariff ch. 29-30 |
 | `UseCaseD_Shortage_Therapeutic_Substitution` | D, Sandeep | openFDA shortages, NADAC 2026 prices and changes, TE codes, Purple Book, NDC products/packages |
-| `UseCaseE_Pharmacovigilance_Recall_Triage` | E, Sandeep | 18,194 recalls with lot numbers, FAERS summaries, NDC, 21 CFR 7/310/314/600/211, ICH E2A/E2D/E2E/Q9(R1) |
+| `UseCaseE_Pharmacovigilance_Recall_Triage` | E, Ajay  | 18,194 recalls with lot numbers, FAERS summaries, NDC, 21 CFR 7/310/314/600/211, ICH E2A/E2D/E2E/Q9(R1) |
 
 Packs only use public sources. Personal data is removed or masked: establishment contacts, national ID
 numbers on import alert 99-34, and free-mail addresses in FDA records.
