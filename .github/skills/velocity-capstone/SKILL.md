@@ -30,7 +30,7 @@ Treat the code on `origin/main` as the source of truth. This file can be stale: 
 | `app/app.py` | Streamlit app; rate limit from `configs/settings.yaml`; caching |
 | `eval/gold/` | Frozen 64-query set + SHA-256, retrieval gold set |
 | `eval/results/` | Reported runs (force-added; the folder is otherwise git-ignored) |
-| `tests/` | 91 offline tests (fake model and embeddings, no keys) |
+| `tests/` | 94 offline tests (fake model and embeddings, no keys) |
 
 Course endpoints (verified 2026-11-25): chat VM04 `https://<COURSE_HOST>:1034/v1`, model `Qwen/Qwen3-8B`, cert `vm04-ca.crt`;
 embeddings VM02 `https://<COURSE_HOST>:1035/v1`, `bge-small-en-v1.5`, cert `vm02-ca.crt`. The host, certs and keys come
@@ -47,7 +47,7 @@ The full testing guide is section 2 of `README.md`: three levels (offline, with 
 per-component table (unit-test command, demo command, expected output) and an 8-step whole-system checklist.
 Point teammates there. Short version:
 1. Python 3.11+: `python3 -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"`
-2. Offline: `python -m pytest -q` (91 passed); `python scripts/demo.py safety`, `tools`, `dashboard --open` (fake data).
+2. Offline: `python -m pytest -q` (94 passed); `python scripts/demo.py safety`, `tools`, `dashboard --open` (fake data).
 3. Live: `python scripts/check_setup.py --live <flags>` where `<flags>` are `--chat-endpoint`, `--model`,
    `--chat-ca-cert`, `--api-key-file`, `--embed-endpoint`, `--embed-model`, `--embed-ca-cert`, `--embed-api-key-file`.
 4. Corpus once: `python scripts/build_corpus.py --fetch --embed <flags>` (about 4 minutes, git-ignored).
@@ -61,7 +61,7 @@ Work from the outside in and change one thing at a time.
 | `CERTIFICATE_VERIFY_FAILED` | Cert and port don't match | VM04 cert with port 1034, VM02 cert with 1035; `check_setup.py --live` prints a hint |
 | HTTP 401 | Wrong key for that server | Each server has its own key; test with `check_setup.py --live` |
 | HTTP 429 or slow | Busy server | 429/5xx are retried 3 times with backoff; do not parallelise calls |
-| Embeddings HTTP 413 / 422 "512 tokens" | Request too big | At most 16 texts per request; passages under 512 tokens (`chunk_chars: 800`) |
+| Embeddings HTTP 413 / 422 "512 tokens" | Request too big | At most 16 texts per request (`chunk_chars: 800`); over-long passages are shortened automatically by `EmbedClient` |
 | "Model endpoint error" in an answer | Model call or JSON parse failed | `error` in `results.jsonl` / dashboard; `ValueError` = invalid JSON (retried once) |
 | Critic rejects repeatedly / step cap | Schema problems in the model's JSON | Trace shows `critic ... problems`; the problem text is fed back to the model |
 | Answer ABSTAIN though the fact exists | Retrieval miss or data gap | `python scripts/demo.py retrieval "<question>"`; check the passage is in `data/processed/corpus.jsonl` |

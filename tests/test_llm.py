@@ -1,8 +1,9 @@
 """Model client: JSON parsing, blank settings and CA certificate handling (no network)."""
 import pytest
+import requests
 
 from copilot.config import env, llm_configured
-from copilot.agent.llm import ChatClient, EndpointNotConfigured, ca_bundle, parse_json_object
+from copilot.agent.llm import ChatClient, EmbedClient, EndpointNotConfigured, ca_bundle, parse_json_object
 
 
 def test_parses_plain_and_fenced_json():
@@ -48,3 +49,44 @@ def test_ca_bundle_resolves_relative_path(monkeypatch, tmp_path):
 
 def test_think_block_before_json_is_ignored():
     assert parse_json_object('<think>plan...</think>\n{"action": "answer"}') == {"action": "answer"}
+
+
+class _TokenLimitedServer(EmbedClient):
+    """Fake embeddings server that rejects any input longer than 50 characters, like the 512-token limit."""
+    def __init__(self):
+        self.model, self.calls = "fake", []
+
+    def _post(self, path, payload):
+        self.calls.append(list(payload["input"]))
+        too_long = [t for t in payload["input"] if len(t) > 50]
+        if too_long:
+            raise requests.HTTPError(f"HTTP 422 from /embeddings: `inputs` must have less than 50 tokens. Given: {len(too_long[0])}")
+        return {"data": [{"index": i, "embedding": [float(len(t))]} for i, t in enumerate(payload["input"])]}
+
+
+def test_embed_shortens_only_texts_over_the_token_limit():
+    client = _TokenLimitedServer()
+    vectors = client.embed(["short", "x" * 200, "also short"], batch=16)
+    assert len(vectors) == 3
+    assert vectors[0] == [5.0] and vectors[2] == [10.0]   # untouched, order kept
+    assert vectors[1][0] <= 50                          # the long text was shortened to fit
+
+
+def test_embed_shortening_converges_when_token_counts_barely_drop():
+    class Stubborn(_TokenLimitedServer):
+        def _post(self, path, payload):
+            text = payload["input"][0]
+            if len(payload["input"]) == 1 and len(text) > 30:  # dot-leader text: count stays just over the limit
+                raise requests.HTTPError("HTTP 422 from /embeddings: `inputs` must have less than 50 tokens. Given: 51")
+            if len(payload["input"]) > 1:
+                raise requests.HTTPError("HTTP 422 from /embeddings: `inputs` must have less than 50 tokens. Given: 51")
+            return {"data": [{"index": 0, "embedding": [float(len(text))]}]}
+    assert Stubborn().embed(["." * 200, "x"])[0][0] <= 30
+
+
+def test_embed_reraises_other_http_errors():
+    class Broken(_TokenLimitedServer):
+        def _post(self, path, payload):
+            raise requests.HTTPError("HTTP 401 from /embeddings: bad key")
+    with pytest.raises(requests.HTTPError):
+        Broken().embed(["a"])
